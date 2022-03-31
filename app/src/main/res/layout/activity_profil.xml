@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fundal"
+    tools:context=".controller.ProfilActivity">
+
+    <TextView
+        android:id="@+id/profil_textViewSalut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:textSize="@dimen/text20"
+        app:layout_constraintBaseline_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/profil_textViewEmailTitlu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Adresa de email"
+        android:textSize="@dimen/text20"
+        android:textStyle="bold"
+        app:layout_constraintBaseline_toBottomOf="@+id/profil_textViewSalut"
+        app:layout_constraintLeft_toLeftOf="@+id/profil_textViewSalut" />
+
+    <TextView
+        android:id="@+id/profil_textViewEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:textSize="@dimen/text20"
+        app:layout_constraintLeft_toLeftOf="@+id/profil_textViewEmailTitlu"
+        app:layout_constraintTop_toBottomOf="@+id/profil_textViewEmailTitlu" />
+
+    <TextView
+        android:id="@+id/profil_textViewNumeTitlu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Nume"
+        android:textSize="@dimen/text20"
+        android:textStyle="bold"
+        app:layout_constraintBaseline_toBottomOf="@+id/profil_textViewEmail"
+        app:layout_constraintLeft_toLeftOf="@+id/profil_textViewEmail" />
+
+    <TextView
+        android:id="@+id/bottom_sheet_meniu_textViewNume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:textSize="@dimen/text20"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profil_textViewNumeTitlu" />
+
+    <Button
+        android:id="@+id/profil_buttonMeniu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/primara"
+        android:textSize="@dimen/text20"
+        android:text="Meniu"
+        android:textColor="@color/text_pe_primara"
+        app:layout_constraintBaseline_toBottomOf="@id/bottom_sheet_meniu_textViewNume"
+        app:layout_constraintLeft_toLeftOf="@+id/bottom_sheet_meniu_textViewNume" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

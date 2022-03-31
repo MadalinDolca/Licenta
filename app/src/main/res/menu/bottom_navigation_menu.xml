@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/acasa"
+        android:enabled="true"
+        android:icon="@drawable/ic_acasa"
+        android:title="Acasă" />
+    <item
+        android:id="@+id/cauta"
+        android:enabled="true"
+        android:icon="@drawable/ic_cauta"
+        android:title="Caută" />
+    <item
+        android:id="@+id/adauga"
+        android:enabled="true"
+        android:icon="@drawable/ic_adauga"
+        android:title="Adaugă" />
+    <item
+        android:id="@+id/biblioteca"
+        android:enabled="true"
+        android:icon="@drawable/ic_biblioteca"
+        android:title="Bibliotecă" />
+    <item
+        android:id="@+id/meniu"
+        android:enabled="true"
+        android:icon="@drawable/ic_meniu"
+        android:title="Meniu" />
+</menu>

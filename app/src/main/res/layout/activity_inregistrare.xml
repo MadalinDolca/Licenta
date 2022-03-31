@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fundal"
+    android:fillViewport="true"
+    android:scrollbars="none"
+    tools:context=".controller.InregistrareActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="25dp">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="false"
+            app:lottie_rawRes="@raw/lottie_inregistrare" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:gravity="center_horizontal"
+            android:text="Înregistrare"
+            android:textColor="@color/primara"
+            android:textSize="@dimen/text30"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxCornerRadiusBottomEnd="@dimen/radius15"
+            app:boxCornerRadiusBottomStart="@dimen/radius15"
+            app:boxCornerRadiusTopEnd="@dimen/radius15"
+            app:boxCornerRadiusTopStart="@dimen/radius15">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inregistrare_editTextNume"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nume"
+                android:inputType="textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:boxCornerRadiusBottomEnd="@dimen/radius15"
+            app:boxCornerRadiusBottomStart="@dimen/radius15"
+            app:boxCornerRadiusTopEnd="@dimen/radius15"
+            app:boxCornerRadiusTopStart="@dimen/radius15">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inregistrare_editTextEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:boxCornerRadiusBottomEnd="@dimen/radius15"
+            app:boxCornerRadiusBottomStart="@dimen/radius15"
+            app:boxCornerRadiusTopEnd="@dimen/radius15"
+            app:boxCornerRadiusTopStart="@dimen/radius15"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inregistrare_editTextParola"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Parola"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/inregistrare_buttonInregistreazate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:padding="15dp"
+            android:text="Înregistrează-te"
+            android:textColor="@color/text_pe_primara"
+            android:textSize="@dimen/text20"
+            app:backgroundTint="@color/primara"
+            app:cornerRadius="@dimen/radius15" />
+
+        <LinearLayout
+            android:id="@+id/inregistrare_linearLayoutAutentificate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Deja înregistrat?"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text20" />
+
+            <TextView
+                android:id="@+id/inregistrare_textViewAutentificate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="Autentifică-te"
+                android:textColor="@color/primara"
+                android:textSize="@dimen/text20"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

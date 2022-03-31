@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1096745239590",
+    "firebase_url": "https://licenta-000-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "licenta-000",
+    "storage_bucket": "licenta-000.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1096745239590:android:e5c3d1c617343b79bb52e7",
+        "android_client_info": {
+          "package_name": "com.madalin.licenta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1096745239590-v5sn9df6lmjip4smptqdq1c8ig0qijp0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4PlGh04g4ZKTKINTDiqosMyUsVRu1WSk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1096745239590-v5sn9df6lmjip4smptqdq1c8ig0qijp0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
