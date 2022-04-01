@@ -1,16 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     tools:context=".controller.fragment.AdaugaFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Adauga"
-        android:textSize="30sp" />
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_ecran">
 
-</FrameLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Încarcă o imagine"
+            android:textColor="@color/text"
+            android:textSize="@dimen/text20"
+            android:textStyle="bold" />
+
+        <!-- card adauga imagine -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="10dp"
+            app:cardBackgroundColor="@color/fundal_alt"
+            app:cardCornerRadius="@dimen/radius20">
+
+            <ImageView
+                android:id="@+id/adauga_imageViewImagineMelodie"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_adauga" />
+        </androidx.cardview.widget.CardView>
+
+        <!-- nume melodie -->
+        <EditText
+            android:id="@+id/adauga_editTextNumeMelodie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:autofillHints="Adaugă titlul melodiei"
+            android:background="@drawable/background_text_field"
+            android:backgroundTint="@color/fundal_alt"
+            android:hint="Adaugă numele melodiei"
+            android:inputType="text"
+            android:padding="15dp"
+            android:textColor="@color/text"
+            android:textSize="@dimen/text20" />
+
+        <!-- descriere melodie -->
+        <EditText
+            android:id="@+id/adauga_editTextDescriereMelodie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:autofillHints="Adaugă titlul melodiei"
+            android:background="@drawable/background_text_field"
+            android:backgroundTint="@color/fundal_alt"
+            android:hint="Adaugă o descriere"
+            android:inputType="text"
+            android:padding="15dp"
+            android:textColor="@color/text"
+            android:textSize="@dimen/text20" />
+
+        <!-- spinner gen melodie -->
+
+        <!-- buton incarca -->
+        <Spinner
+            android:id="@+id/adauga_spinnerGenMelodie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/background_spinner"
+            android:spinnerMode="dialog" />
+
+        <Button
+            android:id="@+id/adauga_buttonIncarca"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/background_buton"
+            android:backgroundTint="@color/primara"
+            android:text="Încarcă"
+            android:textColor="@color/text_pe_primara"
+            android:textSize="@dimen/text20" />
+
+    </LinearLayout>
+</ScrollView>

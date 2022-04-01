@@ -27,7 +27,7 @@
             android:layout_height="50dp"
             android:scaleType="centerCrop"
             android:src="@drawable/logo_music"
-            app:riv_corner_radius="@dimen/radius15" />
+            app:riv_corner_radius="@dimen/radius20" />
 
         <!-- nume -->
         <LinearLayout
@@ -121,7 +121,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="25dp"
-        android:background="@drawable/background_button_deconectare"
+        android:background="@drawable/background_buton"
+        android:backgroundTint="@color/primara"
         android:text="Deconectare"
         android:textColor="@color/text_pe_primara"
         android:textSize="@dimen/text20"

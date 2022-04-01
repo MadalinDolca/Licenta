@@ -38,19 +38,21 @@ public class AcasaFragment extends Fragment {
     ArrayList<CardMelodie> electronicaArrayList; // pentru memorarea melodiilor din categoria "electronica"
     ArrayList<CardMelodie> favoriteArrayList;
 
-    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM1 = "param1"; // parametru de initializare a fragmentului
     private String mParam1;
 
+    // constructor gol folosit atunci cand Android decide sa recreeze fragmentul
     public AcasaFragment() {
     }
 
+    // metoda pentru crearea unei noi instante a fragmentului folosind parametrii
     public static AcasaFragment newInstance(String param1) {
         AcasaFragment fragment = new AcasaFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         fragment.setArguments(args);
 
-        return fragment;
+        return fragment; // returneaza noua instanta a fragmentului
     }
 
     @Override
@@ -130,12 +132,27 @@ public class AcasaFragment extends Fragment {
                 List<Melodie> listaMelodii = response.body(); // adaugare body raspuns in lista de obiecte Melodie
                 melodiiGitArrayList.clear(); // golire lista pentru evitarea duplicarii datelor
 
+                /////////////
+                electronicaArrayList.clear();
+                favoriteArrayList.clear();
+                /////////////
+
                 // iterare melodii si adaugare date in cardul din lista respectiva
                 for (Melodie melodie : listaMelodii) {
                     melodiiGitArrayList.add(new CardMelodie(melodie.getImagineMelodie(), melodie.getNumeMelodie(), melodie.getNumeArtist()));
+
+                    /////////
+                    electronicaArrayList.add(new CardMelodie(melodie.getImagineMelodie(), melodie.getNumeMelodie(), melodie.getNumeArtist()));
+                    favoriteArrayList.add(new CardMelodie(melodie.getImagineMelodie(), melodie.getNumeMelodie(), melodie.getNumeArtist()));
+                    /////////
                 }
 
                 categorieCarduriArrayList.add(new CategorieCarduri("Mada API", melodiiGitArrayList)); // adaugare lista carduri melodii in lista categoriilor
+
+                //////////
+                categorieCarduriArrayList.add(new CategorieCarduri("Mada API", electronicaArrayList)); // adaugare lista carduri melodii in lista categoriilor
+                categorieCarduriArrayList.add(new CategorieCarduri("Mada API", favoriteArrayList)); // adaugare lista carduri melodii in lista categoriilor
+                //////////
 
                 CategorieCarduriAdapter categorieCarduriAdapter;
                 categorieCarduriAdapter = new CategorieCarduriAdapter(/*this.*/getContext(), categorieCarduriArrayList);

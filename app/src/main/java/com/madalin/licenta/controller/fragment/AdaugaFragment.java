@@ -7,10 +7,14 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.madalin.licenta.R;
 
 public class AdaugaFragment extends Fragment {
+
+    Spinner spinnerGenMelodie;
 
     private static final String ARG_PARAM1 = "param1"; // parametru de initializare a fragmentului
     private String mParam1;
@@ -37,11 +41,21 @@ public class AdaugaFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_adauga, container, false);
+        View viewFragmentAdauga = inflater.inflate(R.layout.fragment_adauga, container, false); // obtinere vedere fragment_adauga din MainActivity
+
+        spinnerGenMelodie = viewFragmentAdauga.findViewById(R.id.adauga_spinnerGenMelodie);
+
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapterSpinnerGenMelodie = ArrayAdapter.createFromResource(getContext(), R.array.array_genuri_muzicale, android.R.layout.simple_spinner_item);
+        adapterSpinnerGenMelodie.setDropDownViewResource(R.layout.layout_spinner_dropdown_item); // specificare aspect lista optiuni
+
+        spinnerGenMelodie.setAdapter(adapterSpinnerGenMelodie); // aplicare adapter la spinner
+
+        return viewFragmentAdauga;
     }
 }

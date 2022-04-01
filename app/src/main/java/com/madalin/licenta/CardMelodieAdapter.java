@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -46,6 +47,8 @@ public class CardMelodieAdapter extends RecyclerView.Adapter<CardMelodieAdapter.
         Glide.with(context).load(listaCardMelodie.get(position).imagineMelodie).apply(RequestOptions.centerCropTransform()).placeholder(R.drawable.logo_music).into(holder.imageViewImagineMelodie);
         holder.textViewNumeMelodie.setText(listaCardMelodie.get(position).numeMelodie);
         holder.textViewNumeArtist.setText(listaCardMelodie.get(position).numeArtist);
+
+        holder.imageViewImagineMelodie.setOnClickListener(v -> Toast.makeText(context, holder.textViewNumeArtist.getText(), Toast.LENGTH_SHORT).show());
 
         //holder.imageViewImagineChild.setOnClickListener();
     }

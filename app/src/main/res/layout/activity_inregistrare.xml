@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="25dp">
+        android:padding="@dimen/padding_ecran">
 
         <com.airbnb.lottie.LottieAnimationView
             android:layout_width="130dp"
@@ -37,10 +37,10 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:boxCornerRadiusBottomEnd="@dimen/radius15"
-            app:boxCornerRadiusBottomStart="@dimen/radius15"
-            app:boxCornerRadiusTopEnd="@dimen/radius15"
-            app:boxCornerRadiusTopStart="@dimen/radius15">
+            app:boxCornerRadiusBottomEnd="@dimen/radius20"
+            app:boxCornerRadiusBottomStart="@dimen/radius20"
+            app:boxCornerRadiusTopEnd="@dimen/radius20"
+            app:boxCornerRadiusTopStart="@dimen/radius20">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inregistrare_editTextNume"
@@ -55,10 +55,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            app:boxCornerRadiusBottomEnd="@dimen/radius15"
-            app:boxCornerRadiusBottomStart="@dimen/radius15"
-            app:boxCornerRadiusTopEnd="@dimen/radius15"
-            app:boxCornerRadiusTopStart="@dimen/radius15">
+            app:boxCornerRadiusBottomEnd="@dimen/radius20"
+            app:boxCornerRadiusBottomStart="@dimen/radius20"
+            app:boxCornerRadiusTopEnd="@dimen/radius20"
+            app:boxCornerRadiusTopStart="@dimen/radius20">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inregistrare_editTextEmail"
@@ -73,10 +73,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            app:boxCornerRadiusBottomEnd="@dimen/radius15"
-            app:boxCornerRadiusBottomStart="@dimen/radius15"
-            app:boxCornerRadiusTopEnd="@dimen/radius15"
-            app:boxCornerRadiusTopStart="@dimen/radius15"
+            app:boxCornerRadiusBottomEnd="@dimen/radius20"
+            app:boxCornerRadiusBottomStart="@dimen/radius20"
+            app:boxCornerRadiusTopEnd="@dimen/radius20"
+            app:boxCornerRadiusTopStart="@dimen/radius20"
             app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -97,7 +97,7 @@
             android:textColor="@color/text_pe_primara"
             android:textSize="@dimen/text20"
             app:backgroundTint="@color/primara"
-            app:cornerRadius="@dimen/radius15" />
+            app:cornerRadius="@dimen/radius20" />
 
         <LinearLayout
             android:id="@+id/inregistrare_linearLayoutAutentificate"

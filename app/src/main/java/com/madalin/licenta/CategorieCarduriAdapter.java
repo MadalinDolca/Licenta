@@ -1,7 +1,6 @@
 package com.madalin.licenta;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,13 +34,13 @@ public class CategorieCarduriAdapter extends RecyclerView.Adapter<CategorieCardu
 
     @Override
     public void onBindViewHolder(@NonNull CategorieCarduriViewHolder holder, int position) {
-        holder.textViewParentTitle.setText(listaCategorieCarduri.get(position).titluCategorie);
+        holder.textViewTitlu.setText(listaCategorieCarduri.get(position).titluCategorie);
 
         CardMelodieAdapter cardMelodieAdapter;
         cardMelodieAdapter = new CardMelodieAdapter(context, listaCategorieCarduri.get(position).listaCardMelodie);
-
-        holder.recyclerViewChild.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        holder.recyclerViewChild.setAdapter(cardMelodieAdapter);
+        
+        holder.recyclerViewCarduri.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        holder.recyclerViewCarduri.setAdapter(cardMelodieAdapter);
         cardMelodieAdapter.notifyDataSetChanged();
     }
 
@@ -52,14 +51,14 @@ public class CategorieCarduriAdapter extends RecyclerView.Adapter<CategorieCardu
 
     public class CategorieCarduriViewHolder extends RecyclerView.ViewHolder {
 
-        RecyclerView recyclerViewChild;
-        TextView textViewParentTitle;
+        RecyclerView recyclerViewCarduri;
+        TextView textViewTitlu;
 
         public CategorieCarduriViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            recyclerViewChild = itemView.findViewById(R.id.categorie_carduri_recyclerViewCarduri);
-            textViewParentTitle = itemView.findViewById(R.id.categorie_carduri_textViewTitlu);
+            recyclerViewCarduri = itemView.findViewById(R.id.categorie_carduri_recyclerViewCarduri);
+            textViewTitlu = itemView.findViewById(R.id.categorie_carduri_textViewTitlu);
         }
     }
 }

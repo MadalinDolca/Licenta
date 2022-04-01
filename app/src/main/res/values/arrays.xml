@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="array_genuri_muzicale">
+        <item>EDM</item>
+        <item>Dubstep</item>
+        <item>Drumstep</item>
+        <item>Drum &amp; Bass</item>
+        <item>House</item>
+        <item>Chill</item>
+        <item>Glitch Hop</item>
+        <item>Trap</item>
+        <item>Future Bass</item>
+        <item>Electro</item>
+        <item>Hip Hop</item>
+        <item>Rap</item>
+        <item>Rock</item>
+        <item>Alternative Rock</item>
+    </string-array>
+</resources>

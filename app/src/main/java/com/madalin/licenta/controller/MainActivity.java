@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         edgeToEdge(this, findViewById(R.id.main_frameLayoutFragment), Spatiere.PADDING, Directie.SUS);
-//        edgeToEdge(this, findViewById(R.id.main_bottomNavigationView), Spatiere.PADDING, Directie.JOS);
 
         /*
         // Reload current fragment
