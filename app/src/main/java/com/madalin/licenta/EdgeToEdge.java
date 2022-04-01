@@ -1,7 +1,9 @@
 package com.madalin.licenta;
 
+import android.content.ContentResolver;
 import android.graphics.Color;
 import android.os.Build;
+import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -22,67 +24,74 @@ public class EdgeToEdge {
         activitate.getWindow().setNavigationBarColor(Color.TRANSPARENT); // bara de navigare transparenta
     }
 
+    // metoda pentru detectarea navigarii prin gesturi
+    public static boolean isGestureNavigationEnabled(ContentResolver contentResolver) {
+        return Settings.Secure.getInt(contentResolver, "navigation_mode", 0) == 2;
+    }
+
     // metoda pentru aplicarea spatiilor unei vederi pentru inlaturarea suprapunerilor cu barile de sistem folosind Insets
     public static void edgeToEdge(AppCompatActivity activitate, View vedere, Spatiere spatiere, Directie directie) {
-        // se aplica edge to edge daca versiunea este >= Q (API 29)
+        // se aplica edge to edge daca versiunea este >= Q (API 29) si daca navigarea prin gesturi este activata
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            fullscreen(activitate);
+            if (isGestureNavigationEnabled(activitate.getContentResolver())) {
+                fullscreen(activitate);
 
-            vedere.setOnApplyWindowInsetsListener((v, insets) -> {
-                // aplicare insets ca margini pentru vedere
-                if (spatiere == Spatiere.MARGIN) {
-                    ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+                vedere.setOnApplyWindowInsetsListener((v, insets) -> {
+                    // aplicare insets ca margini pentru vedere
+                    if (spatiere == Spatiere.MARGIN) {
+                        ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
 
-                    switch (directie) {
-                        case STANGA:
-                            mlp.leftMargin = insets.getSystemWindowInsetLeft();
-                            break;
+                        switch (directie) {
+                            case STANGA:
+                                mlp.leftMargin = insets.getSystemWindowInsetLeft();
+                                break;
 
-                        case SUS:
-                            mlp.topMargin = insets.getSystemWindowInsetTop();
-                            break;
+                            case SUS:
+                                mlp.topMargin = insets.getSystemWindowInsetTop();
+                                break;
 
-                        case DREAPTA:
-                            mlp.rightMargin = insets.getSystemWindowInsetRight();
-                            break;
+                            case DREAPTA:
+                                mlp.rightMargin = insets.getSystemWindowInsetRight();
+                                break;
 
-                        case JOS:
-                            mlp.bottomMargin = insets.getSystemWindowInsetBottom();
-                            break;
+                            case JOS:
+                                mlp.bottomMargin = insets.getSystemWindowInsetBottom();
+                                break;
 
-                        default:
-                            break;
+                            default:
+                                break;
+                        }
+
+                        v.setLayoutParams(mlp); // setare parametrii
                     }
 
-                    v.setLayoutParams(mlp); // setare parametrii
-                }
+                    // aplicare insets ca padding pentru vedere
+                    else if (spatiere == Spatiere.PADDING) {
+                        switch (directie) {
+                            case STANGA:
+                                v.setPadding(insets.getSystemWindowInsetLeft(), v.getPaddingTop(), v.getPaddingRight(), v.getPaddingBottom());
+                                break;
 
-                // aplicare insets ca padding pentru vedere
-                else if (spatiere == Spatiere.PADDING) {
-                    switch (directie) {
-                        case STANGA:
-                            v.setPadding(insets.getSystemWindowInsetLeft(), v.getPaddingTop(), v.getPaddingRight(), v.getPaddingBottom());
-                            break;
+                            case SUS:
+                                v.setPadding(v.getPaddingLeft(), insets.getSystemWindowInsetTop(), v.getPaddingRight(), v.getPaddingBottom());
+                                break;
 
-                        case SUS:
-                            v.setPadding(v.getPaddingLeft(), insets.getSystemWindowInsetTop(), v.getPaddingRight(), v.getPaddingBottom());
-                            break;
+                            case DREAPTA:
+                                v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), insets.getSystemWindowInsetRight(), v.getPaddingBottom());
+                                break;
 
-                        case DREAPTA:
-                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), insets.getSystemWindowInsetRight(), v.getPaddingBottom());
-                            break;
+                            case JOS:
+                                v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), insets.getSystemWindowInsetBottom());
+                                break;
 
-                        case JOS:
-                            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), insets.getSystemWindowInsetBottom());
-                            break;
-
-                        default:
-                            break;
+                            default:
+                                break;
+                        }
                     }
-                }
 
-                return insets; // returnare inseturi
-            });
+                    return insets; // returnare inseturi
+                });
+            }
         }
     }
 

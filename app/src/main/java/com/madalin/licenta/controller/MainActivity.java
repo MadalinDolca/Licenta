@@ -45,10 +45,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         edgeToEdge(this, findViewById(R.id.main_frameLayoutFragment), Spatiere.PADDING, Directie.SUS);
-        edgeToEdge(this, findViewById(R.id.main_bottomNavigationView), Spatiere.PADDING, Directie.JOS);
+//        edgeToEdge(this, findViewById(R.id.main_bottomNavigationView), Spatiere.PADDING, Directie.JOS);
 
         /*
-
         // Reload current fragment
 Fragment frg = null;
 frg = getSupportFragmentManager().findFragmentByTag("Your_Fragment_TAG");
@@ -56,9 +55,7 @@ final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 ft.detach(frg);
 ft.attach(frg);
 ft.commit();
-
         */
-
 
         firebaseAuth = FirebaseAuth.getInstance(); // initializare Firebase Auth
 
