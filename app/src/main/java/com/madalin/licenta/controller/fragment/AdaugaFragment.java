@@ -49,11 +49,8 @@ public class AdaugaFragment extends Fragment {
         View viewFragmentAdauga = inflater.inflate(R.layout.fragment_adauga, container, false); // obtinere vedere fragment_adauga din MainActivity
 
         spinnerGenMelodie = viewFragmentAdauga.findViewById(R.id.adauga_spinnerGenMelodie);
-
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapterSpinnerGenMelodie = ArrayAdapter.createFromResource(getContext(), R.array.array_genuri_muzicale, android.R.layout.simple_spinner_item);
-        adapterSpinnerGenMelodie.setDropDownViewResource(R.layout.layout_spinner_dropdown_item); // specificare aspect lista optiuni
-
+        ArrayAdapter<CharSequence> adapterSpinnerGenMelodie = ArrayAdapter.createFromResource(getContext(), R.array.array_genuri_muzicale, R.layout.layout_spinner_item); // populare spinner si setare aspect optiune
+        adapterSpinnerGenMelodie.setDropDownViewResource(R.layout.layout_spinner_dropdown_item); // setare aspect optiuni din dropdown
         spinnerGenMelodie.setAdapter(adapterSpinnerGenMelodie); // aplicare adapter la spinner
 
         return viewFragmentAdauga;

@@ -57,7 +57,7 @@
             android:id="@+id/adauga_editTextDescriereMelodie"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginVertical="15dp"
             android:autofillHints="Adaugă titlul melodiei"
             android:background="@drawable/background_text_field"
             android:backgroundTint="@color/fundal_alt"
@@ -68,16 +68,15 @@
             android:textSize="@dimen/text20" />
 
         <!-- spinner gen melodie -->
-
-        <!-- buton incarca -->
         <Spinner
             android:id="@+id/adauga_spinnerGenMelodie"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
             android:background="@drawable/background_spinner"
-            android:spinnerMode="dialog" />
+            android:popupBackground="@drawable/background_spinner_dropdown" />
+        <!--android:spinnerMode="dialog"-->
 
+        <!-- buton incarca -->
         <Button
             android:id="@+id/adauga_buttonIncarca"
             android:layout_width="match_parent"

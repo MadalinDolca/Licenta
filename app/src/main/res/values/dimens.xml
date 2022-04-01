@@ -3,15 +3,17 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <!-- Custom -->
+    <!-- dimensiuni rotunjire -->
     <dimen name="radius15">15dp</dimen>
     <dimen name="radius20">20dp</dimen>
     <dimen name="radius30">30dp</dimen>
 
+    <!-- dimensiuni text -->
     <dimen name="text15">15sp</dimen>
     <dimen name="text20">20sp</dimen>
     <dimen name="text30">30sp</dimen>
 
+    <!-- dimensiuni spatiere -->
     <dimen name="padding_ecran">25sp</dimen>
 
 </resources>

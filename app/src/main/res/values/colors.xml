@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- culori tema luminoasa -->
     <color name="primara">#DC0000</color>
     <color name="fundal">#FFFFFF</color>
     <color name="fundal_alt">#F2F2F2</color>

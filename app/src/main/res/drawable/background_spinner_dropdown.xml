@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- fundal Text Field rotunjit -->
+<!-- fundal spinner deschis (dropdown) -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
+
+    <solid android:color="@color/fundal_alt" />
 
     <corners android:radius="@dimen/radius20" />
 

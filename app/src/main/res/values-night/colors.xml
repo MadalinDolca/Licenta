@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- culori tema intunecata -->
     <color name="primara">#0B27FF</color>
     <color name="fundal">#000000</color>
     <color name="fundal_alt">#090909</color>
