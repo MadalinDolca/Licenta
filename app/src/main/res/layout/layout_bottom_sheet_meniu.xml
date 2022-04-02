@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:text="Profil"
                 android:textColor="@color/text"
-                android:textSize="@dimen/text20"
+                android:textSize="@dimen/text_standard"
                 android:textStyle="bold" />
 
             <TextView
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:text="Vizualizează-ți profilul"
                 android:textColor="@color/text"
-                android:textSize="@dimen/text15" />
+                android:textSize="@dimen/text_mic" />
         </LinearLayout>
 
     </LinearLayout>
@@ -84,8 +84,7 @@
             android:layout_marginStart="15dp"
             android:text="Setări"
             android:textColor="@color/text"
-            android:textSize="@dimen/text20"
-            android:textStyle="bold" />
+            android:textSize="@dimen/text_standard" />
     </LinearLayout>
 
     <!-- ceva -->
@@ -110,8 +109,7 @@
             android:layout_marginStart="15dp"
             android:text="Ceva"
             android:textColor="@color/text"
-            android:textSize="@dimen/text20"
-            android:textStyle="bold" />
+            android:textSize="@dimen/text_standard" />
     </LinearLayout>
 
     <!-- deconectare -->
@@ -121,10 +119,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="25dp"
-        android:background="@drawable/background_buton"
+        android:background="@drawable/background_rotunjit"
         android:backgroundTint="@color/primara"
         android:text="Deconectare"
         android:textColor="@color/text_pe_primara"
-        android:textSize="@dimen/text20"
-        android:textStyle="bold" />
+        android:textSize="@dimen/text_standard" />
 </LinearLayout>

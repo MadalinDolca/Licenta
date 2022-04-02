@@ -8,5 +8,5 @@
     android:padding="15dp"
     android:singleLine="true"
     android:textColor="@color/text"
-    android:textSize="@dimen/text20" />
+    android:textSize="@dimen/text_standard" />
 

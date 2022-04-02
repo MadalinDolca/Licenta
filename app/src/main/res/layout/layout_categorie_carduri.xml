@@ -12,7 +12,7 @@
         android:paddingTop="10dp"
         android:text="Titlu Categorie"
         android:textColor="@color/text"
-        android:textSize="@dimen/text30"
+        android:textSize="@dimen/text_mare"
         android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView

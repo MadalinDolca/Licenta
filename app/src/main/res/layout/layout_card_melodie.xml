@@ -25,7 +25,7 @@
         android:layout_marginTop="5dp"
         android:text="Nume melodie"
         android:textColor="@color/text"
-        android:textSize="@dimen/text15"
+        android:textSize="@dimen/text_mic"
         android:textStyle="bold" />
 
     <TextView
@@ -34,6 +34,6 @@
         android:layout_height="wrap_content"
         android:text="Nume artist"
         android:textColor="@color/text_alt"
-        android:textSize="@dimen/text15" />
+        android:textSize="@dimen/text_mic" />
 
 </LinearLayout>
