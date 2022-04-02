@@ -22,13 +22,6 @@
         <item name="android:colorBackground">@android:color/transparent</item>
         <item name="android:navigationBarColor">@color/fundal_alt</item>
         <item name="android:windowIsFloating">false</item>
-        <!--<item name="android:statusBarColor">@android:color/transparent</item>-->
-        <!--<item name="android:windowCloseOnTouchOutside">false</item>-->
-        <!--<item name="android:windowIsTranslucent">true</item>-->
-        <!--<item name="android:windowContentOverlay">@null</item>-->
-        <!--<item name="android:backgroundDimEnabled">true</item>-->
-        <!--<item name="android:backgroundDimAmount">0.3</item>-->
-        <!--<item name="android:windowFrame">@null</item>-->
     </style>
 
     <!-- SplashScreen -->
