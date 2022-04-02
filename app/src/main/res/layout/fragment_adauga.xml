@@ -14,28 +14,78 @@
         android:orientation="vertical"
         android:padding="@dimen/padding_ecran">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Încarcă o imagine"
-            android:textColor="@color/text"
-            android:textSize="@dimen/text20"
-            android:textStyle="bold" />
+        <!-- rand imagine & fisier audio -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <!-- card adauga imagine -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginTop="10dp"
-            app:cardBackgroundColor="@color/fundal_alt"
-            app:cardCornerRadius="@dimen/radius20">
+            <!-- coloana imagine -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/adauga_imageViewImagineMelodie"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_adauga" />
-        </androidx.cardview.widget.CardView>
+                <!-- text imagine -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Imagine"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/text_standard"
+                    android:textStyle="bold" />
+
+                <!-- card adauga imagine -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:layout_marginTop="10dp"
+                    app:cardBackgroundColor="@color/fundal_alt"
+                    app:cardCornerRadius="@dimen/radius20">
+
+                    <ImageView
+                        android:id="@+id/adauga_imageViewImagineMelodie"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_imagine" />
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+            <!-- coloana fisier audio -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <!-- text fisier audio -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fișier audio"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/text_standard"
+                    android:textStyle="bold" />
+
+                <!-- card adauga fisier audio -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:layout_marginTop="10dp"
+                    app:cardBackgroundColor="@color/fundal_alt"
+                    app:cardCornerRadius="@dimen/radius20">
+
+                    <ImageView
+                        android:id="@+id/adauga_imageViewFisierAudio"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_nota_muzicala" />
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+        </RelativeLayout>
 
         <!-- nume melodie -->
         <EditText
@@ -43,14 +93,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:autofillHints="Adaugă titlul melodiei"
-            android:background="@drawable/background_text_field"
+            android:background="@drawable/background_rotunjit"
             android:backgroundTint="@color/fundal_alt"
             android:hint="Adaugă numele melodiei"
             android:inputType="text"
             android:padding="15dp"
             android:textColor="@color/text"
-            android:textSize="@dimen/text20" />
+            android:textSize="@dimen/text_standard" />
 
         <!-- descriere melodie -->
         <EditText
@@ -58,14 +107,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="15dp"
-            android:autofillHints="Adaugă titlul melodiei"
-            android:background="@drawable/background_text_field"
+            android:background="@drawable/background_rotunjit"
             android:backgroundTint="@color/fundal_alt"
             android:hint="Adaugă o descriere"
             android:inputType="text"
             android:padding="15dp"
             android:textColor="@color/text"
-            android:textSize="@dimen/text20" />
+            android:textSize="@dimen/text_standard" />
 
         <!-- spinner gen melodie -->
         <Spinner
@@ -82,11 +130,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:background="@drawable/background_buton"
+            android:background="@drawable/background_rotunjit"
             android:backgroundTint="@color/primara"
-            android:text="Încarcă"
+            android:text="Încarcă Melodia"
             android:textColor="@color/text_pe_primara"
-            android:textSize="@dimen/text20" />
+            android:textSize="@dimen/text_standard" />
 
     </LinearLayout>
 </ScrollView>
