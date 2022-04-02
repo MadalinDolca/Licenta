@@ -30,7 +30,7 @@
             android:gravity="center_horizontal"
             android:text="Autentificare"
             android:textColor="@color/primara"
-            android:textSize="@dimen/text30"
+            android:textSize="@dimen/text_mare"
             android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -69,17 +69,16 @@
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/autentificare_buttonLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:padding="15dp"
+            android:background="@drawable/background_rotunjit"
+            android:backgroundTint="@color/primara"
             android:text="Login"
             android:textColor="@color/text_pe_primara"
-            android:textSize="@dimen/text20"
-            app:backgroundTint="@color/primara"
-            app:cornerRadius="@dimen/radius20" />
+            android:textSize="@dimen/text_standard" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -93,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:text="Nu ai un cont?"
                 android:textColor="@color/text"
-                android:textSize="@dimen/text20" />
+                android:textSize="@dimen/text_standard" />
 
             <TextView
                 android:id="@+id/autentificare_textViewInregistreazate"
@@ -102,7 +101,7 @@
                 android:layout_marginStart="10dp"
                 android:text="Înregistrează-te"
                 android:textColor="@color/primara"
-                android:textSize="@dimen/text20"
+                android:textSize="@dimen/text_standard"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -114,6 +113,6 @@
             android:gravity="center"
             android:text="Recuperare cont"
             android:textColor="@color/primara"
-            android:textSize="@dimen/text20" />
+            android:textSize="@dimen/text_standard" />
     </LinearLayout>
 </ScrollView>

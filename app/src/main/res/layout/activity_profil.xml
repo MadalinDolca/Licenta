@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:textSize="@dimen/text20"
+        android:textSize="@dimen/text_standard"
         app:layout_constraintBaseline_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="Adresa de email"
-        android:textSize="@dimen/text20"
+        android:textSize="@dimen/text_standard"
         android:textStyle="bold"
         app:layout_constraintBaseline_toBottomOf="@+id/profil_textViewSalut"
         app:layout_constraintLeft_toLeftOf="@+id/profil_textViewSalut" />
@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
-        android:textSize="@dimen/text20"
+        android:textSize="@dimen/text_standard"
         app:layout_constraintLeft_toLeftOf="@+id/profil_textViewEmailTitlu"
         app:layout_constraintTop_toBottomOf="@+id/profil_textViewEmailTitlu" />
 
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="Nume"
-        android:textSize="@dimen/text20"
+        android:textSize="@dimen/text_standard"
         android:textStyle="bold"
         app:layout_constraintBaseline_toBottomOf="@+id/profil_textViewEmail"
         app:layout_constraintLeft_toLeftOf="@+id/profil_textViewEmail" />
@@ -52,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
-        android:textSize="@dimen/text20"
+        android:textSize="@dimen/text_standard"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profil_textViewNumeTitlu" />
 
@@ -61,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/primara"
-        android:textSize="@dimen/text20"
+        android:textSize="@dimen/text_standard"
         android:text="Meniu"
         android:textColor="@color/text_pe_primara"
         app:layout_constraintBaseline_toBottomOf="@id/bottom_sheet_meniu_textViewNume"

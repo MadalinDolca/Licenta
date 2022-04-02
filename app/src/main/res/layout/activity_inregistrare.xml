@@ -30,7 +30,7 @@
             android:gravity="center_horizontal"
             android:text="Înregistrare"
             android:textColor="@color/primara"
-            android:textSize="@dimen/text30"
+            android:textSize="@dimen/text_mare"
             android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -87,17 +87,16 @@
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/inregistrare_buttonInregistreazate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:padding="15dp"
+            android:background="@drawable/background_rotunjit"
+            android:backgroundTint="@color/primara"
             android:text="Înregistrează-te"
             android:textColor="@color/text_pe_primara"
-            android:textSize="@dimen/text20"
-            app:backgroundTint="@color/primara"
-            app:cornerRadius="@dimen/radius20" />
+            android:textSize="@dimen/text_standard" />
 
         <LinearLayout
             android:id="@+id/inregistrare_linearLayoutAutentificate"
@@ -112,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:text="Deja înregistrat?"
                 android:textColor="@color/text"
-                android:textSize="@dimen/text20" />
+                android:textSize="@dimen/text_standard" />
 
             <TextView
                 android:id="@+id/inregistrare_textViewAutentificate"
@@ -121,7 +120,7 @@
                 android:layout_marginStart="10dp"
                 android:text="Autentifică-te"
                 android:textColor="@color/primara"
-                android:textSize="@dimen/text20"
+                android:textSize="@dimen/text_standard"
                 android:textStyle="bold" />
         </LinearLayout>
 

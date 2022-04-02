@@ -7,7 +7,7 @@
     <solid android:color="@color/fundal_alt" />
 
     <corners
-        android:topLeftRadius="@dimen/radius30"
-        android:topRightRadius="@dimen/radius30" />
+        android:topLeftRadius="@dimen/radius20"
+        android:topRightRadius="@dimen/radius20" />
 
 </shape>
