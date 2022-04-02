@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- fundal rotunjit -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/fundal">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/radius20" />
+        </shape>
+    </item>
+</ripple>
