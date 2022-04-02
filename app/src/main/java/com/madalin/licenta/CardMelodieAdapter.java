@@ -44,7 +44,17 @@ public class CardMelodieAdapter extends RecyclerView.Adapter<CardMelodieAdapter.
     public void onBindViewHolder(@NonNull CardMelodieViewHolder holder, int position) {
         //Log.d("ggggggggggg", listaCardMelodie.get(position).numeMelodie);
         //holder.imageViewImagineMelodie.setImageResource(listaCardMelodie.get(position).imagineMelodie);
-        Glide.with(context).load(listaCardMelodie.get(position).imagineMelodie).apply(RequestOptions.centerCropTransform()).placeholder(R.drawable.logo_music).into(holder.imageViewImagineMelodie);
+
+        if (listaCardMelodie.get(position).imagineMelodie == null) { // daca melodia nu are link spre imagine
+            holder.imageViewImagineMelodie.setImageResource(R.drawable.ic_nota_muzicala); // se adauga o resursa inlocuitoare
+        } else { // daca melodia are link spre imagine, aceasta se obtine si se adauga in card-ul melodiei
+            Glide.with(context).load(listaCardMelodie.get(position).imagineMelodie)
+                    .apply(RequestOptions.centerCropTransform())
+                    .placeholder(R.drawable.logo_music)
+                    .error(R.drawable.ic_error) // in caz ca nu s-a putut incarca imaginea, se adauga o resursa inlocuitoare
+                    .into(holder.imageViewImagineMelodie);
+        }
+
         holder.textViewNumeMelodie.setText(listaCardMelodie.get(position).numeMelodie);
         holder.textViewNumeArtist.setText(listaCardMelodie.get(position).numeArtist);
 
