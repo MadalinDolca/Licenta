@@ -1,7 +1,7 @@
 package com.madalin.licenta;
 
 import android.content.Context;
-import android.util.Log;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.madalin.licenta.controller.PlayerActivity;
 import com.madalin.licenta.model.CardMelodie;
 
 import java.util.List;
@@ -51,7 +52,7 @@ public class CardMelodieAdapter extends RecyclerView.Adapter<CardMelodieAdapter.
             Glide.with(context).load(listaCardMelodie.get(position).imagineMelodie)
                     .apply(RequestOptions.centerCropTransform())
                     .placeholder(R.drawable.logo_music)
-                    .error(R.drawable.ic_error) // in caz ca nu s-a putut incarca imaginea, se adauga o resursa inlocuitoare
+                    .error(R.drawable.ic_eroare) // in caz ca nu s-a putut incarca imaginea, se adauga o resursa inlocuitoare
                     .into(holder.imageViewImagineMelodie);
         }
 
@@ -60,7 +61,11 @@ public class CardMelodieAdapter extends RecyclerView.Adapter<CardMelodieAdapter.
 
         holder.imageViewImagineMelodie.setOnClickListener(v -> Toast.makeText(context, holder.textViewNumeArtist.getText(), Toast.LENGTH_SHORT).show());
 
-        //holder.imageViewImagineChild.setOnClickListener();
+        holder.imageViewImagineMelodie.setOnClickListener(v -> {
+            Intent intent = new Intent(context, PlayerActivity.class);
+            // intent.putExtra(EXTRA_MESSAGE, message);
+            context.startActivity(intent);
+        });
     }
 
     // numarul total de randuri
