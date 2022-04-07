@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fundal"
+    android:fillViewport="true"
+    android:scrollbars="none"
+    tools:context=".controller.PlayerActivity">
+
+    <!-- layout container -->
+    <LinearLayout
+        android:id="@+id/player_linearLayoutContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- bara superioara -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <!-- buton inapoi -->
+            <ImageView
+                android:id="@+id/player_imageViewButonInapoi"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_sageata_inapoi"
+                app:tint="@color/text" />
+
+            <!-- text now playing -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Now Playing"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- layout interfata -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/padding_ecran">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <!-- imagine melodie -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="10dp"
+                    app:cardBackgroundColor="@color/primara"
+                    app:cardCornerRadius="@dimen/radius20"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="W,1:1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/player_imageViewImagineMelodie"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/logo_music" />
+
+                </androidx.cardview.widget.CardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- nume melodie -->
+            <TextView
+                android:id="@+id/player_textViewNumeMelodie"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:ellipsize="end"
+                android:gravity="center_horizontal"
+                android:singleLine="true"
+                android:text="Nume melodie"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_mare"
+                android:textStyle="bold" />
+
+            <!-- nume artist -->
+            <TextView
+                android:id="@+id/player_textViewNumeArtist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center_horizontal"
+                android:singleLine="true"
+                android:text="Nume artist"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard" />
+
+            <!-- seek bar -->
+            <SeekBar
+                android:id="@+id/player_seekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:progressTint="@color/primara"
+                android:thumbTint="@color/primara" />
+
+            <!-- layout controale -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="horizontal">
+
+                <!-- buton shuffle -->
+                <ImageView
+                    android:id="@+id/player_imageViewButonShuffle"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_shuffle_oprit"
+                    app:tint="@color/text" />
+
+                <!-- buton skip previous -->
+                <ImageView
+                    android:id="@+id/player_imageViewButonSkipPrevious"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:src="@drawable/ic_skip_previous"
+                    app:tint="@color/text" />
+
+                <!-- buton play pause -->
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/player_floatingActionButtonPlayPause"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="10dp"
+                    android:src="@drawable/ic_play"
+                    app:backgroundTint="@color/primara"
+                    app:elevation="0dp"
+                    app:tint="@color/text_pe_primara" />
+
+                <!-- buton skip next -->
+                <ImageView
+                    android:id="@+id/player_imageViewButonSkipNext"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:src="@drawable/ic_skip_next"
+                    app:tint="@color/text" />
+
+                <!-- buton repeat -->
+                <ImageView
+                    android:id="@+id/player_imageViewButonRepeat"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/ic_repeat_oprit"
+                    app:tint="@color/text" />
+
+            </LinearLayout>
+
+            <!-- buton solicita permisiunea -->
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/background_rotunjit"
+                android:backgroundTint="@color/primara"
+                android:text="Solicită permisiunea"
+                android:textColor="@color/text_pe_primara"
+                android:textSize="@dimen/text_standard" />
+
+            <!-- layout descriere melodie -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/background_rotunjit"
+                android:backgroundTint="@color/fundal_alt"
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp">
+
+                <!-- titlu descriere melodie -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Descriere melodie"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/text_standard"
+                    android:textStyle="bold" />
+
+                <!-- descriere melodie -->
+                <TextView
+                    android:id="@+id/player_textViewDescriereMelodie"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:text="Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ..."
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/text_standard" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
