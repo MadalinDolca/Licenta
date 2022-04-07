@@ -4,13 +4,18 @@ import static com.madalin.licenta.EdgeToEdge.Directie;
 import static com.madalin.licenta.EdgeToEdge.Spatiere;
 import static com.madalin.licenta.EdgeToEdge.edgeToEdge;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -26,6 +31,8 @@ import com.madalin.licenta.controller.fragment.BibliotecaFragment;
 import com.madalin.licenta.controller.fragment.CautaFragment;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final int COD_SOLICITARE_SCRIERE = 1;
 
     FirebaseAuth firebaseAuth;
     BottomNavigationView bottomNavigationView;
@@ -55,6 +62,8 @@ ft.detach(frg);
 ft.attach(frg);
 ft.commit();
         */
+
+        verificarePermisiuni();
 
         firebaseAuth = FirebaseAuth.getInstance(); // initializare Firebase Auth
 
@@ -113,6 +122,35 @@ ft.commit();
             Toast.makeText(this, "Apasa din nou BACK ca sa iesi", Toast.LENGTH_SHORT).show();
         } else { // daca fragmentul activ NU este fragmentul acasa
             afisareFragment(fragmentAcasa, "acasa", 0); // se afiseaza fragmentul acasa
+        }
+    }
+
+    // metoda pentru verificarea si solicitarea permisiunilor
+    private void verificarePermisiuni() {
+        // daca nu s-a oferit permisiunea de scriere, se va solicita permisiunea de scriere
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, COD_SOLICITARE_SCRIERE);
+        }
+    }
+
+    // metoda pentru gestionarea raspunsului utilizatorului la dialogul de solicitare a permisiunilor
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case COD_SOLICITARE_SCRIERE:
+                // daca s-a oferit permisiunea de scriere
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Permisiune acordată!", Toast.LENGTH_SHORT).show();
+                    // ...
+                } else { // altfel resolicita permisiunea
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, COD_SOLICITARE_SCRIERE);
+                }
+                return;
+
+            default:
+                break;
         }
     }
 
