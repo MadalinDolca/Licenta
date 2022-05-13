@@ -17,10 +17,10 @@
         android:orientation="vertical">
 
         <!-- bara superioara -->
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:gravity="center_vertical|center_horizontal"
             android:padding="10dp">
 
             <!-- buton inapoi -->
@@ -28,6 +28,9 @@
                 android:id="@+id/player_imageViewButonInapoi"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
                 android:src="@drawable/ic_sageata_inapoi"
                 app:tint="@color/text" />
 
@@ -36,12 +39,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Now Playing"
+                android:text="În Curs de Redare"
                 android:textColor="@color/text"
                 android:textSize="@dimen/text_standard"
                 android:textStyle="bold" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <!-- layout interfata -->
         <LinearLayout
@@ -51,16 +54,15 @@
             android:orientation="vertical"
             android:paddingHorizontal="@dimen/padding_ecran">
 
+            <!-- imagine melodie -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1">
 
-                <!-- imagine melodie -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginTop="10dp"
                     app:cardBackgroundColor="@color/primara"
                     app:cardCornerRadius="@dimen/radius20"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -72,7 +74,7 @@
 
                     <ImageView
                         android:id="@+id/player_imageViewImagineMelodie"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:adjustViewBounds="true"
                         android:src="@drawable/logo_music" />
@@ -112,63 +114,109 @@
                 android:id="@+id/player_seekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:progressTint="@color/primara"
-                android:thumbTint="@color/primara" />
+                android:max="100"
+                android:paddingVertical="20dp"
+                android:progress="0"
+                android:progressDrawable="@drawable/seekbar_progress"
+                android:secondaryProgress="0"
+                android:splitTrack="false"
+                android:thumb="@drawable/seekbar_thumb" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/player_textViewDurataRedata"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:text="0:00"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/text_mic" />
+
+                <TextView
+                    android:id="@+id/player_textViewDurataMelodie"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="0:00"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/text_mic" />
+
+            </LinearLayout>
 
             <!-- layout controale -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="10dp"
-                android:gravity="center_vertical|center_horizontal"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <!-- buton shuffle -->
                 <ImageView
                     android:id="@+id/player_imageViewButonShuffle"
-                    android:layout_width="30dp"
+                    android:layout_width="0dp"
                     android:layout_height="30dp"
-                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:src="@drawable/ic_shuffle_oprit"
                     app:tint="@color/text" />
 
                 <!-- buton skip previous -->
                 <ImageView
                     android:id="@+id/player_imageViewButonSkipPrevious"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginHorizontal="10dp"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:src="@drawable/ic_skip_previous"
                     app:tint="@color/text" />
 
                 <!-- buton play pause -->
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/player_floatingActionButtonPlayPause"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginHorizontal="10dp"
+                    android:layout_weight="1"
                     android:src="@drawable/ic_play"
                     app:backgroundTint="@color/primara"
                     app:elevation="0dp"
+                    app:fabCustomSize="60dp"
+                    app:maxImageSize="50dp"
                     app:tint="@color/text_pe_primara" />
 
                 <!-- buton skip next -->
                 <ImageView
                     android:id="@+id/player_imageViewButonSkipNext"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginHorizontal="10dp"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:src="@drawable/ic_skip_next"
                     app:tint="@color/text" />
 
                 <!-- buton repeat -->
                 <ImageView
                     android:id="@+id/player_imageViewButonRepeat"
-                    android:layout_width="30dp"
+                    android:layout_width="0dp"
                     android:layout_height="30dp"
-                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:src="@drawable/ic_repeat_oprit"
                     app:tint="@color/text" />
 
@@ -176,9 +224,10 @@
 
             <!-- buton solicita permisiunea -->
             <Button
+                android:id="@+id/player_buttonSolicitaPermisiunea"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/background_rotunjit"
                 android:backgroundTint="@color/primara"
                 android:text="Solicită permisiunea"
@@ -189,17 +238,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginVertical="20dp"
                 android:background="@drawable/background_rotunjit"
                 android:backgroundTint="@color/fundal_alt"
                 android:orientation="vertical"
-                android:paddingHorizontal="20dp">
+                android:padding="20dp">
 
                 <!-- titlu descriere melodie -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:text="Descriere melodie"
                     android:textColor="@color/text"
                     android:textSize="@dimen/text_standard"
