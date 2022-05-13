@@ -1,7 +1,5 @@
 package com.madalin.licenta.controller.fragment;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,8 +9,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,12 +31,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AcasaFragment extends Fragment {
 
+    public static List<Melodie> listaMelodii; // lista pentru memorarea datelor melodiilor din request API
+
     RecyclerView recyclerView;
     ArrayList<CategorieCarduri> categorieCarduriArrayList; // pentru memorarea categoriilor
 
-    ArrayList<CardMelodie> melodiiGitArrayList;
-    ArrayList<CardMelodie> electronicaArrayList; // pentru memorarea melodiilor din categoria "electronica"
-    ArrayList<CardMelodie> favoriteArrayList;
+    public static ArrayList<CardMelodie> melodiiGitArrayList; // pentru memorarea melodiilor din categoria "X"
+    public static ArrayList<CardMelodie> electronicaArrayList;
+    public static ArrayList<CardMelodie> favoriteArrayList;
 
     private static final String ARG_PARAM1 = "param1"; // parametru de initializare a fragmentului
     private String mParam1;
@@ -133,37 +131,29 @@ public class AcasaFragment extends Fragment {
                     return; // se iese din metoda
                 }
 
-                List<Melodie> listaMelodii = response.body(); // adaugare body raspuns in lista de obiecte Melodie
-                melodiiGitArrayList.clear(); // golire lista pentru evitarea duplicarii datelor
+                listaMelodii = response.body(); // adaugare body raspuns in lista de obiecte Melodie
 
-                /////////////
+                // golire liste pentru evitarea duplicarii datelor
+                melodiiGitArrayList.clear();
                 electronicaArrayList.clear();
                 favoriteArrayList.clear();
-                /////////////
 
                 // iterare melodii si adaugare date in cardul din lista respectiva
                 for (Melodie melodie : listaMelodii) {
                     melodiiGitArrayList.add(new CardMelodie(melodie.getImagineMelodie(), melodie.getNumeMelodie(), melodie.getNumeArtist()));
-
-                    /////////
                     electronicaArrayList.add(new CardMelodie(melodie.getImagineMelodie(), melodie.getNumeMelodie(), melodie.getNumeArtist()));
                     favoriteArrayList.add(new CardMelodie(melodie.getImagineMelodie(), melodie.getNumeMelodie(), melodie.getNumeArtist()));
-                    /////////
                 }
 
-                categorieCarduriArrayList.add(new CategorieCarduri("Mada API", melodiiGitArrayList)); // adaugare lista carduri melodii in lista categoriilor
+                categorieCarduriArrayList.add(new CategorieCarduri("Mada API #1", melodiiGitArrayList)); // adaugare lista carduri melodii in lista categoriilor
+                categorieCarduriArrayList.add(new CategorieCarduri("Mada API #2", electronicaArrayList)); // adaugare lista carduri melodii in lista categoriilor
+                categorieCarduriArrayList.add(new CategorieCarduri("Mada API #3", favoriteArrayList)); // adaugare lista carduri melodii in lista categoriilor
 
-                //////////
-                categorieCarduriArrayList.add(new CategorieCarduri("Mada API", electronicaArrayList)); // adaugare lista carduri melodii in lista categoriilor
-                categorieCarduriArrayList.add(new CategorieCarduri("Mada API", favoriteArrayList)); // adaugare lista carduri melodii in lista categoriilor
-                //////////
-
-                CategorieCarduriAdapter categorieCarduriAdapter;
-                categorieCarduriAdapter = new CategorieCarduriAdapter(/*this.*/getContext(), categorieCarduriArrayList);
-
+                CategorieCarduriAdapter categorieCarduriAdapter = new CategorieCarduriAdapter(/*this.*/getContext(), categorieCarduriArrayList); // creare adapter categorie carduri
                 recyclerView = view.findViewById(R.id.acasa_recyclerViewCategoriiCarduri); // obtinere vedere RecyclerView
                 recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext() /*getActivity()*/));
-                recyclerView.setAdapter(categorieCarduriAdapter);
+                recyclerView.setAdapter(categorieCarduriAdapter); // setare adapter pe recyclerView pentru a furniza child views la cerere
+
                 //categorieCarduriAdapter.notifyDataSetChanged();
             }
 

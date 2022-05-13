@@ -43,7 +43,8 @@
                     android:layout_height="130dp"
                     android:layout_marginTop="10dp"
                     app:cardBackgroundColor="@color/fundal_alt"
-                    app:cardCornerRadius="@dimen/radius20">
+                    app:cardCornerRadius="@dimen/radius20"
+                    app:cardElevation="0dp">
 
                     <ImageView
                         android:id="@+id/adauga_imageViewImagineMelodie"
@@ -76,7 +77,8 @@
                     android:layout_height="130dp"
                     android:layout_marginTop="10dp"
                     app:cardBackgroundColor="@color/fundal_alt"
-                    app:cardCornerRadius="@dimen/radius20">
+                    app:cardCornerRadius="@dimen/radius20"
+                    app:cardElevation="0dp">
 
                     <ImageView
                         android:id="@+id/adauga_imageViewFisierAudio"

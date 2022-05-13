@@ -10,7 +10,8 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         app:cardBackgroundColor="@color/primara"
-        app:cardCornerRadius="@dimen/radius20">
+        app:cardCornerRadius="@dimen/radius20"
+        app:cardElevation="0dp">
 
         <ImageView
             android:id="@+id/card_melodie_imageViewImagine"

@@ -2,8 +2,9 @@
 <resources>
     <!-- culori tema intunecata -->
     <color name="primara">#0B27FF</color>
+    <color name="secundara">#8997FF</color>
     <color name="fundal">#000000</color>
-    <color name="fundal_alt">#090909</color>
+    <color name="fundal_alt">#101010</color>
     <color name="text">#D9D7D7</color>
     <color name="text_alt">#7C7C7C</color>
     <color name="text_pe_primara">#FFFFFF</color>

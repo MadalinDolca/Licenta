@@ -1,8 +1,6 @@
 package com.madalin.licenta.controller;
 
-import static com.madalin.licenta.EdgeToEdge.Directie;
-import static com.madalin.licenta.EdgeToEdge.Spatiere;
-import static com.madalin.licenta.EdgeToEdge.edgeToEdge;
+import static com.madalin.licenta.EdgeToEdge.*;
 
 import android.Manifest;
 import android.content.Intent;

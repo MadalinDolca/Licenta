@@ -59,11 +59,10 @@ public class CardMelodieAdapter extends RecyclerView.Adapter<CardMelodieAdapter.
         holder.textViewNumeMelodie.setText(listaCardMelodie.get(position).numeMelodie);
         holder.textViewNumeArtist.setText(listaCardMelodie.get(position).numeArtist);
 
-        holder.imageViewImagineMelodie.setOnClickListener(v -> Toast.makeText(context, holder.textViewNumeArtist.getText(), Toast.LENGTH_SHORT).show());
-
+        // lansare activitate Player la apasarea cardului
         holder.imageViewImagineMelodie.setOnClickListener(v -> {
             Intent intent = new Intent(context, PlayerActivity.class);
-            // intent.putExtra(EXTRA_MESSAGE, message);
+            intent.putExtra("com.madalin.licenta.position", position); // adaugare pozitie melodie selectata in intent
             context.startActivity(intent);
         });
     }
