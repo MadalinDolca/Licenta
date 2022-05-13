@@ -14,17 +14,17 @@
     </item>
 
     <!-- culoare, inaltime si raza foreground progres secundar -->
-    <item
-        android:id="@android:id/secondaryProgress"
-        android:gravity="center_vertical">
-        <scale android:scaleWidth="100%">
-            <shape android:shape="rectangle">
-                <solid android:color="@color/secundara" />
-                <size android:height="7dp" />
-                <corners android:radius="@dimen/radius20" />
-            </shape>
-        </scale>
-    </item>
+<!--    <item-->
+<!--        android:id="@android:id/secondaryProgress"-->
+<!--        android:gravity="center_vertical">-->
+<!--        <scale android:scaleWidth="100%">-->
+<!--            <shape android:shape="rectangle">-->
+<!--                <solid android:color="@color/secundara" />-->
+<!--                <size android:height="7dp" />-->
+<!--                <corners android:radius="@dimen/radius20" />-->
+<!--            </shape>-->
+<!--        </scale>-->
+<!--    </item>-->
 
     <!-- culoare, inaltime si raza foreground progres -->
     <item
