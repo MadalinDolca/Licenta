@@ -69,4 +69,7 @@ dependencies {
     // Incarcare Imagini
     implementation 'com.github.bumptech.glide:glide:4.13.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
+
+    // Extragere paleta culori din imagine
+    implementation 'androidx.palette:palette:1.0.0'
 }
