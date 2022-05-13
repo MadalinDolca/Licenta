@@ -6,9 +6,13 @@ import static com.madalin.licenta.EdgeToEdge.edgeToEdge;
 import static com.madalin.licenta.controller.fragment.AcasaFragment.listaMelodii;
 
 import android.annotation.SuppressLint;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
@@ -28,12 +32,16 @@ import android.widget.TextView;
 import android.widget.ThemedSpinnerAdapter;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 import androidx.palette.graphics.Palette;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.madalin.licenta.R;
 import com.madalin.licenta.model.Melodie;
@@ -45,6 +53,7 @@ public class PlayerActivity extends AppCompatActivity {
 
     LinearLayout linearLayoutContainer;
 
+    TextView textViewInCursDeRedare;
     TextView textViewNumeMelodie;
     TextView textViewNumeArtist;
     TextView textViewDescriereMelodie;
@@ -374,37 +383,68 @@ public class PlayerActivity extends AppCompatActivity {
 
     // metoda pentru afisarea imaginii, numelui, artistului etc. melodiei
     void afisareDateMelodie() {
+        // setare date de tip text
         textViewNumeMelodie.setText(melodieArrayList.get(pozitieMelodie).getNumeMelodie());
         textViewNumeArtist.setText(melodieArrayList.get(pozitieMelodie).getNumeArtist());
         textViewDurataMelodie.setText(formatareMilisecunde(mediaPlayer.getDuration()));
 
+        // setare imagine melodie si paleta de culori
         if (melodieArrayList.get(pozitieMelodie).getImagineMelodie() == null) { // daca melodia nu are link spre imagine
             imageViewImagineMelodie.setImageResource(R.drawable.ic_nota_muzicala); // se adauga o resursa inlocuitoare
-        } else { // daca melodia are link spre imagine, aceasta se obtine si se adauga in card-ul melodiei
-            Glide.with(this).load(melodieArrayList.get(pozitieMelodie).getImagineMelodie())
-                    .apply(RequestOptions.centerCropTransform())
-                    .placeholder(R.drawable.logo_music)
-                    .error(R.drawable.ic_eroare) // in caz ca nu s-a putut incarca imaginea, se adauga o resursa inlocuitoare
-                    .into(imageViewImagineMelodie);
-
-            //Bitmap bitmap = BitmapFactory.decodeByteArray(imageViewImagineMelodie.getDrawable(), imageViewImagineMelodie.getDrawable().)
-            Bitmap bitmap = ((BitmapDrawable) imageViewImagineMelodie.getDrawable()).getBitmap();// BitmapFactory.decodeResource(this, imageViewImagineMelodie.getDrawable());
-
-            Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-                @Override
-                public void onGenerated(@Nullable Palette palette) {
-                    Palette.Swatch swatch = palette.getDominantSwatch();
-
-                    if (swatch != null) {
-                        GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, new int[]{swatch.getRgb(), swatch.getRgb() /*0x00000000*/});
-
-                        linearLayoutContainer.setBackground(gradientDrawable);
-                        textViewNumeMelodie.setTextColor(swatch.getTitleTextColor());
-                        textViewNumeArtist.setTextColor(swatch.getBodyTextColor());
-                    }
-                }
-            });
         }
+        // daca melodia are link spre imagine, aceasta se obtine ca bitmap, se adauga in card si se aplica paleta de culori
+        else {
+            Glide.with(this).asBitmap().load(melodieArrayList.get(pozitieMelodie).getImagineMelodie()) // obtine imaginea ca bitmap
+                    .into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resursaBitmapImagineMelodie, @Nullable Transition<? super Bitmap> transition) {
+                            imageViewImagineMelodie.setImageBitmap(resursaBitmapImagineMelodie); // setare bitmap obtinut ca imagine pentru melodie
+
+                            // generare paleta de culori
+                            Palette.from(resursaBitmapImagineMelodie).generate(palette -> {
+                                Palette.Swatch swatchCuloareDominanta = palette.getDominantSwatch(); // obtine culoarea dominanta a imaginii melodiei
+
+                                if (swatchCuloareDominanta != null) {
+                                    GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{swatchCuloareDominanta.getRgb(), 0xFF000000}); // culoare fundal cu gradient
+                                    linearLayoutContainer.setBackground(gradientDrawable); // setare culoare fundal
+                                    setareCuloriElemente(swatchCuloareDominanta);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                        }
+                    });
+        }
+    }
+
+    // metoda pentru setarea culorii elementelor din player folosind culoarea dominanta a imaginii melodiei
+    private void setareCuloriElemente(Palette.Swatch swatchCuloareDominanta) {
+        int swatchColor = swatchCuloareDominanta.getTitleTextColor(); // culoare elemente
+        ColorStateList swatchColorState = ColorStateList.valueOf(swatchColor); // culoare elemente
+
+        imageViewButonInapoi.setImageTintList(ColorStateList.valueOf(swatchColor));
+        textViewInCursDeRedare.setTextColor(swatchColor);
+
+        seekBar.setThumbTintList(swatchColorState);
+        seekBar.setProgressTintList(swatchColorState);
+        //seekBar.setSecondaryProgressTintList(swatchColorState);
+        seekBar.setProgressBackgroundTintList(swatchColorState);
+
+        textViewNumeMelodie.setTextColor(swatchColor);
+        textViewNumeArtist.setTextColor(swatchColor);
+        textViewDurataRedata.setTextColor(swatchColor);
+        textViewDurataMelodie.setTextColor(swatchColor);
+
+        floatingActionButtonPlayPause.setBackgroundTintList(swatchColorState);
+        imageViewButonShuffle.setImageTintList(swatchColorState);
+        imageViewButonSkipPrevious.setImageTintList(swatchColorState);
+        imageViewButonSkipNext.setImageTintList(swatchColorState);
+        imageViewButonRepeat.setImageTintList(swatchColorState);
+
+        buttonSolicitaPermisiunea.setBackgroundTintList(swatchColorState);
     }
 
     // metoda pentru formatarea milisecundelor pozitiei curente a SeekBar-ului
@@ -434,6 +474,8 @@ public class PlayerActivity extends AppCompatActivity {
     // metoda pentru initializarea vederilor
     private void initializareVederi() {
         linearLayoutContainer = findViewById(R.id.player_linearLayoutContainer);
+
+        textViewInCursDeRedare = findViewById(R.id.player_textViewInCursDeRedare);
 
         textViewNumeMelodie = findViewById(R.id.player_textViewNumeMelodie);
         textViewNumeArtist = findViewById(R.id.player_textViewNumeArtist);
