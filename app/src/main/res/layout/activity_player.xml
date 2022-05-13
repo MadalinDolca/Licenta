@@ -36,6 +36,7 @@
 
             <!-- text now playing -->
             <TextView
+                android:id="@+id/player_textViewInCursDeRedare"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -77,6 +78,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/logo_music" />
 
                 </androidx.cardview.widget.CardView>
