@@ -4,6 +4,8 @@ import static com.madalin.licenta.EdgeToEdge.Directie;
 import static com.madalin.licenta.EdgeToEdge.Spatiere;
 import static com.madalin.licenta.EdgeToEdge.edgeToEdge;
 import static com.madalin.licenta.controller.fragment.AcasaFragment.listaMelodii;
+import static com.madalin.licenta.controller.MainActivity.shuffleBoolean;
+import static com.madalin.licenta.controller.MainActivity.repeatBoolean;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -16,6 +18,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -39,6 +42,7 @@ import com.madalin.licenta.model.Melodie;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener {
 
@@ -145,8 +149,16 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
             mediaPlayer.stop(); // opreste player-ul
             mediaPlayer.release(); // elibereaza resursele
 
-            pozitieMelodie = ((pozitieMelodie - 1) < 0 ? listaMelodii.size() - 1 : pozitieMelodie - 1); // obtine pozitia melodiei anterioare din lista
-            uri = Uri.parse(listaMelodii.get(pozitieMelodie).getUrl()); // obtine adresa resursei melodiei
+            // daca modul "shuffle" este pornit si modul "repeat" este oprit
+            if (shuffleBoolean && !repeatBoolean) {
+                pozitieMelodie = getRandom(melodieArrayList.size() - 1); // trece la o pozitie aleatoare
+            }
+            // daca modul "shuffle" este oprit si modul "repeat" este oprit
+            else if (!shuffleBoolean && !repeatBoolean) {
+                pozitieMelodie = ((pozitieMelodie - 1) < 0 ? melodieArrayList.size() - 1 : pozitieMelodie - 1); // obtine pozitia melodiei anterioare din lista
+            }
+
+            uri = Uri.parse(melodieArrayList.get(pozitieMelodie).getUrl()); // obtine adresa resursei melodiei
             mediaPlayer = MediaPlayer.create(getApplicationContext(), uri); // creare player cu noul URI
 
             afisareDateMelodie(); // actualizare UI cu datele noii melodii
@@ -160,8 +172,16 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
             mediaPlayer.stop(); // opreste player-ul
             mediaPlayer.release(); // elibereaza resursele
 
-            pozitieMelodie = ((pozitieMelodie - 1) < 0 ? listaMelodii.size() - 1 : pozitieMelodie - 1); // obtine pozitia melodiei anterioare din lista
-            uri = Uri.parse(listaMelodii.get(pozitieMelodie).getUrl()); // obtine adresa resursei melodiei
+            // daca modul "shuffle" este pornit si modul "repeat" este oprit
+            if (shuffleBoolean && !repeatBoolean) {
+                pozitieMelodie = getRandom(melodieArrayList.size() - 1); // trece la o pozitie aleatoare
+            }
+            // daca modul "shuffle" este oprit si modul "repeat" este oprit
+            else if (!shuffleBoolean && !repeatBoolean) {
+                pozitieMelodie = ((pozitieMelodie - 1) < 0 ? melodieArrayList.size() - 1 : pozitieMelodie - 1); // obtine pozitia melodiei anterioare din lista
+            }
+
+            uri = Uri.parse(melodieArrayList.get(pozitieMelodie).getUrl()); // obtine adresa resursei melodiei
             mediaPlayer = MediaPlayer.create(getApplicationContext(), uri); // creare player cu noul URI
 
             afisareDateMelodie(); // actualizare UI cu datele noii melodii
@@ -184,8 +204,17 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
             mediaPlayer.stop(); // opreste player-ul
             mediaPlayer.release(); // elibereaza resursele
 
-            pozitieMelodie = ((pozitieMelodie + 1) % listaMelodii.size()); // obtine pozitia urmatoarei melodii din lista
-            uri = Uri.parse(listaMelodii.get(pozitieMelodie).getUrl()); // obtine adresa resursei melodiei
+            // daca modul "shuffle" este pornit si modul "repeat" este oprit
+            if (shuffleBoolean && !repeatBoolean) {
+                pozitieMelodie = getRandom(melodieArrayList.size() - 1); // trece la o pozitie aleatoare
+            }
+            // daca modul "shuffle" este oprit si modul "repeat" este oprit
+            else if (!shuffleBoolean && !repeatBoolean) {
+                pozitieMelodie = ((pozitieMelodie + 1) % melodieArrayList.size()); // obtine pozitia urmatoarei melodii din lista
+            }
+
+            // altfel pozitia melodiei ramane neschimbata
+            uri = Uri.parse(melodieArrayList.get(pozitieMelodie).getUrl()); // obtine adresa resursei melodiei
             mediaPlayer = MediaPlayer.create(getApplicationContext(), uri); // creare player cu noul URI
 
             afisareDateMelodie(); // actualizare UI cu datele noii melodii
@@ -199,8 +228,16 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
             mediaPlayer.stop(); // opreste player-ul
             mediaPlayer.release(); // elibereaza resursele
 
-            pozitieMelodie = ((pozitieMelodie + 1) % listaMelodii.size()); // obtine pozitia urmatoarei melodii din lista
-            uri = Uri.parse(listaMelodii.get(pozitieMelodie).getUrl()); // obtine adresa resursei melodiei
+            // daca modul "shuffle" este pornit si modul "repeat" este oprit
+            if (shuffleBoolean && !repeatBoolean) {
+                pozitieMelodie = getRandom(melodieArrayList.size() - 1);
+            }
+            // daca modul "shuffle" este oprit si modul "repeat" este oprit
+            else if (!shuffleBoolean && !repeatBoolean) {
+                pozitieMelodie = ((pozitieMelodie + 1) % melodieArrayList.size()); // obtine pozitia urmatoarei melodii din lista
+            }
+
+            uri = Uri.parse(melodieArrayList.get(pozitieMelodie).getUrl()); // obtine adresa resursei melodiei
             mediaPlayer = MediaPlayer.create(getApplicationContext(), uri); // creare player cu noul URI
 
             afisareDateMelodie(); // actualizare UI cu datele noii melodii
@@ -213,9 +250,10 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
     }
 
     /**
-     * Seteaza valoarea maxima a seekBar-ului in functie de lungimea melodiei din mediaPlayer.
-     * Lanseaza un thread pe UiThread pentru actualizarea continua a progresului seekBar-ului in
-     * functie de pozitia curenta a mediaPlayer-ului.
+     * Seteaza valoarea maxima a {@link #seekBar}-ului in functie de lungimea melodiei din
+     * {@link #mediaPlayer}. Lanseaza un thread pe UiThread pentru actualizarea continua a
+     * progresului {@link #seekBar}-ului si a {@link #textViewDurataRedata} in
+     * functie de pozitia curenta a {@link #mediaPlayer}-ului.
      */
     public void actualizareSeekBar() {
         seekBar.setMax(mediaPlayer.getDuration() / 1000); // setare valoare maxima seekBar in functie de durata melodiei din mediaPlayer
@@ -224,11 +262,17 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
         PlayerActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mediaPlayer != null) {
-                    seekBar.setProgress(mediaPlayer.getCurrentPosition() / 1000);
-                }
+                try {
+                    if (mediaPlayer != null) {
+                        seekBar.setProgress(mediaPlayer.getCurrentPosition() / 1000);
+                        textViewDurataRedata.setText(formatareMilisecunde(mediaPlayer.getCurrentPosition())); /////
+                    }
 
-                handlerProgresMelodie.postDelayed(this, 1000);
+                    handlerProgresMelodie.postDelayed(this, 1000);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -265,27 +309,27 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
             super.onPostExecute(unused);
 
             afisareDateMelodie();
-            //actualizareSeekBar();//////////////
+            actualizareSeekBar();//////////////
 
             // runnable pentru setarea progresului de redare al melodiei in seekBar si textViewDurataRedata
-            PlayerActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (mediaPlayer != null) {
-                            seekBar.setProgress(mediaPlayer.getCurrentPosition() / 1000);
-                            textViewDurataRedata.setText(formatareMilisecunde(mediaPlayer.getCurrentPosition()));
-                        }
-
-                        handlerProgresMelodie.postDelayed(this, 1000);
-                    } catch (Exception e) {
-                        // UH OH :(
-                        //mediaPlayer.stop();
-                        //mediaPlayer.release();
-                        //Toast.makeText(PlayerActivity.this, "Eroare: " + e, Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
+//            PlayerActivity.this.runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        if (mediaPlayer != null) {
+//                            seekBar.setProgress(mediaPlayer.getCurrentPosition() / 1000);
+//                            textViewDurataRedata.setText(formatareMilisecunde(mediaPlayer.getCurrentPosition()));
+//                        }
+//
+//                        handlerProgresMelodie.postDelayed(this, 1000);
+//                    } catch (Exception e) {
+//                        // UH OH :(
+//                        //mediaPlayer.stop();
+//                        //mediaPlayer.release();
+//                        //Toast.makeText(PlayerActivity.this, "Eroare: " + e, Toast.LENGTH_LONG).show();
+//                    }
+//                }
+//            });
 
             // listener pentru schimbarea starii seekBar-ului
             seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -299,12 +343,10 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
 
                 @Override
                 public void onStartTrackingTouch(SeekBar seekBar) {
-
                 }
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
-
                 }
             });
 
@@ -332,6 +374,29 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
                 }
             });
 
+            imageViewButonShuffle.setOnClickListener(v -> {
+                // daca modul de amestecare este pornit
+                if (shuffleBoolean) {
+                    shuffleBoolean = false;
+                    imageViewButonShuffle.setImageResource(R.drawable.ic_shuffle_oprit);
+                }
+                // daca modul de amestecare este oprit
+                else {
+                    shuffleBoolean = true;
+                    imageViewButonShuffle.setImageResource(R.drawable.ic_shuffle_pornit);
+                }
+            });
+
+            imageViewButonRepeat.setOnClickListener(v -> {
+                if (repeatBoolean) {
+                    repeatBoolean = false;
+                    imageViewButonRepeat.setImageResource(R.drawable.ic_repeat_oprit);
+                } else {
+                    repeatBoolean = true;
+                    imageViewButonRepeat.setImageResource(R.drawable.ic_repeat_pornit);
+                }
+            });
+
 //            // listener repornire melodie dupa finalizare
 //            mediaPlayer.setOnCompletionListener(mp -> {
 //                nextBtnClicked();
@@ -351,7 +416,9 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
         }
     }
 
-    // metoda pentru pregatirea mediaPlayer-ului pentru redarea unei melodii
+    /**
+     * Pregateste mediaPlayer-ul pentru redarea unei melodii din lista de melodii folosind URL-ul acesteia.
+     */
     private void pregatireMediaPlayer() {
         pozitieMelodie = getIntent().getIntExtra("com.madalin.licenta.position", -1); // obtinere pozitie melodie selectata din intent
         melodieArrayList = listaMelodii; // obtinere lista melodii
@@ -406,7 +473,12 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
 //        }
 //    }
 
-    // metoda pentru afisarea imaginii, numelui, artistului etc. melodiei
+    /**
+     * Afiseaza datele unei melodii in player. Genereaza o paleta de culori in functie de culorile
+     * imaginii melodiei pe care o aplica in interfata. Aplica o animatie de tranzitie pe imaginea
+     * melodiei prin {@link PlayerActivity#animatieImagine(Context, ImageView, Bitmap)}. Seteaza
+     * culorile elementelor cu {@link PlayerActivity#setareCuloriElemente(Palette.Swatch)}.
+     */
     void afisareDateMelodie() {
         // setare date de tip text
         textViewNumeMelodie.setText(melodieArrayList.get(pozitieMelodie).getNumeMelodie());
@@ -443,6 +515,11 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
                         }
                     });
         }
+    }
+
+    private int getRandom(int i) {
+        Random random = new Random();
+        return random.nextInt(i + 1);
     }
 
     // metoda pentru setarea culorii elementelor din player folosind culoarea dominanta a imaginii melodiei
