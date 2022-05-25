@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.madalin.licenta">
-    <!-- permisiune utilizare internet -->
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- permisiune scriere in memorie -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- permite utilizarea internetului -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- permite rularea notificarii in foreground -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- permite scrierea in memorie -->
+
+    <!-- speficicare subclasa personalizata ApplicationClass -->
     <application
+        android:name=".ApplicationClass"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -13,37 +16,53 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Licenta">
         <activity
-            android:name=".controller.PlayerActivity"
+            android:name=".controllers.PlayerActivity"
             android:exported="false" />
         <activity
-            android:name=".controller.ResetareParolaActivity"
+            android:name=".controllers.ResetareParolaActivity"
             android:exported="false"
-            android:parentActivityName=".controller.AutentificareActivity" />
+            android:parentActivityName=".controllers.AutentificareActivity" />
         <activity
-            android:name=".controller.ProfilActivity"
+            android:name=".controllers.ProfilActivity"
             android:exported="false"
-            android:parentActivityName=".controller.MainActivity" />
+            android:parentActivityName=".controllers.MainActivity" />
         <activity
-            android:name=".controller.InregistrareActivity"
+            android:name=".controllers.InregistrareActivity"
             android:exported="false"
-            android:parentActivityName=".controller.AutentificareActivity" />
+            android:parentActivityName=".controllers.AutentificareActivity" />
         <activity
-            android:name=".controller.AutentificareActivity"
+            android:name=".controllers.AutentificareActivity"
             android:exported="false" />
         <activity
-            android:name=".controller.MainActivity"
+            android:name=".controllers.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true" />
         <activity
-            android:name=".controller.SplashScreenActivity"
+            android:name=".controllers.SplashScreenActivity"
             android:exported="true"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- serciviu redare muzica -->
+        <service
+            android:name=".services.MuzicaService"
+            android:enabled="true" />
+
+        <!-- receptionare comenzi de la notificarea din PlayerActivity cu actiunile din ApplicationClass spre MuzicaService -->
+        <receiver
+            android:name=".receivers.NotificarePlayerReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="ApplicationClass.actionPrevious" />
+                <action android:name="ApplicationClass.actionNext" />
+                <action android:name="ApplicationClass.actionPlay" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
