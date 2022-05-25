@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".controller.fragment.AcasaFragment">
+    tools:context=".controllers.fragments.AcasaFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/acasa_recyclerViewCategoriiCarduri"

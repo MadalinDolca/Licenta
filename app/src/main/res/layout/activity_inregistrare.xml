@@ -7,7 +7,7 @@
     android:background="@color/fundal"
     android:fillViewport="true"
     android:scrollbars="none"
-    tools:context=".controller.InregistrareActivity">
+    tools:context=".controllers.InregistrareActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

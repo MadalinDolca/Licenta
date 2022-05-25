@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".controller.fragment.AdaugaFragment">
+    tools:context=".controllers.fragments.AdaugaFragment">
 
     <!-- layout container -->
     <LinearLayout

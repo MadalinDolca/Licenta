@@ -7,7 +7,7 @@
     android:background="@color/fundal"
     android:fillViewport="true"
     android:scrollbars="none"
-    tools:context=".controller.PlayerActivity">
+    tools:context=".controllers.PlayerActivity">
 
     <!-- layout container -->
     <LinearLayout
@@ -116,13 +116,13 @@
                 android:id="@+id/player_seekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:max="100"
                 android:paddingVertical="20dp"
-                android:progress="0"
                 android:progressDrawable="@drawable/seekbar_progress"
-                android:secondaryProgress="0"
                 android:splitTrack="false"
                 android:thumb="@drawable/seekbar_thumb" />
+            <!--            android:progress="0"-->
+            <!--            android:max="100"-->
+            <!--            android:secondaryProgress="0"-->
 
             <LinearLayout
                 android:layout_width="match_parent"

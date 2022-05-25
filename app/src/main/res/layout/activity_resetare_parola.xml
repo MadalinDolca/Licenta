@@ -7,7 +7,7 @@
     android:background="@color/fundal"
     android:fillViewport="true"
     android:scrollbars="none"
-    tools:context=".controller.ResetareParolaActivity">
+    tools:context=".controllers.ResetareParolaActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

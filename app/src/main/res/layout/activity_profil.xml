@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/fundal"
-    tools:context=".controller.ProfilActivity">
+    tools:context=".controllers.ProfilActivity">
 
     <TextView
         android:id="@+id/profil_textViewSalut"
