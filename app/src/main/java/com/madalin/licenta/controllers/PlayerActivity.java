@@ -91,6 +91,7 @@ public class PlayerActivity extends AppCompatActivity
     private Handler handlerProgresMelodie = new Handler(); // handler pentru postarea delay-urilor in UI Thread
     private Thread playThread, previousThread, nextThread;
     //MediaSessionCompat mediaSessionCompat; // sesiune interactiuni cu controalele media din notificare
+    static boolean activitateActiva = false; // specifica daca activitatea este activa sau nu pentru utilizarea sigura a serviciului muzical & notificarii
 
     public static final String POZITIE_MELODIE_SERVICE = "pozitieMelodieService";
 
@@ -149,6 +150,7 @@ public class PlayerActivity extends AppCompatActivity
             }
         });
 
+        // listener buton shuffle
         imageViewButonShuffle.setOnClickListener(v -> {
             // daca modul de amestecare este pornit
             if (shuffleBoolean) {
@@ -162,6 +164,7 @@ public class PlayerActivity extends AppCompatActivity
             }
         });
 
+        // listener buton repeat
         imageViewButonRepeat.setOnClickListener(v -> {
             if (repeatBoolean) {
                 repeatBoolean = false;
@@ -173,7 +176,25 @@ public class PlayerActivity extends AppCompatActivity
         });
     }
 
+    /**
+     * La crearea activitatii sau la repornirea activitatii dupa apelarea metodei {@link #onStop()}
+     * seteaza {@link #activitateActiva} ca <code>true</code> pentru a marca faptul ca activitatea
+     * este vizibila utilizatorului.
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        activitateActiva = true;
+    }
+
     // la reintoarcerea la activitate
+
+    /**
+     * Cand activitatea este vizibila utilizatorului, iar acesta poate interactiona cu ea sau se
+     * intoarce la aceasta, {@link PlayerActivity} se leaga la serviciul {@link MuzicaService} si
+     * apeleaza metodele {@link #butonPlayPauseThread()}, {@link #butonPreviousThread()} si
+     * {@link #butonNextThread()}.
+     */
     @Override
     protected void onResume() {
         Log.e("", "PlayerActivity#onResume()");
@@ -189,7 +210,10 @@ public class PlayerActivity extends AppCompatActivity
         super.onResume();
     }
 
-    // dezleaga PlayerActivity de muzicaService de atunci cand PlayerActivity este pus pe pauza
+    /**
+     * Cand activitatea nu este vizibila utilizatorului, {@link PlayerActivity} se dezleaga de la
+     * serviciul muzical {@link MuzicaService}.
+     */
     @Override
     protected void onPause() {
         Log.e("", "PlayerActivity#onPause()");
@@ -198,150 +222,14 @@ public class PlayerActivity extends AppCompatActivity
         unbindService(this); // unbind de la serviciul muzical
     }
 
-    @SuppressLint("StaticFieldLeak")
-    public class PregatirePlayerAsyncTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            //pregatireMediaPlayer(); // pregatire mediaPlayer
-
-            pozitieMelodie = getIntent().getIntExtra(CardMelodieAdapter.POZITIE_MELODIE, -1); // obtine pozitia melodiei selectate din intent AcasaFragment
-            listaMelodiiPlayer = AcasaFragment.listaMelodii; // obtine lista cu melodii din AcasaFragment
-
-            // daca lista cu melodii nu este goala, se va obtine URI-ul melodiei din aceasta
-            if (listaMelodiiPlayer != null) {
-                floatingActionButtonPlayPause.setImageResource(R.drawable.ic_pause);
-                uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrl());
-            }
-
-            // pregatire si lansare serviciu muzical
-            Intent intent = new Intent(PlayerActivity.this, MuzicaService.class);
-            intent.putExtra(POZITIE_MELODIE_SERVICE, pozitieMelodie); // extra cu pozitia melodiei curente
-            startService(intent); // lansare serviciu
-
-            while (true) {
-                if (MainActivity.muzicaServicePregatit) {
-                    Log.e("", "muzicaServicePregatit");
-                    MainActivity.muzicaServicePregatit = false;
-                    seekBar.setMax(muzicaService.getDurataMelodie() / 1000); // seteaza limita maxima a seekBar-ului dupa ce s-a conectat la serviciu
-
-                    break;
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void unused) {
-            super.onPostExecute(unused);
-
-            afisareDateMelodie();
-            actualizareSeekBar();//////////////
-
-            // runnable pentru setarea progresului de redare al melodiei in seekBar si textViewDurataRedata
-//            PlayerActivity.this.runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    try {
-//                        if (mediaPlayer != null) {
-//                            seekBar.setProgress(mediaPlayer.getCurrentPosition() / 1000);
-//                            textViewDurataRedata.setText(formatareMilisecunde(mediaPlayer.getCurrentPosition()));
-//                        }
-//
-//                        handlerProgresMelodie.postDelayed(this, 1000);
-//                    } catch (Exception e) {
-//                        // UH OH :(
-//                        //mediaPlayer.stop();
-//                        //mediaPlayer.release();
-//                        //Toast.makeText(PlayerActivity.this, "Eroare: " + e, Toast.LENGTH_LONG).show();
-//                    }
-//                }
-//            });
-
-            // listener pentru schimbarea starii seekBar-ului
-            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    if (muzicaService != null && fromUser) {
-                        muzicaService.seekTo(progress * 1000); // cauta in melodie la pozitia de timp specificata de seekBar
-                        //textViewDurataRedata.setText(formatareMilisecunde(mediaPlayer.getCurrentPosition())); /////////
-                    }
-                }
-
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-                }
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                }
-            });
-
-            // listener play / pause
-//            floatingActionButtonPlayPause.setOnClickListener(v -> {
-//                // pauza player daca melodia este in curs de redare
-//                if (mediaPlayer.isPlaying()) {
-//                    //handlerProgresMelodie.removeCallbacks(updaterProgresMelodie); ////////
-//                    mediaPlayer.pause();
-//                    floatingActionButtonPlayPause.setImageResource(R.drawable.ic_play);
-//                }
-//                // pornire player daca melodia NU este in curs de redare
-//                else {
-//                    mediaPlayer.start();
-//                    floatingActionButtonPlayPause.setImageResource(R.drawable.ic_pause);
-//                    //actualizareSeekBar(); //////////
-//                }
-//            });
-
-            // listener buffer progres secundar seekBar
-//            mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
-//                @Override
-//                public void onBufferingUpdate(MediaPlayer mp, int percent) {
-//                    seekBar.setSecondaryProgress(percent /*(mediaPlayer.getDuration() / 1000)*/);
-//                }
-//            });
-
-            imageViewButonShuffle.setOnClickListener(v -> {
-                // daca modul de amestecare este pornit
-                if (shuffleBoolean) {
-                    shuffleBoolean = false;
-                    imageViewButonShuffle.setImageResource(R.drawable.ic_shuffle_oprit);
-                }
-                // daca modul de amestecare este oprit
-                else {
-                    shuffleBoolean = true;
-                    imageViewButonShuffle.setImageResource(R.drawable.ic_shuffle_pornit);
-                }
-            });
-
-            imageViewButonRepeat.setOnClickListener(v -> {
-                if (repeatBoolean) {
-                    repeatBoolean = false;
-                    imageViewButonRepeat.setImageResource(R.drawable.ic_repeat_oprit);
-                } else {
-                    repeatBoolean = true;
-                    imageViewButonRepeat.setImageResource(R.drawable.ic_repeat_pornit);
-                }
-            });
-
-//            // listener repornire melodie dupa finalizare
-//            mediaPlayer.setOnCompletionListener(mp -> {
-//                nextBtnClicked();
-//
-//                if (mediaPlayer != null) {
-//                    mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
-//                    mediaPlayer.start();
-//                }
-//
-////                seekBar.setProgress(0);
-////                floatingActionButtonPlayPause.setImageResource(R.drawable.ic_play);
-////                textViewDurataRedata.setText("0:00");
-////                textViewDurataMelodie.setText("0:00");
-////                mediaPlayer.reset();
-////                pregatireMediaPlayer();
-//            });
-        }
+    /**
+     * Cand activitatea nu mai este vizibila utilizatorului, {@link #activitateActiva} se seteaza
+     * ca <code>false</code>.
+     */
+    @Override
+    protected void onStop() {
+        super.onStop();
+        activitateActiva = false;
     }
 
     // SERVICII
@@ -536,30 +424,150 @@ public class PlayerActivity extends AppCompatActivity
         }
     }
 
-    /**
-     * Seteaza valoarea maxima a {@link #seekBar}-ului in functie de lungimea melodiei din
-     * {@link #muzicaService}. Lanseaza un thread pe UiThread pentru actualizarea continua a
-     * progresului {@link #seekBar}-ului si a {@link #textViewDurataRedata} in functie de pozitia
-     * curenta a {@link #muzicaService}-ului.
-     */
-    public void actualizareSeekBar() {
-        seekBar.setMax(muzicaService.getDurataMelodie() / 1000); // setare valoare maxima seekBar in functie de durata melodiei din mediaPlayer
+    @SuppressLint("StaticFieldLeak")
+    public class PregatirePlayerAsyncTask extends AsyncTask<Void, Void, Void> {
 
-        /*
-        // actualizeaza progresul seekBar-ului in functie de progresul mediaPlayer-ului
-        PlayerActivity.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (muzicaService != null) {
-                    seekBar.setProgress(muzicaService.getDurataMelodie() / 1000);
-                    //textViewDurataRedata.setText(formatareMilisecunde(muzicaService.getPozitieCurenta()));
+        @Override
+        protected Void doInBackground(Void... voids) {
+            //pregatireMediaPlayer(); // pregatire mediaPlayer
+
+            pozitieMelodie = getIntent().getIntExtra(CardMelodieAdapter.POZITIE_MELODIE, -1); // obtine pozitia melodiei selectate din intent AcasaFragment
+            listaMelodiiPlayer = AcasaFragment.listaMelodii; // obtine lista cu melodii din AcasaFragment
+
+            // daca lista cu melodii nu este goala, se va obtine URI-ul melodiei din aceasta
+            if (listaMelodiiPlayer != null) {
+                floatingActionButtonPlayPause.setImageResource(R.drawable.ic_pause);
+                uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrl());
+            }
+
+            // pregatire si lansare serviciu muzical
+            Intent intent = new Intent(PlayerActivity.this, MuzicaService.class);
+            intent.putExtra(POZITIE_MELODIE_SERVICE, pozitieMelodie); // extra cu pozitia melodiei curente
+            startService(intent); // lansare serviciu
+
+            while (true) {
+                if (MainActivity.muzicaServicePregatit) {
+                    Log.e("", "muzicaServicePregatit");
+                    MainActivity.muzicaServicePregatit = false;
+                    seekBar.setMax(muzicaService.getDurataMelodie() / 1000); // seteaza limita maxima a seekBar-ului dupa ce s-a conectat la serviciu
+
+                    break;
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            super.onPostExecute(unused);
+
+            afisareDateMelodie();
+            actualizareSeekBar();//////////////
+
+            // runnable pentru setarea progresului de redare al melodiei in seekBar si textViewDurataRedata
+//            PlayerActivity.this.runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        if (mediaPlayer != null) {
+//                            seekBar.setProgress(mediaPlayer.getCurrentPosition() / 1000);
+//                            textViewDurataRedata.setText(formatareMilisecunde(mediaPlayer.getCurrentPosition()));
+//                        }
+//
+//                        handlerProgresMelodie.postDelayed(this, 1000);
+//                    } catch (Exception e) {
+//                        // UH OH :(
+//                        //mediaPlayer.stop();
+//                        //mediaPlayer.release();
+//                        //Toast.makeText(PlayerActivity.this, "Eroare: " + e, Toast.LENGTH_LONG).show();
+//                    }
+//                }
+//            });
+
+            // listener pentru schimbarea starii seekBar-ului
+            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    if (muzicaService != null && fromUser) {
+                        muzicaService.seekTo(progress * 1000); // cauta in melodie la pozitia de timp specificata de seekBar
+                        //textViewDurataRedata.setText(formatareMilisecunde(mediaPlayer.getCurrentPosition())); /////////
+                    }
                 }
 
-                handlerProgresMelodie.postDelayed(this, 1000); // intarzieri de o secunda intre actualizari
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
 
-            }
-        });
-        */
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                }
+            });
+
+            // listener play / pause
+//            floatingActionButtonPlayPause.setOnClickListener(v -> {
+//                // pauza player daca melodia este in curs de redare
+//                if (mediaPlayer.isPlaying()) {
+//                    //handlerProgresMelodie.removeCallbacks(updaterProgresMelodie); ////////
+//                    mediaPlayer.pause();
+//                    floatingActionButtonPlayPause.setImageResource(R.drawable.ic_play);
+//                }
+//                // pornire player daca melodia NU este in curs de redare
+//                else {
+//                    mediaPlayer.start();
+//                    floatingActionButtonPlayPause.setImageResource(R.drawable.ic_pause);
+//                    //actualizareSeekBar(); //////////
+//                }
+//            });
+
+            // listener buffer progres secundar seekBar
+//            mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+//                @Override
+//                public void onBufferingUpdate(MediaPlayer mp, int percent) {
+//                    seekBar.setSecondaryProgress(percent /*(mediaPlayer.getDuration() / 1000)*/);
+//                }
+//            });
+
+            imageViewButonShuffle.setOnClickListener(v -> {
+                // daca modul de amestecare este pornit
+                if (shuffleBoolean) {
+                    shuffleBoolean = false;
+                    imageViewButonShuffle.setImageResource(R.drawable.ic_shuffle_oprit);
+                }
+                // daca modul de amestecare este oprit
+                else {
+                    shuffleBoolean = true;
+                    imageViewButonShuffle.setImageResource(R.drawable.ic_shuffle_pornit);
+                }
+            });
+
+            imageViewButonRepeat.setOnClickListener(v -> {
+                if (repeatBoolean) {
+                    repeatBoolean = false;
+                    imageViewButonRepeat.setImageResource(R.drawable.ic_repeat_oprit);
+                } else {
+                    repeatBoolean = true;
+                    imageViewButonRepeat.setImageResource(R.drawable.ic_repeat_pornit);
+                }
+            });
+
+//            // listener repornire melodie dupa finalizare
+//            mediaPlayer.setOnCompletionListener(mp -> {
+//                nextBtnClicked();
+//
+//                if (mediaPlayer != null) {
+//                    mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
+//                    mediaPlayer.start();
+//                }
+//
+////                seekBar.setProgress(0);
+////                floatingActionButtonPlayPause.setImageResource(R.drawable.ic_play);
+////                textViewDurataRedata.setText("0:00");
+////                textViewDurataMelodie.setText("0:00");
+////                mediaPlayer.reset();
+////                pregatireMediaPlayer();
+//            });
+        }
     }
 
     /**
@@ -624,10 +632,13 @@ public class PlayerActivity extends AppCompatActivity
     }
 
     /**
-     * Afiseaza datele unei melodii in {@link PlayerActivity}. Genereaza o paleta de culori in
-     * functie de culorile imaginii melodiei pe care o aplica in interfata. Aplica o animatie de
-     * tranzitie pe imaginea melodiei prin {@link #animatieImagine(Context, ImageView, Bitmap)}.
-     * Seteaza culorile elementelor cu {@link #setareCuloriElemente(Palette.Swatch)}.
+     * Afiseaza datele unei melodii in {@link PlayerActivity}. Daca {@link #activitateActiva} este
+     * <code>true</code>, inseamna ca activitatea este vizibila utilizatorului si se genereaza o
+     * paleta de culori in functie de culorile imaginii melodiei pe care o aplica in interfata.
+     * Aplica o animatie de tranzitie pe imaginea melodiei prin
+     * {@link #animatieImagine(Context, ImageView, Bitmap)}. Seteaza culorile elementelor cu
+     * {@link #setareCuloriElemente(Palette.Swatch)}. Daca {@link #activitateActiva} este
+     * <code>false</code>, inseamna ca aplicatia este inchisa si doar serviciul ruleaza.
      */
     public void afisareDateMelodie() {
         // setare date de tip text
@@ -635,36 +646,65 @@ public class PlayerActivity extends AppCompatActivity
         textViewNumeArtist.setText(listaMelodiiPlayer.get(pozitieMelodie).getNumeArtist());
         textViewDurataMelodie.setText(formatareMilisecunde(muzicaService.getDurataMelodie()));
 
-        // setare imagine melodie si paleta de culori
-        if (listaMelodiiPlayer.get(pozitieMelodie).getImagineMelodie() == null) { // daca melodia nu are link spre imagine
-            imageViewImagineMelodie.setImageResource(R.drawable.ic_nota_muzicala); // se adauga o resursa inlocuitoare
+        // verifica daca activitatea este activa (afisata utilizatorului) sau inchisa
+        if (activitateActiva) {
+            // setare imagine melodie si paleta de culori
+            if (listaMelodiiPlayer.get(pozitieMelodie).getImagineMelodie() == null) { // daca melodia nu are link spre imagine
+                imageViewImagineMelodie.setImageResource(R.drawable.ic_nota_muzicala); // se adauga o resursa inlocuitoare
+            }
+            // daca melodia are link spre imagine, aceasta se obtine ca bitmap, se adauga in card si se aplica paleta de culori
+            else {
+                Glide.with(this).asBitmap().load(listaMelodiiPlayer.get(pozitieMelodie).getImagineMelodie()) // obtine imaginea ca bitmap
+                        .into(new CustomTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resursaBitmapImagineMelodie, @Nullable Transition<? super Bitmap> transition) {
+                                animatieImagine(PlayerActivity.this, imageViewImagineMelodie, resursaBitmapImagineMelodie);
+                                //imageViewImagineMelodie.setImageBitmap(resursaBitmapImagineMelodie); // setare bitmap obtinut ca imagine pentru melodie
+
+                                // generare paleta de culori
+                                Palette.from(resursaBitmapImagineMelodie).generate(palette -> {
+                                    Palette.Swatch swatchCuloareDominanta = palette.getDominantSwatch(); // obtine culoarea dominanta a imaginii melodiei
+
+                                    if (swatchCuloareDominanta != null) {
+                                        GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{swatchCuloareDominanta.getRgb(), 0xFF000000}); // culoare fundal cu gradient
+                                        linearLayoutContainer.setBackground(gradientDrawable); // setare culoare fundal
+                                        setareCuloriElemente(swatchCuloareDominanta); // aplica culoarea swatch-ului pe elementele player-ului
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onLoadCleared(@Nullable Drawable placeholder) {
+                            }
+                        });
+            }
         }
-        // daca melodia are link spre imagine, aceasta se obtine ca bitmap, se adauga in card si se aplica paleta de culori
-        else {
-            Glide.with(this).asBitmap().load(listaMelodiiPlayer.get(pozitieMelodie).getImagineMelodie()) // obtine imaginea ca bitmap
-                    .into(new CustomTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resursaBitmapImagineMelodie, @Nullable Transition<? super Bitmap> transition) {
-                            animatieImagine(PlayerActivity.this, imageViewImagineMelodie, resursaBitmapImagineMelodie);
-                            //imageViewImagineMelodie.setImageBitmap(resursaBitmapImagineMelodie); // setare bitmap obtinut ca imagine pentru melodie
+    }
 
-                            // generare paleta de culori
-                            Palette.from(resursaBitmapImagineMelodie).generate(palette -> {
-                                Palette.Swatch swatchCuloareDominanta = palette.getDominantSwatch(); // obtine culoarea dominanta a imaginii melodiei
+    /**
+     * Seteaza valoarea maxima a {@link #seekBar}-ului in functie de lungimea melodiei din
+     * {@link #muzicaService}. Lanseaza un thread pe UiThread pentru actualizarea continua a
+     * progresului {@link #seekBar}-ului si a {@link #textViewDurataRedata} in functie de pozitia
+     * curenta a {@link #muzicaService}-ului.
+     */
+    public void actualizareSeekBar() {
+        seekBar.setMax(muzicaService.getDurataMelodie() / 1000); // setare valoare maxima seekBar in functie de durata melodiei din mediaPlayer
 
-                                if (swatchCuloareDominanta != null) {
-                                    GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{swatchCuloareDominanta.getRgb(), 0xFF000000}); // culoare fundal cu gradient
-                                    linearLayoutContainer.setBackground(gradientDrawable); // setare culoare fundal
-                                    setareCuloriElemente(swatchCuloareDominanta); // aplica culoarea swatch-ului pe elementele player-ului
-                                }
-                            });
-                        }
+        /*
+        // actualizeaza progresul seekBar-ului in functie de progresul mediaPlayer-ului
+        PlayerActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (muzicaService != null) {
+                    seekBar.setProgress(muzicaService.getDurataMelodie() / 1000);
+                    //textViewDurataRedata.setText(formatareMilisecunde(muzicaService.getPozitieCurenta()));
+                }
 
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                        }
-                    });
-        }
+                handlerProgresMelodie.postDelayed(this, 1000); // intarzieri de o secunda intre actualizari
+
+            }
+        });
+        */
     }
 
     /**

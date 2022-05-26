@@ -271,9 +271,10 @@ public class MuzicaService extends Service
                                 .build(); // combina optiunile setate si returneaza noul obiect Notification
 
                         // notificare utilizator in legatura cu evenimentele din fundal
-                        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE); // obtine handle la serviciul de sistem "NOTIFICATION_SERVICE" pentru informarea utilizatorului despre evenimentele de fundal
-                        notificationManager.notify(0, notificarePlayer); // publica notificarea cu melodia in curs de rulare si inlocuieste notificarile cu acelasi ID
-                        startForeground(0, notificarePlayer); // lansare notificare in prim plan
+                        //NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE); // obtine handle la serviciul de sistem "NOTIFICATION_SERVICE" pentru informarea utilizatorului despre evenimentele de fundal
+                        //notificationManager.notify(0, notificarePlayer); // publica notificarea cu melodia in curs de rulare si inlocuieste notificarile cu acelasi ID
+
+                        startForeground(1, notificarePlayer); // lansare notificare in prim plan
                     }
 
                     @Override
