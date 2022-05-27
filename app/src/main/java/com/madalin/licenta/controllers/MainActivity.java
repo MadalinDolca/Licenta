@@ -3,7 +3,9 @@ package com.madalin.licenta.controllers;
 import static com.madalin.licenta.EdgeToEdge.*;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
@@ -27,10 +29,9 @@ import com.madalin.licenta.controllers.fragments.AcasaFragment;
 import com.madalin.licenta.controllers.fragments.AdaugaFragment;
 import com.madalin.licenta.controllers.fragments.BibliotecaFragment;
 import com.madalin.licenta.controllers.fragments.CautaFragment;
+import com.madalin.licenta.services.MuzicaService;
 
 public class MainActivity extends AppCompatActivity {
-
-    public static final int COD_SOLICITARE_SCRIERE = 1;
 
     FirebaseAuth firebaseAuth;
     BottomNavigationView bottomNavigationView;
@@ -43,11 +44,17 @@ public class MainActivity extends AppCompatActivity {
 
     Fragment fragmentActiv; // fragmentul activ din activitate
 
-    boolean doubleBackToExitPressedOnce = false;
+    boolean doubleBackToExitPressedOnce = false; // tine evidenta apasarii optiunii "back"
+    static boolean shuffleBoolean = false; // tine evidenta starii butonului "shuffle" din PlayerActivity
+    static boolean repeatBoolean = false; // tine evidenta starii butonului "repeat" din PlayerActivity
+    public static boolean arataMiniplayer = false; // tine evidenta starii de afisare a miniplayer-ului
 
-    static boolean shuffleBoolean = false;
-    static boolean repeatBoolean = false;
-    public static boolean muzicaServicePregatit = false;
+    public static final int COD_SOLICITARE_SCRIERE = 1;
+
+    public static String URL_MELODIE_FRAGMENT = null;
+    public static String IMAGINE_MELODIE_FRAGMENT = null;
+    public static String NUME_ARTIST_FRAGMENT = null;
+    public static String NUME_MELODIE_FRAGMENT = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +103,6 @@ ft.commit();
         });
 
         afisareFragment(fragmentAcasa, "acasa", 0); // deschidere fragment acasa la pornirea aplicatiei
-
     }
 
     @Override
@@ -113,6 +119,13 @@ ft.commit();
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        obtineDateMelodieStocata(this);
+    }
+
+    @Override
     public void onBackPressed() {
         if (fragmentActiv == fragmentAcasa) { // daca fragmentul activ este fragmentul acasa
             if (doubleBackToExitPressedOnce) { // daca s-a apasat BACK de doua ori
@@ -124,6 +137,26 @@ ft.commit();
             Toast.makeText(this, "Apasa din nou BACK ca sa iesi", Toast.LENGTH_SHORT).show();
         } else { // daca fragmentul activ NU este fragmentul acasa
             afisareFragment(fragmentAcasa, "acasa", 0); // se afiseaza fragmentul acasa
+        }
+    }
+
+    public static void obtineDateMelodieStocata(Activity activitate) {
+        // obtine datele melodiei stocate in baza de date locala a sistemului
+        SharedPreferences sharedPreferences = activitate.getSharedPreferences(MuzicaService.ULTIMA_MELODIE_REDATA, MODE_PRIVATE);
+        URL_MELODIE_FRAGMENT = sharedPreferences.getString(MuzicaService.URL_MELODIE, null); // obtine URL-ul melodiei la cheia "URL_MELODIE"
+        IMAGINE_MELODIE_FRAGMENT = sharedPreferences.getString(MuzicaService.IMAGINE_MELODIE, null); // obtine imaginea melodiei la cheia "IMAGINE_MELODIE"
+        NUME_MELODIE_FRAGMENT = sharedPreferences.getString(MuzicaService.NUME_MELODIE, null); // obtine numele melodiei la cheia "NUME_MELODIE"
+        NUME_ARTIST_FRAGMENT = sharedPreferences.getString(MuzicaService.NUME_ARTIST, null); // obtine numele artistului la cheia "NUME_ARTIST"
+
+        if (URL_MELODIE_FRAGMENT != null) {
+            arataMiniplayer = true;
+        } else {
+            arataMiniplayer = false;
+
+            URL_MELODIE_FRAGMENT = null;
+            IMAGINE_MELODIE_FRAGMENT = null;
+            NUME_MELODIE_FRAGMENT = null;
+            NUME_ARTIST_FRAGMENT = null;
         }
     }
 
