@@ -26,6 +26,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -232,14 +233,21 @@ public class PlayerActivity extends AppCompatActivity
         activitateActiva = false;
     }
 
-    // SERVICII
-    // apelata automat la conectarea la serviciu
+    /**
+     * La conectarea la serviciul {@link MuzicaService} se obtine o instanta a acestuia si se
+     * initializeaza {@link #muzicaService} pentru a face posibila manipularea serviciului muzical.
+     * Permite instantei {@link MuzicaService#actiuniRedareInterface} din MuzicaService sa
+     * foloseasca implementarea din aceasta clasa. Seteaza valoarea maxima a {@link #seekBar}-ului
+     * si apeleaza {@link #afisareDateMelodie()} pentru afisarea datelor melodiei curente.
+     * Apeleaza {@link MuzicaService#onTerminareMelodie()} pentru reactionarea la terminarea melodiei.
+     * Apeleaza {@link MuzicaService#afisareNotificare(int)} pentru afisarea notificarii.
+     */
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        MuzicaService.MuzicaServiceBinder myBinder = (MuzicaService.MuzicaServiceBinder) service;
-        muzicaService = myBinder.getServiciu();
+        MuzicaService.MuzicaServiceBinder playerMuzicaServiceBinder = (MuzicaService.MuzicaServiceBinder) service;
+        muzicaService = playerMuzicaServiceBinder.getServiciu(); // obtine instanta serviciul MuzicaService
 
-        muzicaService.setCallBack(this); // permite instantei ActiuniRedareInterface din MuzicaPlayer sa foloseasca implementarea din PlayerActivity
+        muzicaService.setCallBack(this); // permite instantei ActiuniRedareInterface din MuzicaService sa foloseasca implementarea din PlayerActivity
 
         Log.e("", "PlayerActivity#onServiceConnected(ComponentName, IBinder) " + muzicaService);
 
@@ -250,6 +258,10 @@ public class PlayerActivity extends AppCompatActivity
         muzicaService.afisareNotificare(R.drawable.ic_pause); // afisare notificare
     }
 
+    /**
+     * La deconectarea de la {@link MuzicaService} se dezinstantiaza {@link #muzicaService}, facand
+     * imposibila manipularea serviciului muzical.
+     */
     @Override
     public void onServiceDisconnected(ComponentName name) {
         Log.e("", "ON SERVICE DISCONNECTED");
@@ -445,15 +457,7 @@ public class PlayerActivity extends AppCompatActivity
             intent.putExtra(POZITIE_MELODIE_SERVICE, pozitieMelodie); // extra cu pozitia melodiei curente
             startService(intent); // lansare serviciu
 
-            while (true) {
-                if (MainActivity.muzicaServicePregatit) {
-                    Log.e("", "muzicaServicePregatit");
-                    MainActivity.muzicaServicePregatit = false;
-                    seekBar.setMax(muzicaService.getDurataMelodie() / 1000); // seteaza limita maxima a seekBar-ului dupa ce s-a conectat la serviciu
-
-                    break;
-                }
-            }
+            seekBar.setMax(muzicaService.getDurataMelodie() / 1000); // seteaza limita maxima a seekBar-ului dupa ce s-a conectat la serviciu
 
             return null;
         }
