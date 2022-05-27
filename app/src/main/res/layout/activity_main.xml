@@ -18,6 +18,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- cadru in care va aparea miniplayer-ul -->
+    <FrameLayout
+        android:id="@+id/main_frameLayoutMiniPlayer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toTopOf="@id/main_bottomNavigationView">
+
+        <fragment
+            android:name="com.madalin.licenta.controllers.fragments.MiniPlayerFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout="@layout/fragment_mini_player" />
+
+    </FrameLayout>
+
     <!-- bara inferioara de navigatie -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/main_bottomNavigationView"
