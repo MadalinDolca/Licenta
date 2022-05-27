@@ -31,7 +31,7 @@
         <!--<item name="android:windowFrame">@null</item>-->
     </style>
 
-    <!-- SplashScreen -->
+    <!-- SplashScreenActivity -->
     <style name="SplashScreenTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/background_splashscreen</item>
 
@@ -42,4 +42,5 @@
         <!-- bara de status luminoasa si continut intunecat -->
         <item name="android:windowLightStatusBar">true</item>
     </style>
+
 </resources>
