@@ -8,10 +8,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.media.MediaMetadata;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 
@@ -252,22 +254,33 @@ public class MuzicaService extends Service
                             thumbnail = BitmapFactory.decodeResource(getResources(), R.drawable.logo_music);
                         }
 
-                        // crearea notificarii playerului cu datele melodiei in curs de rulare si a controalelor media
-                        Notification notificarePlayer = new NotificationCompat.Builder(MuzicaService.this, ApplicationClass.CHANNEL_ID_2)
-                                .setSmallIcon(imaginePlayPause) // imaginea "Play/Pause" din bara de stare
-                                .setLargeIcon(thumbnail) // imaginea melodiei
+                        // seteaza metadatele sesiunii media inainte de folosirea acesteia in setarea stilului notificarii (> Android 11)
+                        mediaSessionCompat.setMetadata(new MediaMetadataCompat.Builder()
+                                .putString(MediaMetadata.METADATA_KEY_TITLE, listaMelodiiService.get(pozitieMelodie).getNumeMelodie())
+                                .putString(MediaMetadata.METADATA_KEY_ARTIST, listaMelodiiService.get(pozitieMelodie).getNumeArtist())
+                                .build()
+                        );
 
-                                .setContentTitle(listaMelodiiService.get(pozitieMelodie).getNumeMelodie()) // numele melodiei
-                                .setContentText(listaMelodiiService.get(pozitieMelodie).getNumeArtist()) // numele artistului
+                        // crearea notificarii playerului cu datele melodiei in curs de rulare si a controalelor media folosind canalul CHANNEL_PLAYER_NOTIFICARE
+                        Notification notificarePlayer = new NotificationCompat.Builder(MuzicaService.this, ApplicationClass.CHANNEL_PLAYER_NOTIFICARE)
+                                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC) // afiseaza controalele pe ecranul de blocare
+
+                                .setSmallIcon(imaginePlayPause) // imaginea "Play/Pause" din bara de stare
 
                                 .addAction(R.drawable.ic_skip_previous, "Previous", previousPending) // buton "Previous", invoca PendingIntent spre NotificareReceiver
                                 .addAction(imaginePlayPause, "Pause", pausePending) // buton "Play/Pause", invoca PendingIntent spre NotificareReceiver
                                 .addAction(R.drawable.ic_skip_next, "Next", nextPending) // buton "Next", invoca PendingIntent spre NotificareReceiver
 
-                                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediaSessionCompat.getSessionToken())) // aplica stilul notificarii si ataseaza sesiunea de interactiuni cu controalele media din notificare
+                                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                                        .setShowActionsInCompactView(0, 1, 2) // afiseaza butonul "Previous", "Play/Pause" si "Next" in modul compact
+                                        .setMediaSession(mediaSessionCompat.getSessionToken())) // aplica stilul notificarii si ataseaza sesiunea de interactiuni cu controalele media din notificare
+
+                                .setContentTitle(listaMelodiiService.get(pozitieMelodie).getNumeMelodie()) // numele melodiei
+                                .setContentText(listaMelodiiService.get(pozitieMelodie).getNumeArtist()) // numele artistului
+                                .setLargeIcon(thumbnail) // imaginea melodiei
+
                                 .setPriority(NotificationCompat.PRIORITY_HIGH) // prioritatea inalta a notificarii
-                                .setOnlyAlertOnce(true)
-                                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                                .setOnlyAlertOnce(true) // afiseaza notificarea ca alerta doar o data
                                 .build(); // combina optiunile setate si returneaza noul obiect Notification
 
                         // notificare utilizator in legatura cu evenimentele din fundal
