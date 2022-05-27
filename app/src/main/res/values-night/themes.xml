@@ -24,7 +24,7 @@
         <item name="android:windowIsFloating">false</item>
     </style>
 
-    <!-- SplashScreen -->
+    <!-- SplashScreenActivity -->
     <style name="SplashScreenTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/background_splashscreen</item>
 
