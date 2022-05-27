@@ -1,10 +1,10 @@
 package com.madalin.licenta.services;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -47,11 +47,18 @@ public class MuzicaService extends Service
 
     ActiuniRedareInterface actiuniRedareInterface;
     MediaPlayer mediaPlayer;
-    List<Melodie> listaMelodiiService = new ArrayList<>();
+    public List<Melodie> listaMelodiiService = new ArrayList<>();
     Uri uri; // adresa melodiei
-    int pozitieMelodie = -1; // pozitia implicita a melodiei din lista
+    public int pozitieMelodie = -1; // pozitia implicita a melodiei din lista
 
     MediaSessionCompat mediaSessionCompat; // sesiune interactiuni cu controalele media din notificare
+
+    // variabile finale folosite drept chei pentru stocarea datelor unei melodii in baza de date locala
+    public static final String ULTIMA_MELODIE_REDATA = "ULTIMA_MELODIE_REDATA";
+    public static final String URL_MELODIE = "URL_MELODIE";
+    public static final String IMAGINE_MELODIE = "IMAGINE_MELODIE";
+    public static final String NUME_MELODIE = "NUME_MELODIE";
+    public static final String NUME_ARTIST = "NUME_ARTIST";
 
     @Override
     public void onCreate() {
@@ -61,6 +68,13 @@ public class MuzicaService extends Service
     }
 
     // se apeleaza la legarea serviciului de activitate
+
+    /**
+     * Returneaza {@link #muzicaServiceBinder} pe post de canal de comunicare dintre client
+     * (activitate / fragment) si acest serviciu {@link MuzicaService}.
+     *
+     * @return {@link #muzicaServiceBinder} ca instanta a serviciului curent
+     */
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -80,39 +94,43 @@ public class MuzicaService extends Service
         }
     }
 
-    // se apeleaza la lansarea serviciului
+    /**
+     * Apelata de catre sistem de fiecare data cand clientul porneste explicit serviciul folosind
+     * {@link #startService(Intent)}. Obtine pozitia melodiei oferita de {@link PlayerActivity} si
+     * numele actiunii media din notificare oferit de {@link NotificarePlayerReceiver} prin
+     * intermediul {@link Intent}-urilor. Lanseaza melodia folosind {@link #playMelodie(int)} si
+     * pozitia din intent. Apeleaza metodele {@link #butonPlayPauseClicked()},
+     * {@link #butonNextClicked()} si {@link #butonPreviousClicked()} in functie de actiunea
+     * specificata in intent.
+     *
+     * @param intent tipul de {@link Intent} furnizat
+     * @return START_STICKY - daca procesul acestui serviciu este oprit in timp ce este pornit
+     * (dupa revenirea de la onStartCommand), atunci se lasa in starea pornita, dar nu pastraza
+     * acest intent livrat. Ulterior, sistemul va incerca sa recreeze serviciul.
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         int pozitieMelodiePlayer = intent.getIntExtra(PlayerActivity.POZITIE_MELODIE_SERVICE, -1); // pozitia melodiei oferita de PlayerActivity prin Intent
-        String numeActiuneNotificare = intent.getStringExtra(NotificarePlayerReceiver.NUME_ACTIUNE_NOTIFICARE); // numele actiunii din notificare oferit de NotificareReceiver prin Intent
+        String numeActiuneNotificare = intent.getStringExtra(NotificarePlayerReceiver.NUME_ACTIUNE_NOTIFICARE); // numele actiunii din notificare oferit de NotificarePlayerReceiver prin Intent
 
         // daca s-a furnizat o pozitie a melodiei, se lanseaza melodia
         if (pozitieMelodiePlayer != -1) {
             playMelodie(pozitieMelodiePlayer);
         }
 
-        // daca s-a furnizat numele actiunii in NotificarePlayerReceiver, se verifica
+        // daca s-a furnizat numele actiunii in NotificarePlayerReceiver, se verifica si se apeleaza tipul de actiune
         if (numeActiuneNotificare != null) {
             switch (numeActiuneNotificare) {
                 case "playPause":
-                    if (actiuniRedareInterface != null) {
-                        actiuniRedareInterface.butonPlayPauseClicked();
-                    }
-
+                    butonPlayPauseClicked();
                     break;
 
                 case "next":
-                    if (actiuniRedareInterface != null) {
-                        actiuniRedareInterface.butonNextClicked();
-                    }
-
+                    butonNextClicked();
                     break;
 
                 case "previous":
-                    if (actiuniRedareInterface != null) {
-                        actiuniRedareInterface.butonPreviousClicked();
-                    }
-
+                    butonPreviousClicked();
                     break;
             }
         }
@@ -152,14 +170,55 @@ public class MuzicaService extends Service
 
     /**
      * Creeaza un {@link MediaPlayer} pentru {@link #mediaPlayer} folosind ca {@link Uri} adresa
-     * melodiei de la pozitia data.
+     * melodiei de la pozitia data. Stocheaza datele melodiei in baza de date locala a sistemului
+     * folosind {@link SharedPreferences} la cheile {@link #URL_MELODIE}, {@link #NUME_MELODIE}
+     * si {@link #NUME_ARTIST}.
      *
      * @param pozitieData pozitia melodiei pentru redare din lista
      */
     public void creeazaMediaPlayer(int pozitieData) {
         pozitieMelodie = pozitieData;
         uri = Uri.parse(listaMelodiiService.get(pozitieMelodie).getUrl()); // obtine adresa resursei melodiei
+
+        // stocheaza datele melodiei in baza de date locala a sistemului
+        SharedPreferences.Editor editor = getSharedPreferences(ULTIMA_MELODIE_REDATA, MODE_PRIVATE).edit(); // obtine si pastraza continutul fisierului cu preferinte "ULTIMA_MELODIE_REDATA" si creeaza un editor
+        editor.putString(URL_MELODIE, listaMelodiiService.get(pozitieMelodie).getUrl()); // seteaza adresa melodiei la cheia "URL_MELODIE"
+        editor.putString(IMAGINE_MELODIE, listaMelodiiService.get(pozitieMelodie).getImagineMelodie()); // seteaza imaginea melodiei la cheia "IMAGINE_MELODIE"
+        editor.putString(NUME_MELODIE, listaMelodiiService.get(pozitieMelodie).getNumeMelodie()); // seteaza numele melodiei la cheia "NUME_MELODIE"
+        editor.putString(NUME_ARTIST, listaMelodiiService.get(pozitieMelodie).getNumeArtist()); // seteaza numele artistului la cheia "NUME_ARTIST"
+        editor.apply(); // comite noile preferinte inapoi editorului
+
         mediaPlayer = MediaPlayer.create(getBaseContext(), uri); // creaza MediaPlayer cu noul URI
+    }
+
+    /**
+     * Apeleaza metoda {@link PlayerActivity#butonPlayPauseClicked()} prin intermediul
+     * instantei {@link #actiuniRedareInterface}.
+     */
+    public void butonPlayPauseClicked() {
+        if (actiuniRedareInterface != null) {
+            actiuniRedareInterface.butonPlayPauseClicked();
+        }
+    }
+
+    /**
+     * Apeleaza metoda {@link PlayerActivity#butonPreviousClicked()} prin intermediul
+     * instantei {@link #actiuniRedareInterface}.
+     */
+    public void butonPreviousClicked() {
+        if (actiuniRedareInterface != null) {
+            actiuniRedareInterface.butonPreviousClicked();
+        }
+    }
+
+    /**
+     * Apeleaza metoda {@link PlayerActivity#butonNextClicked()} prin intermediul
+     * instantei {@link #actiuniRedareInterface}.
+     */
+    public void butonNextClicked() {
+        if (actiuniRedareInterface != null) {
+            actiuniRedareInterface.butonNextClicked();
+        }
     }
 
     /**
