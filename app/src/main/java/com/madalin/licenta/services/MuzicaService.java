@@ -25,9 +25,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.madalin.licenta.ApplicationClass;
+import com.madalin.licenta.NumeExtra;
 import com.madalin.licenta.R;
+import com.madalin.licenta.controllers.MainActivity;
 import com.madalin.licenta.controllers.PlayerActivity;
-import com.madalin.licenta.interfaces.ActiuniRedareInterface;
+import com.madalin.licenta.controllers.fragments.MiniPlayerFragment;
+import com.madalin.licenta.interfaces.PlayerInterface;
+import com.madalin.licenta.interfaces.MiniPlayerInterface;
 import com.madalin.licenta.models.Melodie;
 import com.madalin.licenta.receivers.NotificarePlayerReceiver;
 
@@ -45,8 +49,10 @@ public class MuzicaService extends Service
 
     MuzicaServiceBinder muzicaServiceBinder = new MuzicaServiceBinder();
 
-    ActiuniRedareInterface actiuniRedareInterface;
-    MediaPlayer mediaPlayer;
+    PlayerInterface playerInterface; // referinta a interfetei de comunicare dintre PlayerActivity si MuzicaService
+    MiniPlayerInterface miniPlayerInterface; // referinta a interfetei de comunicare dintre MiniPlayerFragment si MuzicaService
+
+    public MediaPlayer mediaPlayer;
     public List<Melodie> listaMelodiiService = new ArrayList<>();
     Uri uri; // adresa melodiei
     public int pozitieMelodie = -1; // pozitia implicita a melodiei din lista
@@ -110,8 +116,8 @@ public class MuzicaService extends Service
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        int pozitieMelodiePlayer = intent.getIntExtra(PlayerActivity.POZITIE_MELODIE_SERVICE, -1); // pozitia melodiei oferita de PlayerActivity prin Intent
-        String numeActiuneNotificare = intent.getStringExtra(NotificarePlayerReceiver.NUME_ACTIUNE_NOTIFICARE); // numele actiunii din notificare oferit de NotificarePlayerReceiver prin Intent
+        int pozitieMelodiePlayer = intent.getIntExtra(NumeExtra.POZITIE_MELODIE_SERVICE, -1); // pozitia melodiei oferita de PlayerActivity prin Intent
+        String numeActiuneNotificare = intent.getStringExtra(NumeExtra.NUME_ACTIUNE_NOTIFICARE); // numele actiunii din notificare oferit de NotificarePlayerReceiver prin Intent
 
         // daca s-a furnizat o pozitie a melodiei, se lanseaza melodia
         if (pozitieMelodiePlayer != -1) {
@@ -137,6 +143,29 @@ public class MuzicaService extends Service
 
         Log.e("", "MuzicaService#onStartCommand(Intent, int, int)");
         return START_STICKY; // return super.onStartCommand(intent, flags, startId);
+    }
+
+    /**
+     * Permite {@link #playerInterface} sa foloseasca implementarea
+     * {@link PlayerInterface} din {@link PlayerActivity} pentru controlul actiunilor din
+     * cadrul notificarii playerului {@link PlayerActivity} > {@link NotificarePlayerReceiver} >
+     * {@link MuzicaService#onStartCommand(Intent, int, int)}.
+     *
+     * @param playerInterface clasa care implementeaza interfata {@link PlayerInterface}
+     */
+    public void setCallbackPlayerInterface(PlayerInterface playerInterface) {
+        this.playerInterface = playerInterface;
+    }
+
+    /**
+     * Permite {@link #miniPlayerInterface} sa foloseasca implementarea {@link MiniPlayerInterface}
+     * din {@link MiniPlayerFragment} pentru controlul obtinerii si afisarii datelor in miniplayer-ul
+     * din {@link MiniPlayerFragment}.
+     *
+     * @param miniPlayerInterface clasa care implementeaza interfata {@link MiniPlayerInterface}
+     */
+    public void setCallbackMiniPlayerInterface(MiniPlayerInterface miniPlayerInterface) {
+        this.miniPlayerInterface = miniPlayerInterface;
     }
 
     /**
@@ -181,7 +210,7 @@ public class MuzicaService extends Service
         uri = Uri.parse(listaMelodiiService.get(pozitieMelodie).getUrl()); // obtine adresa resursei melodiei
 
         // stocheaza datele melodiei in baza de date locala a sistemului
-        SharedPreferences.Editor editor = getSharedPreferences(ULTIMA_MELODIE_REDATA, MODE_PRIVATE).edit(); // obtine si pastraza continutul fisierului cu preferinte "ULTIMA_MELODIE_REDATA" si creeaza un editor
+        SharedPreferences.Editor editor = getSharedPreferences(ULTIMA_MELODIE_REDATA, MODE_PRIVATE).edit(); // obtine si pastreaza continutul fisierului cu preferinte "ULTIMA_MELODIE_REDATA" si creeaza un editor
         editor.putString(URL_MELODIE, listaMelodiiService.get(pozitieMelodie).getUrl()); // seteaza adresa melodiei la cheia "URL_MELODIE"
         editor.putString(IMAGINE_MELODIE, listaMelodiiService.get(pozitieMelodie).getImagineMelodie()); // seteaza imaginea melodiei la cheia "IMAGINE_MELODIE"
         editor.putString(NUME_MELODIE, listaMelodiiService.get(pozitieMelodie).getNumeMelodie()); // seteaza numele melodiei la cheia "NUME_MELODIE"
@@ -193,44 +222,38 @@ public class MuzicaService extends Service
 
     /**
      * Apeleaza metoda {@link PlayerActivity#butonPlayPauseClicked()} prin intermediul
-     * instantei {@link #actiuniRedareInterface}.
+     * instantei {@link #playerInterface}. Actualizeaza {@link MiniPlayerFragment} folosind
+     * {@link #actualizareMiniPlayer()}.
      */
     public void butonPlayPauseClicked() {
-        if (actiuniRedareInterface != null) {
-            actiuniRedareInterface.butonPlayPauseClicked();
+        if (playerInterface != null) {
+            playerInterface.butonPlayPauseClicked();
+            actualizareMiniPlayer();
         }
     }
 
     /**
      * Apeleaza metoda {@link PlayerActivity#butonPreviousClicked()} prin intermediul
-     * instantei {@link #actiuniRedareInterface}.
+     * instantei {@link #playerInterface}. Actualizeaza {@link MiniPlayerFragment} folosind
+     * {@link #actualizareMiniPlayer()}.
      */
     public void butonPreviousClicked() {
-        if (actiuniRedareInterface != null) {
-            actiuniRedareInterface.butonPreviousClicked();
+        if (playerInterface != null) {
+            playerInterface.butonPreviousClicked();
+            actualizareMiniPlayer();
         }
     }
 
     /**
      * Apeleaza metoda {@link PlayerActivity#butonNextClicked()} prin intermediul
-     * instantei {@link #actiuniRedareInterface}.
+     * instantei {@link #playerInterface}. Actualizeaza {@link MiniPlayerFragment} folosind
+     * {@link #actualizareMiniPlayer()}.
      */
     public void butonNextClicked() {
-        if (actiuniRedareInterface != null) {
-            actiuniRedareInterface.butonNextClicked();
+        if (playerInterface != null) {
+            playerInterface.butonNextClicked();
+            actualizareMiniPlayer();
         }
-    }
-
-    /**
-     * Permite {@link #actiuniRedareInterface} sa foloseasca implementarea
-     * {@link ActiuniRedareInterface} din {@link PlayerActivity} pentru controlul actiunilor din
-     * cadrul notificarii playerului {@link PlayerActivity} > {@link NotificarePlayerReceiver} >
-     * {@link MuzicaService#onStartCommand(Intent, int, int)}.
-     *
-     * @param actiuniRedareInterface clasa care implementeaza interfata {@link ActiuniRedareInterface}
-     */
-    public void setCallBack(ActiuniRedareInterface actiuniRedareInterface) {
-        this.actiuniRedareInterface = actiuniRedareInterface;
     }
 
     /**
@@ -242,9 +265,11 @@ public class MuzicaService extends Service
      * @param imaginePlayPause resursa care se va afisa in notificare pentru actiunea de Play/Pause
      */
     public void afisareNotificare(int imaginePlayPause) {
-        // continut
-        Intent intent = new Intent(this, PlayerActivity.class); // la click pe notificare se deschide PlayerActivity
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        // intent pentru deschiderea PlayerActivity la apasarea notificatii
+        Intent contentIntent = new Intent(this, PlayerActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); // la click pe notificare se deschide PlayerActivity
+        //contentIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        contentIntent.putExtra(NumeExtra.POZITIE_MELODIE, pozitieMelodie);
+        PendingIntent contentPending = PendingIntent.getActivity(this, 0, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // intent din notificare spre NotificareReceiver cu actiunea ApplicationClass.ACTION_PLAY
         Intent pauseIntent = new Intent(this, NotificarePlayerReceiver.class).setAction(ApplicationClass.ACTION_PLAY); // la click pe notificare se deschide NotificareReceiver
@@ -257,45 +282,6 @@ public class MuzicaService extends Service
         // intent din notificare spre NotificareReceiver cu actiunea ApplicationClass.ACTION_NEXT
         Intent nextIntent = new Intent(this, NotificarePlayerReceiver.class).setAction(ApplicationClass.ACTION_NEXT); // la click pe notificare se deschide NotificareReceiver
         PendingIntent nextPending = PendingIntent.getBroadcast(this, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT); // invocat de actiunea "Next" din notificare
-
-        /*Bitmap thumbnail = null;
-
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(PlayerActivity.this, ApplicationClass.CHANNEL_ID_2)
-                        .setSmallIcon(imaginePlayPause)
-                        .setLargeIcon(thumbnail)
-
-                        .setContentTitle(listaMelodiiPlayer.get(pozitieMelodie).getNumeMelodie())
-                        .setContentText(listaMelodiiPlayer.get(pozitieMelodie).getNumeArtist())
-
-                        .addAction(R.drawable.ic_skip_previous, "Previous", previousPending)
-                        .addAction(imaginePlayPause, "Pause", pausePending)
-                        .addAction(R.drawable.ic_skip_next, "Next", nextPending)
-
-                        //.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediaSessionCompat.getSessionToken()))
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setOnlyAlertOnce(true);
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-        Glide.with(this)
-                .asBitmap()
-                .load(listaMelodiiPlayer.get(pozitieMelodie).getImagineMelodie()) // obtine imaginea ca bitmap
-                .into(new CustomTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(@NonNull Bitmap resursaBitmapImagineMelodie, @Nullable Transition<? super Bitmap> transition) {
-                        notificationBuilder.setLargeIcon(resursaBitmapImagineMelodie);
-                        notificationBuilder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediaSessionCompat.getSessionToken()));
-
-                        Notification notification = notificationBuilder.build();
-                        notificationManager.notify(0, notification);
-                    }
-
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-
-                    }
-                });*/
 
         // obtine imaginea melodiei si creeaza notificarea playerului
         Glide.with(this).asBitmap().load(listaMelodiiService.get(pozitieMelodie).getImagineMelodie()) // obtine imaginea ca bitmap
@@ -326,6 +312,8 @@ public class MuzicaService extends Service
 
                                 .setSmallIcon(imaginePlayPause) // imaginea "Play/Pause" din bara de stare
 
+                                .setContentIntent(contentPending) // deschide PlayerActivity la apasarea notificarii folosind "contentPending"
+
                                 .addAction(R.drawable.ic_skip_previous, "Previous", previousPending) // buton "Previous", invoca PendingIntent spre NotificareReceiver
                                 .addAction(imaginePlayPause, "Pause", pausePending) // buton "Play/Pause", invoca PendingIntent spre NotificareReceiver
                                 .addAction(R.drawable.ic_skip_next, "Next", nextPending) // buton "Next", invoca PendingIntent spre NotificareReceiver
@@ -353,6 +341,23 @@ public class MuzicaService extends Service
                     public void onLoadCleared(@Nullable Drawable placeholder) {
                     }
                 });
+    }
+
+    /**
+     * Obtine si seteaza datele melodiei curente in fragmentul {@link MiniPlayerFragment} prin
+     * intermediul {@link #miniPlayerInterface}. Apeleaza cu aceasta referinta a interfetei metodele
+     * {@link MiniPlayerFragment#obtineDateMelodieStocata()} si
+     * {@link MiniPlayerFragment#afisareDateMelodie()}.
+     */
+    void actualizareMiniPlayer() {
+        if (MainActivity.arataMiniplayer) { // verifica starea de afisarea miniplayer-ului
+            if (MiniPlayerFragment.URL_MELODIE_FRAGMENT != null) { // verifica daca exista locatia spre melodie
+                if (miniPlayerInterface != null) { // verifica daca s-a setat callback-ul
+                    miniPlayerInterface.obtineDateMelodieStocata(); // obtine datele melodiei stocate in baza de date locala a sistemului
+                    miniPlayerInterface.afisareDateMelodie(); // afiseaza datele melodiei in miniplayer
+                }
+            }
+        }
     }
 
     /**
@@ -422,18 +427,22 @@ public class MuzicaService extends Service
 
     /**
      * Listener pentru schimbarea melodiei dupa finalizarea acesteia. Apeleaza
-     * {@link ActiuniRedareInterface#butonNextClicked()} pentru a trece la urmatoarea melodie. Daca nu exista un
-     * {@link #mediaPlayer}, creeaza unul si apeleaza {@link #onTerminareMelodie()}.
+     * {@link PlayerInterface#butonNextClicked()} pentru a trece la urmatoarea melodie. Daca nu
+     * exista un {@link #mediaPlayer}, creeaza unul. Actualizeaza {@link MiniPlayerFragment}
+     * folosind {@link #actualizareMiniPlayer()}. Apeleaza {@link #onTerminareMelodie()}.
      */
     @Override
     public void onCompletion(MediaPlayer mp) {
-        if (actiuniRedareInterface != null) {
-            actiuniRedareInterface.butonNextClicked(); // trece la urmatoarea melodie
+        if (playerInterface != null) {
+            playerInterface.butonNextClicked(); // trece la urmatoarea melodie
 
             // creeaza un nou mediaPlayer in cazul in care nu exista deja unul
             if (mediaPlayer != null) {
                 creeazaMediaPlayer(pozitieMelodie);
                 mediaPlayer.start();
+
+                actualizareMiniPlayer(); // actualizeaza miniplayer-ul
+
                 onTerminareMelodie();
             }
         }

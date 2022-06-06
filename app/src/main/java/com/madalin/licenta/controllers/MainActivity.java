@@ -3,9 +3,10 @@ package com.madalin.licenta.controllers;
 import static com.madalin.licenta.EdgeToEdge.*;
 
 import android.Manifest;
-import android.app.Activity;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
@@ -29,7 +30,7 @@ import com.madalin.licenta.controllers.fragments.AcasaFragment;
 import com.madalin.licenta.controllers.fragments.AdaugaFragment;
 import com.madalin.licenta.controllers.fragments.BibliotecaFragment;
 import com.madalin.licenta.controllers.fragments.CautaFragment;
-import com.madalin.licenta.services.MuzicaService;
+import com.madalin.licenta.controllers.fragments.MiniPlayerFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,11 +51,6 @@ public class MainActivity extends AppCompatActivity {
     public static boolean arataMiniplayer = false; // tine evidenta starii de afisare a miniplayer-ului
 
     public static final int COD_SOLICITARE_SCRIERE = 1;
-
-    public static String URL_MELODIE_FRAGMENT = null;
-    public static String IMAGINE_MELODIE_FRAGMENT = null;
-    public static String NUME_ARTIST_FRAGMENT = null;
-    public static String NUME_MELODIE_FRAGMENT = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,18 +77,22 @@ ft.commit();
             switch (item.getItemId()) {
                 case R.id.acasa:
                     afisareFragment(fragmentAcasa, "acasa", 0); // afisare fragment acasa
+                    afisareMiniPlayerFragment(true);
                     return true; // marcare buton bara navigare ca checked
 
                 case R.id.adauga:
                     afisareFragment(fragmentAdauga, "adauga", 1);
+                    afisareMiniPlayerFragment(false);
                     return true;
 
                 case R.id.cauta:
                     afisareFragment(fragmentCauta, "cauta", 2);
+                    afisareMiniPlayerFragment(true);
                     return true;
 
                 case R.id.biblioteca:
                     afisareFragment(fragmentBiblioteca, "biblioteca", 3);
+                    afisareMiniPlayerFragment(true);
                     return true;
 
                 case R.id.meniu:
@@ -122,7 +122,7 @@ ft.commit();
     protected void onResume() {
         super.onResume();
 
-        obtineDateMelodieStocata(this);
+        //obtineDateMelodieStocata(this);
     }
 
     @Override
@@ -137,26 +137,6 @@ ft.commit();
             Toast.makeText(this, "Apasa din nou BACK ca sa iesi", Toast.LENGTH_SHORT).show();
         } else { // daca fragmentul activ NU este fragmentul acasa
             afisareFragment(fragmentAcasa, "acasa", 0); // se afiseaza fragmentul acasa
-        }
-    }
-
-    public static void obtineDateMelodieStocata(Activity activitate) {
-        // obtine datele melodiei stocate in baza de date locala a sistemului
-        SharedPreferences sharedPreferences = activitate.getSharedPreferences(MuzicaService.ULTIMA_MELODIE_REDATA, MODE_PRIVATE);
-        URL_MELODIE_FRAGMENT = sharedPreferences.getString(MuzicaService.URL_MELODIE, null); // obtine URL-ul melodiei la cheia "URL_MELODIE"
-        IMAGINE_MELODIE_FRAGMENT = sharedPreferences.getString(MuzicaService.IMAGINE_MELODIE, null); // obtine imaginea melodiei la cheia "IMAGINE_MELODIE"
-        NUME_MELODIE_FRAGMENT = sharedPreferences.getString(MuzicaService.NUME_MELODIE, null); // obtine numele melodiei la cheia "NUME_MELODIE"
-        NUME_ARTIST_FRAGMENT = sharedPreferences.getString(MuzicaService.NUME_ARTIST, null); // obtine numele artistului la cheia "NUME_ARTIST"
-
-        if (URL_MELODIE_FRAGMENT != null) {
-            arataMiniplayer = true;
-        } else {
-            arataMiniplayer = false;
-
-            URL_MELODIE_FRAGMENT = null;
-            IMAGINE_MELODIE_FRAGMENT = null;
-            NUME_MELODIE_FRAGMENT = null;
-            NUME_ARTIST_FRAGMENT = null;
         }
     }
 
@@ -216,6 +196,44 @@ ft.commit();
 
         bottomNavigationView.getMenu().getItem(pozitie).setChecked(true); // setare buton din bara de navigare ca bifat
         fragmentActiv = fragmentSelectat; // setare fragment activ
+    }
+
+    private void afisareMiniPlayerFragment(boolean arata) {
+        View viewMiniPlayer = findViewById(R.id.main_frameLayoutMiniPlayer);
+
+        if (arata) {
+            viewMiniPlayer.setVisibility(View.VISIBLE);
+        } else {
+            viewMiniPlayer.setVisibility(View.GONE);
+
+//            viewMiniPlayer.animate()
+//                    .translationY(viewMiniPlayer.getHeight())
+//                    .alpha(0.0f)
+//                    .setDuration(300)
+//                    .setListener(new AnimatorListenerAdapter() {
+//                        @Override
+//                        public void onAnimationEnd(Animator animation) {
+//                            super.onAnimationEnd(animation);
+//                            viewMiniPlayer.setVisibility(View.INVISIBLE);
+//                        }
+//                    });
+        }
+
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//
+//        if (arata) {
+//            fragmentManager.beginTransaction()
+//                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+//                    .show(fragmentMiniPlayer)
+//                    .commit();
+//            // fragmentMiniPlayer.getView().setVisibility(View.);
+//        } else {
+//            fragmentManager.beginTransaction()
+//                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+//                    .hide(fragmentMiniPlayer)
+//                    .commit();
+//            fragmentMiniPlayer.getView().setVisibility(View.GONE);
+//        }
     }
 
     // metoda pentru afisarea dialogului meniu

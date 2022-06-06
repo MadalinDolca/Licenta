@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.madalin.licenta.ApplicationClass;
+import com.madalin.licenta.NumeExtra;
 import com.madalin.licenta.services.MuzicaService;
 
 /**
@@ -12,8 +13,6 @@ import com.madalin.licenta.services.MuzicaService;
  * intent-uri spre {@link MuzicaService}.
  */
 public class NotificarePlayerReceiver extends BroadcastReceiver {
-
-    public static final String NUME_ACTIUNE_NOTIFICARE = "com.madalin.licenta.receivers.NUME_ACTIUNE";
 
     /**
      * Receptioneaza {@link Intent} broadcast-urile emise ca actiuni din notificarea
@@ -23,7 +22,7 @@ public class NotificarePlayerReceiver extends BroadcastReceiver {
      * acesta avand ca date numele actiunii.
      *
      * @param context contextul in care ruleaza receiver-ul
-     * @param intent {@link Intent}-ul primit
+     * @param intent  {@link Intent}-ul primit
      */
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -34,17 +33,17 @@ public class NotificarePlayerReceiver extends BroadcastReceiver {
         if (numeActiune != null) {
             switch (numeActiune) {
                 case ApplicationClass.ACTION_PLAY:
-                    notificareMuzicaServiceIntent.putExtra(NUME_ACTIUNE_NOTIFICARE, "playPause");
+                    notificareMuzicaServiceIntent.putExtra(NumeExtra.NUME_ACTIUNE_NOTIFICARE, "playPause");
                     context.startService(notificareMuzicaServiceIntent); // lanseaza serviciul spre MuzicaService cu datele "playPause"
                     break;
 
                 case ApplicationClass.ACTION_NEXT:
-                    notificareMuzicaServiceIntent.putExtra(NUME_ACTIUNE_NOTIFICARE, "next");
+                    notificareMuzicaServiceIntent.putExtra(NumeExtra.NUME_ACTIUNE_NOTIFICARE, "next");
                     context.startService(notificareMuzicaServiceIntent); // lanseaza serviciul spre MuzicaService cu datele "previous"
                     break;
 
                 case ApplicationClass.ACTION_PREVIOUS:
-                    notificareMuzicaServiceIntent.putExtra(NUME_ACTIUNE_NOTIFICARE, "previous");
+                    notificareMuzicaServiceIntent.putExtra(NumeExtra.NUME_ACTIUNE_NOTIFICARE, "previous");
                     context.startService(notificareMuzicaServiceIntent); // lanseaza serviciul spre MuzicaService cu datele "previous"
                     break;
             }

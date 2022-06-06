@@ -19,7 +19,7 @@
             android:id="@+id/mini_player_cardViewImagineMelodie"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            app:cardBackgroundColor="@color/primara"
+            app:cardBackgroundColor="#00000000"
             app:cardCornerRadius="@dimen/radius20"
             app:cardElevation="0dp">
 
@@ -40,11 +40,17 @@
             android:layout_marginTop="5dp"
             android:layout_toStartOf="@id/mini_player_floatingActionButtonPlayPause"
             android:layout_toEndOf="@id/mini_player_cardViewImagineMelodie"
-            android:maxLines="1"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
             android:text="Nume Melodie"
             android:textColor="@color/text"
             android:textSize="@dimen/text_standard"
             android:textStyle="bold" />
+        <!--android:maxLines="1"-->
 
         <!-- text nume artist -->
         <TextView
@@ -55,7 +61,13 @@
             android:layout_marginStart="15dp"
             android:layout_toStartOf="@id/mini_player_floatingActionButtonPlayPause"
             android:layout_toEndOf="@id/mini_player_cardViewImagineMelodie"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:marqueeRepeatLimit="marquee_forever"
             android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
             android:text="Nume Artist"
             android:textColor="@color/text"
             android:textSize="@dimen/text_mic" />
@@ -68,10 +80,11 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
             android:layout_toStartOf="@id/mini_player_imageViewButonNext"
-            android:elevation="0dp"
             android:src="@drawable/ic_play"
             app:backgroundTint="@color/primara"
-            app:fabSize="mini"
+            app:elevation="0dp"
+            app:fabCustomSize="40dp"
+            app:maxImageSize="30dp"
             app:tint="@color/text_pe_primara" />
 
         <!-- buton next -->

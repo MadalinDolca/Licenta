@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.madalin.licenta.NumeExtra;
 import com.madalin.licenta.R;
 import com.madalin.licenta.controllers.PlayerActivity;
 import com.madalin.licenta.models.CardMelodie;
@@ -24,7 +25,6 @@ public class CardMelodieAdapter extends RecyclerView.Adapter<CardMelodieAdapter.
 
     Context context;
     List<CardMelodie> listaCardMelodie;
-    public static final String POZITIE_MELODIE = "com.madalin.licenta.adapters.CardMelodieAdapter.position";
 
     // carui context trebuie sa i se ofere datele
     public CardMelodieAdapter(Context context, List<CardMelodie> listaCardMelodie) {
@@ -63,7 +63,7 @@ public class CardMelodieAdapter extends RecyclerView.Adapter<CardMelodieAdapter.
         // lansare activitate Player la apasarea cardului
         holder.imageViewImagineMelodie.setOnClickListener(v -> {
             Intent intent = new Intent(context, PlayerActivity.class);
-            intent.putExtra(POZITIE_MELODIE, position); // adaugare pozitie melodie selectata in intent
+            intent.putExtra(NumeExtra.POZITIE_MELODIE, position); // adaugare pozitie melodie selectata in intent
             context.startActivity(intent);
         });
     }

@@ -7,16 +7,12 @@ import static com.madalin.licenta.controllers.MainActivity.repeatBoolean;
 import static com.madalin.licenta.controllers.MainActivity.shuffleBoolean;
 
 import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -24,9 +20,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -38,20 +32,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 import androidx.palette.graphics.Palette;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.madalin.licenta.ApplicationClass;
+import com.madalin.licenta.NumeExtra;
 import com.madalin.licenta.R;
 import com.madalin.licenta.adapters.CardMelodieAdapter;
 import com.madalin.licenta.controllers.fragments.AcasaFragment;
-import com.madalin.licenta.interfaces.ActiuniRedareInterface;
+import com.madalin.licenta.interfaces.PlayerInterface;
 import com.madalin.licenta.models.Melodie;
-import com.madalin.licenta.receivers.NotificarePlayerReceiver;
 import com.madalin.licenta.services.MuzicaService;
 
 import java.util.ArrayList;
@@ -60,7 +52,7 @@ import java.util.Random;
 
 public class PlayerActivity extends AppCompatActivity
         implements
-        ActiuniRedareInterface,
+        PlayerInterface,
         ServiceConnection {
 
     private LinearLayout linearLayoutContainer;
@@ -92,9 +84,7 @@ public class PlayerActivity extends AppCompatActivity
     private Handler handlerProgresMelodie = new Handler(); // handler pentru postarea delay-urilor in UI Thread
     private Thread playThread, previousThread, nextThread;
     //MediaSessionCompat mediaSessionCompat; // sesiune interactiuni cu controalele media din notificare
-    static boolean activitateActiva = false; // specifica daca activitatea este activa sau nu pentru utilizarea sigura a serviciului muzical & notificarii
-
-    public static final String POZITIE_MELODIE_SERVICE = "pozitieMelodieService";
+    static boolean isActivitatePlayerActiva = false; // specifica daca activitatea este activa sau nu pentru utilizarea sigura a serviciului muzical & notificarii
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,13 +169,13 @@ public class PlayerActivity extends AppCompatActivity
 
     /**
      * La crearea activitatii sau la repornirea activitatii dupa apelarea metodei {@link #onStop()}
-     * seteaza {@link #activitateActiva} ca <code>true</code> pentru a marca faptul ca activitatea
+     * seteaza {@link #isActivitatePlayerActiva} ca <code>true</code> pentru a marca faptul ca activitatea
      * este vizibila utilizatorului.
      */
     @Override
     protected void onStart() {
         super.onStart();
-        activitateActiva = true;
+        isActivitatePlayerActiva = true; // marcheaza activitatea ca activa
     }
 
     // la reintoarcerea la activitate
@@ -224,13 +214,13 @@ public class PlayerActivity extends AppCompatActivity
     }
 
     /**
-     * Cand activitatea nu mai este vizibila utilizatorului, {@link #activitateActiva} se seteaza
+     * Cand activitatea nu mai este vizibila utilizatorului, {@link #isActivitatePlayerActiva} se seteaza
      * ca <code>false</code>.
      */
     @Override
     protected void onStop() {
         super.onStop();
-        activitateActiva = false;
+        isActivitatePlayerActiva = false; // marcheaza activitatea ca inactiva
     }
 
     /**
@@ -247,7 +237,7 @@ public class PlayerActivity extends AppCompatActivity
         MuzicaService.MuzicaServiceBinder playerMuzicaServiceBinder = (MuzicaService.MuzicaServiceBinder) service;
         muzicaService = playerMuzicaServiceBinder.getServiciu(); // obtine instanta serviciul MuzicaService
 
-        muzicaService.setCallBack(this); // permite instantei ActiuniRedareInterface din MuzicaService sa foloseasca implementarea din PlayerActivity
+        muzicaService.setCallbackPlayerInterface(this); // permite instantei ActiuniRedareInterface din MuzicaService sa foloseasca implementarea din PlayerActivity
 
         Log.e("", "PlayerActivity#onServiceConnected(ComponentName, IBinder) " + muzicaService);
 
@@ -264,7 +254,7 @@ public class PlayerActivity extends AppCompatActivity
      */
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        Log.e("", "ON SERVICE DISCONNECTED");
+        Log.e("", "PlayerActivity#onServiceDisconnected()");
         muzicaService = null;
     }
 
@@ -443,7 +433,7 @@ public class PlayerActivity extends AppCompatActivity
         protected Void doInBackground(Void... voids) {
             //pregatireMediaPlayer(); // pregatire mediaPlayer
 
-            pozitieMelodie = getIntent().getIntExtra(CardMelodieAdapter.POZITIE_MELODIE, -1); // obtine pozitia melodiei selectate din intent AcasaFragment
+            pozitieMelodie = getIntent().getIntExtra(NumeExtra.POZITIE_MELODIE, -1); // obtine pozitia melodiei selectate din intent AcasaFragment
             listaMelodiiPlayer = AcasaFragment.listaMelodii; // obtine lista cu melodii din AcasaFragment
 
             // daca lista cu melodii nu este goala, se va obtine URI-ul melodiei din aceasta
@@ -454,7 +444,7 @@ public class PlayerActivity extends AppCompatActivity
 
             // pregatire si lansare serviciu muzical
             Intent intent = new Intent(PlayerActivity.this, MuzicaService.class);
-            intent.putExtra(POZITIE_MELODIE_SERVICE, pozitieMelodie); // extra cu pozitia melodiei curente
+            intent.putExtra(NumeExtra.POZITIE_MELODIE_SERVICE, pozitieMelodie); // extra cu pozitia melodiei curente
             startService(intent); // lansare serviciu
 
             seekBar.setMax(muzicaService.getDurataMelodie() / 1000); // seteaza limita maxima a seekBar-ului dupa ce s-a conectat la serviciu
@@ -600,7 +590,7 @@ public class PlayerActivity extends AppCompatActivity
      * transmisa de {@link CardMelodieAdapter}.
      */
     private void pregatireMediaPlayer() {
-        pozitieMelodie = getIntent().getIntExtra(CardMelodieAdapter.POZITIE_MELODIE, -1); // obtinere pozitie melodie selectata din intent
+        pozitieMelodie = getIntent().getIntExtra(NumeExtra.POZITIE_MELODIE, -1); // obtinere pozitie melodie selectata din intent
         listaMelodiiPlayer = AcasaFragment.listaMelodii; // obtine lista cu melodii din AcasaFragment
 
         // daca lista cu melodii nu este goala, se va obtine URI-ul melodiei din aceasta
@@ -628,7 +618,7 @@ public class PlayerActivity extends AppCompatActivity
 
         // pregatire si lansare serviciu muzical
         Intent intent = new Intent(this, MuzicaService.class);
-        intent.putExtra(POZITIE_MELODIE_SERVICE, pozitieMelodie); // extra cu pozitia melodiei curente
+        intent.putExtra(NumeExtra.POZITIE_MELODIE_SERVICE, pozitieMelodie); // extra cu pozitia melodiei curente
         startService(intent); // lansare serviciu
 
         //seekBar.setMax(muzicaService.getDurataMelodie() / 1000); // mutat la onServiceConnected()
@@ -636,22 +626,26 @@ public class PlayerActivity extends AppCompatActivity
     }
 
     /**
-     * Afiseaza datele unei melodii in {@link PlayerActivity}. Daca {@link #activitateActiva} este
+     * Afiseaza datele unei melodii in {@link PlayerActivity}. Daca {@link #isActivitatePlayerActiva} este
      * <code>true</code>, inseamna ca activitatea este vizibila utilizatorului si se genereaza o
      * paleta de culori in functie de culorile imaginii melodiei pe care o aplica in interfata.
      * Aplica o animatie de tranzitie pe imaginea melodiei prin
      * {@link #animatieImagine(Context, ImageView, Bitmap)}. Seteaza culorile elementelor cu
-     * {@link #setareCuloriElemente(Palette.Swatch)}. Daca {@link #activitateActiva} este
+     * {@link #setareCuloriElemente(Palette.Swatch)}. Daca {@link #isActivitatePlayerActiva} este
      * <code>false</code>, inseamna ca aplicatia este inchisa si doar serviciul ruleaza.
      */
     public void afisareDateMelodie() {
         // setare date de tip text
         textViewNumeMelodie.setText(listaMelodiiPlayer.get(pozitieMelodie).getNumeMelodie());
+        textViewNumeMelodie.setFocusable(true); // pentru marquee
+
         textViewNumeArtist.setText(listaMelodiiPlayer.get(pozitieMelodie).getNumeArtist());
+        textViewNumeArtist.setFocusable(true); // pentru marquee
+
         textViewDurataMelodie.setText(formatareMilisecunde(muzicaService.getDurataMelodie()));
 
         // verifica daca activitatea este activa (afisata utilizatorului) sau inchisa
-        if (activitateActiva) {
+        if (isActivitatePlayerActiva) {
             // setare imagine melodie si paleta de culori
             if (listaMelodiiPlayer.get(pozitieMelodie).getImagineMelodie() == null) { // daca melodia nu are link spre imagine
                 imageViewImagineMelodie.setImageResource(R.drawable.ic_nota_muzicala); // se adauga o resursa inlocuitoare
@@ -670,8 +664,6 @@ public class PlayerActivity extends AppCompatActivity
                                     Palette.Swatch swatchCuloareDominanta = palette.getDominantSwatch(); // obtine culoarea dominanta a imaginii melodiei
 
                                     if (swatchCuloareDominanta != null) {
-                                        GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{swatchCuloareDominanta.getRgb(), 0xFF000000}); // culoare fundal cu gradient
-                                        linearLayoutContainer.setBackground(gradientDrawable); // setare culoare fundal
                                         setareCuloriElemente(swatchCuloareDominanta); // aplica culoarea swatch-ului pe elementele player-ului
                                     }
                                 });
@@ -728,8 +720,8 @@ public class PlayerActivity extends AppCompatActivity
      * @param swatchCuloareDominanta culoarea dominanta a imaginii melodiei
      */
     private void setareCuloriElemente(Palette.Swatch swatchCuloareDominanta) {
-        int swatchColor = swatchCuloareDominanta.getTitleTextColor(); // culoare elemente
-        ColorStateList swatchColorState = ColorStateList.valueOf(swatchColor); // culoare elemente
+        GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{swatchCuloareDominanta.getRgb(), 0xFF000000}); // culoare fundal cu gradient
+        ColorStateList colorStateList = ColorStateList.valueOf(swatchCuloareDominanta.getBodyTextColor()); // culoare elemente
 
         /*
         int culoareAlba = Color.parseColor("#FFFFFF");
@@ -757,26 +749,28 @@ public class PlayerActivity extends AppCompatActivity
         buttonSolicitaPermisiunea.setBackgroundTintList(swatchColorState);
         */
 
-        imageViewButonInapoi.setImageTintList(swatchColorState);
-        textViewInCursDeRedare.setTextColor(swatchColor);
+        linearLayoutContainer.setBackground(gradientDrawable); // setare culoare fundal
 
-        seekBar.setThumbTintList(swatchColorState);
-        seekBar.setProgressTintList(swatchColorState);
+        imageViewButonInapoi.setImageTintList(colorStateList);
+        textViewInCursDeRedare.setTextColor(colorStateList);
+
+        seekBar.setThumbTintList(colorStateList);
+        seekBar.setProgressTintList(colorStateList);
         //seekBar.setSecondaryProgressTintList(swatchColorState);
-        seekBar.setProgressBackgroundTintList(swatchColorState);
+        seekBar.setProgressBackgroundTintList(colorStateList);
 
-        textViewNumeMelodie.setTextColor(swatchColor);
-        textViewNumeArtist.setTextColor(swatchColor);
-        textViewDurataRedata.setTextColor(swatchColor);
-        textViewDurataMelodie.setTextColor(swatchColor);
+        textViewNumeMelodie.setTextColor(colorStateList);
+        textViewNumeArtist.setTextColor(colorStateList);
+        textViewDurataRedata.setTextColor(colorStateList);
+        textViewDurataMelodie.setTextColor(colorStateList);
 
-        floatingActionButtonPlayPause.setBackgroundTintList(swatchColorState);
-        imageViewButonShuffle.setImageTintList(swatchColorState);
-        imageViewButonSkipPrevious.setImageTintList(swatchColorState);
-        imageViewButonSkipNext.setImageTintList(swatchColorState);
-        imageViewButonRepeat.setImageTintList(swatchColorState);
+        floatingActionButtonPlayPause.setBackgroundTintList(colorStateList);
+        imageViewButonShuffle.setImageTintList(colorStateList);
+        imageViewButonSkipPrevious.setImageTintList(colorStateList);
+        imageViewButonSkipNext.setImageTintList(colorStateList);
+        imageViewButonRepeat.setImageTintList(colorStateList);
 
-        buttonSolicitaPermisiunea.setBackgroundTintList(swatchColorState);
+        buttonSolicitaPermisiunea.setBackgroundTintList(colorStateList);
     }
 
     /**
@@ -815,7 +809,7 @@ public class PlayerActivity extends AppCompatActivity
      * @param imageView vederea imaginii melodiei
      * @param bitmap    imaginea melodiei
      */
-    public void animatieImagine(Context context, ImageView imageView, Bitmap bitmap) {
+    public static void animatieImagine(Context context, ImageView imageView, Bitmap bitmap) {
         Animation animationOut = AnimationUtils.loadAnimation(context, android.R.anim.fade_out);
         final Animation animationIn = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
 
