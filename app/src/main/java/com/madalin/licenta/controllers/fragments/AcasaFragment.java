@@ -13,6 +13,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.madalin.licenta.adapters.CategorieCarduriAdapter;
 import com.madalin.licenta.interfaces.MadalinApi;
 import com.madalin.licenta.R;
@@ -22,6 +28,7 @@ import com.madalin.licenta.models.Melodie;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,89 +38,78 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AcasaFragment extends Fragment {
 
+    private RecyclerView recyclerView;
+
     public static List<Melodie> listaMelodii; // lista pentru memorarea datelor melodiilor din request API
+    private ArrayList<CardMelodie> cardMelodieArrayList; // pentru memorarea listei cu carduri
+    private ArrayList<CategorieCarduri> categorieCarduriArrayList; // pentru memorarea categoriilor
 
-    RecyclerView recyclerView;
-    ArrayList<CategorieCarduri> categorieCarduriArrayList; // pentru memorarea categoriilor
+    private DatabaseReference databaseReference;
 
-    public static ArrayList<CardMelodie> melodiiGitArrayList; // pentru memorarea melodiilor din categoria "X"
-    public static ArrayList<CardMelodie> electronicaArrayList;
-    public static ArrayList<CardMelodie> favoriteArrayList;
-
-    private static final String ARG_PARAM1 = "param1"; // parametru de initializare a fragmentului
-    private String mParam1;
+    List<Melodie> listaMelodiiGithub;
 
     // constructor gol folosit atunci cand Android decide sa recreeze fragmentul
     public AcasaFragment() {
     }
 
-    // metoda pentru crearea unei noi instante a fragmentului folosind parametrii
-    public static AcasaFragment newInstance(String param1) {
-        AcasaFragment fragment = new AcasaFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        fragment.setArguments(args);
-
-        return fragment; // returneaza noua instanta a fragmentului
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-        }
 
+        listaMelodii = new ArrayList<>();
+        cardMelodieArrayList = new ArrayList<>();
         categorieCarduriArrayList = new ArrayList<>();
-        melodiiGitArrayList = new ArrayList<>();
-        electronicaArrayList = new ArrayList<>();
-        favoriteArrayList = new ArrayList<>();
-
-/*
-        electronicaArrayList.clear();
-        electronicaArrayList.add(new CardMelodie(R.drawable.background_logo, "My Way", "Max Cameron"));
-        electronicaArrayList.add(new CardMelodie(R.drawable.logo_music, "Johnny Wants to Fight", "BADFLOWER"));
-        electronicaArrayList.add(new CardMelodie(R.drawable.ic_setari, "NUMB", "Chri$tian Gate$"));
-        categorieCarduriArrayList.add(new CategorieCarduri("Yah Yah!", electronicaArrayList));
-
-        favoriteArrayList.clear();
-        favoriteArrayList.add(new CardMelodie(R.drawable.background_logo, "Oki doki", "DAZN"));
-        favoriteArrayList.add(new CardMelodie(R.drawable.ic_meniu, "Numa Numa", "OOO ZONIII"));
-        favoriteArrayList.add(new CardMelodie(R.drawable.logo_music, "AZNAEB", "GTA SA"));
-        categorieCarduriArrayList.add(new CategorieCarduri("Favorite", favoriteArrayList));
-
-        electronicaArrayList.clear();
-        electronicaArrayList.add(new CardMelodie(R.drawable.background_logo, "My Way", "Max Cameron"));
-        electronicaArrayList.add(new CardMelodie(R.drawable.logo_music, "Johnny Wants to Fight", "BADFLOWER"));
-        electronicaArrayList.add(new CardMelodie(R.drawable.ic_setari, "NUMB", "Chri$tian Gate$"));
-        categorieCarduriArrayList.add(new CategorieCarduri("Yah Yah!", electronicaArrayList));
-
-        favoriteArrayList.clear();
-        favoriteArrayList.add(new CardMelodie(R.drawable.background_logo, "Oki doki", "DAZN"));
-        favoriteArrayList.add(new CardMelodie(R.drawable.ic_meniu, "Numa Numa", "OOO ZONIII"));
-        favoriteArrayList.add(new CardMelodie(R.drawable.logo_music, "AZNAEB", "GTA SA"));
-        categorieCarduriArrayList.add(new CategorieCarduri("Favorite", favoriteArrayList));
-    */
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View viewFragmentAcasa = inflater.inflate(R.layout.fragment_acasa, container, false); // obtinere vedere fragment_acasa din MainActivity
-/*
-        CategorieCarduriAdapter categorieCarduriAdapter;
-        categorieCarduriAdapter = new CategorieCarduriAdapter(this.getContext(), categorieCarduriArrayList);
 
-        recyclerView = viewFragmentAcasa.findViewById(R.id.acasa_recyclerViewCategoriiCarduri); // obtinere vedere RecyclerView
-        recyclerView.setLayoutManager(new LinearLayoutManager(viewFragmentAcasa.getContext()));
-        recyclerView.setAdapter(categorieCarduriAdapter);
-        categorieCarduriAdapter.notifyDataSetChanged();
-*/
         return viewFragmentAcasa;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("melodii");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listaMelodii.clear();
+                cardMelodieArrayList.clear();
+                categorieCarduriArrayList.clear();
+
+                for (DataSnapshot melodieSnapshot : snapshot.getChildren()) { // parcurge toti descendentii nodului "melodii" din baza de date
+                    System.out.println(melodieSnapshot.toString());
+                    Melodie melodie = melodieSnapshot.getValue(Melodie.class); // adauga valorile descendentului in obiect
+                    listaMelodii.add(melodie); // adauga obiectul in lista
+                    cardMelodieArrayList.add(new CardMelodie(melodie.getImagineMelodie(), melodie.getNumeMelodie(), melodie.getNumeArtist())); // adauga un nou CardMelodie in lista
+                }
+
+                categorieCarduriArrayList.add(new CategorieCarduri("🎶 Toate Încărcările", cardMelodieArrayList)); // adauga lista cu cardurile melodiilor in lista categoriilor
+
+                CategorieCarduriAdapter categorieCarduriAdapter = new CategorieCarduriAdapter(getContext(), categorieCarduriArrayList); // creare adapter categorie carduri
+                recyclerView = requireActivity().findViewById(R.id.acasa_recyclerViewCategoriiCarduri); // obtinere vedere RecyclerView
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                recyclerView.setAdapter(categorieCarduriAdapter); // setare adapter pe recyclerView pentru a furniza child views la cerere
+
+                view.findViewById(R.id.acasa_lottieAnimationView).setVisibility(View.GONE); // ascunde animatie Lottie dupa afisarea cardurilor
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getContext(), "Eroare: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        getGithub(view);
+    }
+
+    void getGithub(View view) {
+        ArrayList<CardMelodie> melodiiGitArrayList; // pentru memorarea melodiilor din categoria "X" (GitHub)
+
+        melodiiGitArrayList = new ArrayList<>(); // pentru GitHub
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://raw.githubusercontent.com/MadalinDolca/APIs/main/")
@@ -131,23 +127,17 @@ public class AcasaFragment extends Fragment {
                     return; // se iese din metoda
                 }
 
-                listaMelodii = response.body(); // adaugare body raspuns in lista de obiecte Melodie
+                listaMelodiiGithub = response.body(); // adaugare body raspuns in lista de obiecte Melodie
 
                 // golire liste pentru evitarea duplicarii datelor
                 melodiiGitArrayList.clear();
-                electronicaArrayList.clear();
-                favoriteArrayList.clear();
 
                 // iterare melodii si adaugare date in cardul din lista respectiva
-                for (Melodie melodie : listaMelodii) {
+                for (Melodie melodie : listaMelodiiGithub) {
                     melodiiGitArrayList.add(new CardMelodie(melodie.getImagineMelodie(), melodie.getNumeMelodie(), melodie.getNumeArtist()));
-                    electronicaArrayList.add(new CardMelodie(melodie.getImagineMelodie(), melodie.getNumeMelodie(), melodie.getNumeArtist()));
-                    favoriteArrayList.add(new CardMelodie(melodie.getImagineMelodie(), melodie.getNumeMelodie(), melodie.getNumeArtist()));
                 }
 
-                categorieCarduriArrayList.add(new CategorieCarduri("Mada API #1", melodiiGitArrayList)); // adaugare lista carduri melodii in lista categoriilor
-                categorieCarduriArrayList.add(new CategorieCarduri("Mada API #2", electronicaArrayList)); // adaugare lista carduri melodii in lista categoriilor
-                categorieCarduriArrayList.add(new CategorieCarduri("Mada API #3", favoriteArrayList)); // adaugare lista carduri melodii in lista categoriilor
+                categorieCarduriArrayList.add(new CategorieCarduri("🐙 Github API", melodiiGitArrayList)); // adaugare lista carduri melodii in lista categoriilor
 
                 CategorieCarduriAdapter categorieCarduriAdapter = new CategorieCarduriAdapter(/*this.*/getContext(), categorieCarduriArrayList); // creare adapter categorie carduri
                 recyclerView = view.findViewById(R.id.acasa_recyclerViewCategoriiCarduri); // obtinere vedere RecyclerView
