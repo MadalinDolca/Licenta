@@ -1,4 +1,4 @@
-package com.madalin.licenta;
+package com.madalin.licenta.global;
 
 /**
  * Clasa care contine majoritatea numelor datelor extra din {@link android.content.Intent}-urile

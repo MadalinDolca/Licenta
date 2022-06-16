@@ -1,4 +1,4 @@
-package com.madalin.licenta;
+package com.madalin.licenta.global;
 
 import android.content.ContentResolver;
 import android.graphics.Color;
