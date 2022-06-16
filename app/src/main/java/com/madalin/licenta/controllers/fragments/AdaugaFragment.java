@@ -226,24 +226,25 @@ public class AdaugaFragment extends Fragment {
             storageReferenceMelodie.putFile(uriMelodie) // incarca asincron continutul URI-ului melodiei in noul child creat
                     .addOnSuccessListener(taskSnapshotMelodie -> { // daca melodia s-a incarcat cu succes
 
-                        String idIncarcare = firebaseDatabase.getReference("melodii").push().getKey(); // creeaza o referinta in baza de date spre noul child si obtine cheia acestuia
-                        firebaseDatabase.getReference("melodii").child(idIncarcare).setValue(new Melodie());
+                        String cheieIncarcare = firebaseDatabase.getReference("melodii").push().getKey(); // creeaza o referinta in baza de date spre noul child si obtine cheia acestuia
+                        firebaseDatabase.getReference("melodii").child(cheieIncarcare).setValue(new Melodie());
 
                         storageReferenceMelodie.getDownloadUrl().addOnSuccessListener(uri -> { // obtine locatia la care s-a incarcat melodia
                             Melodie melodie = new Melodie(
+                                    cheieIncarcare, // cheia la care se afla melodia
                                     firebaseAuth.getCurrentUser().getUid(), // UID utilizator
-                                    MainActivity.utilizator.nume, // numele utilizatorului
+                                    MainActivity.utilizator.getNume(), // numele utilizatorului
                                     numeMelodie, // numele melodiei
                                     null,
                                     uri.toString(), // locatia fisierului audio
                                     genMelodie, // gen melodie
                                     descriereMelodie, // descrierea melodiei
                                     0,
-                                    0,
-                                    ServerValue.TIMESTAMP // timpul curent
+                                    0/*,
+                                    ServerValue.TIMESTAMP // timpul curent*/
                             );
 
-                            firebaseDatabase.getReference("melodii").child(idIncarcare).setValue(melodie); // adauga datele melodiei in baza de date
+                            firebaseDatabase.getReference("melodii").child(cheieIncarcare).setValue(melodie); // adauga datele melodiei in baza de date
                         });
 
                         // incarca imaginea aferenta melodiei in cazul in care a fost selectata
@@ -254,7 +255,7 @@ public class AdaugaFragment extends Fragment {
                             storageReferenceImagine.putFile(uriImagine) // incarca asincron continutul URI-ului imaginii in noul child creat
                                     .addOnSuccessListener(taskSnapshotImagine ->
                                             storageReferenceImagine.getDownloadUrl().addOnSuccessListener(uri -> { // obtine locatia la care s-a incarcat imaginea
-                                                firebaseDatabase.getReference("melodii").child(idIncarcare).child("imagineMelodie").setValue(uri.toString()); // adauga imaginea melodiei in baza de date
+                                                firebaseDatabase.getReference("melodii").child(cheieIncarcare).child("imagineMelodie").setValue(uri.toString()); // adauga imaginea melodiei in baza de date
                                             }))
                                     .addOnFailureListener(e -> Toast.makeText(getContext(), "Nu s-a putut încărca imaginea: " + e.getMessage(), Toast.LENGTH_LONG).show())
                                     .addOnProgressListener(taskSnapshot -> progressDialog.setProgress((int) (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount()))); // actualizeaza progressDialog-ul
