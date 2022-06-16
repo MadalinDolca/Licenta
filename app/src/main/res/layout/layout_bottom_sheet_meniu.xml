@@ -11,7 +11,8 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_pill" />
+        android:src="@drawable/ic_pill"
+        app:tint="@color/text" />
 
     <!-- profil -->
     <LinearLayout
@@ -62,8 +63,35 @@
         android:layout_height="1dp"
         android:background="#13000000" />
 
+    <!-- solicitari -->
+    <LinearLayout
+        android:id="@+id/bottom_sheet_meniu_linearLayoutSolicitari"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingVertical="10dp">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_solicitare_permisiune"
+            app:tint="@color/text" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:text="Solicitări de permisiuni"
+            android:textColor="@color/text"
+            android:textSize="@dimen/text_standard" />
+    </LinearLayout>
+
     <!-- setari -->
     <LinearLayout
+        android:id="@+id/bottom_sheet_meniu_linearLayoutSetari"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -83,31 +111,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:text="Setări"
-            android:textColor="@color/text"
-            android:textSize="@dimen/text_standard" />
-    </LinearLayout>
-
-    <!-- ceva -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingVertical="10dp">
-
-        <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:src="@drawable/ic_setari"
-            app:tint="@color/text" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:text="Ceva"
             android:textColor="@color/text"
             android:textSize="@dimen/text_standard" />
     </LinearLayout>
