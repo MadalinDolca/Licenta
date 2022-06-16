@@ -1,8 +1,8 @@
 package com.madalin.licenta.controllers;
 
-import static com.madalin.licenta.EdgeToEdge.Directie;
-import static com.madalin.licenta.EdgeToEdge.Spatiere;
-import static com.madalin.licenta.EdgeToEdge.edgeToEdge;
+import static com.madalin.licenta.global.EdgeToEdge.Directie;
+import static com.madalin.licenta.global.EdgeToEdge.Spatiere;
+import static com.madalin.licenta.global.EdgeToEdge.edgeToEdge;
 
 import android.os.Bundle;
 import android.util.Patterns;

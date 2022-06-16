@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.madalin.licenta.ApplicationClass;
-import com.madalin.licenta.NumeExtra;
+import com.madalin.licenta.global.NumeExtra;
 import com.madalin.licenta.services.MuzicaService;
 
 /**
@@ -18,7 +18,7 @@ public class NotificarePlayerReceiver extends BroadcastReceiver {
      * Receptioneaza {@link Intent} broadcast-urile emise ca actiuni din notificarea
      * {@link MuzicaService#afisareNotificare(int)}. Identifica
      * numele actiunilor din {@link Intent}-uri comparandu-le cu cele din {@link ApplicationClass}
-     * si lanseaza lanseaza servicii spre {@link MuzicaService} printr-un {@link Intent} catre
+     * si lanseaza servicii spre {@link MuzicaService} printr-un {@link Intent} catre
      * acesta avand ca date numele actiunii.
      *
      * @param context contextul in care ruleaza receiver-ul
