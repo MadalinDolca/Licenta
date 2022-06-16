@@ -85,6 +85,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:src="@drawable/ic_nota_muzicala" />
+
+                    <TextView
+                        android:id="@+id/adauga_textViewNumeFisierAudio"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="5dp"
+                        android:layout_marginVertical="1dp"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@color/text"
+                        android:textSize="@dimen/text_standard" />
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
 
@@ -129,7 +140,7 @@
 
         <!-- buton incarca -->
         <Button
-            android:id="@+id/adauga_buttonIncarca"
+            android:id="@+id/adauga_buttonIncarcaMelodia"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
