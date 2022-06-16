@@ -244,36 +244,17 @@
                 android:textColor="@color/text_pe_primara"
                 android:textSize="@dimen/text_standard" />
 
-            <!-- layout descriere melodie -->
-            <LinearLayout
+            <!-- buton afiseaza date melodie -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/player_buttonAfiseazaDateMelodie"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="20dp"
                 android:background="@drawable/background_rotunjit"
-                android:backgroundTint="@color/fundal_alt"
-                android:orientation="vertical"
-                android:padding="20dp">
-
-                <!-- titlu descriere melodie -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Descriere melodie"
-                    android:textColor="@color/text"
-                    android:textSize="@dimen/text_standard"
-                    android:textStyle="bold" />
-
-                <!-- descriere melodie -->
-                <TextView
-                    android:id="@+id/player_textViewDescriereMelodie"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:text="Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ...Descriere melodie ..."
-                    android:textColor="@color/text"
-                    android:textSize="@dimen/text_standard" />
-
-            </LinearLayout>
+                android:backgroundTint="@color/text"
+                android:text="Afișează date melodie"
+                android:textColor="@color/fundal"
+                android:textSize="@dimen/text_standard" />
 
         </LinearLayout>
 
