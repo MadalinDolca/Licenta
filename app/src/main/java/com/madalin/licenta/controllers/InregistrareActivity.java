@@ -103,7 +103,7 @@ public class InregistrareActivity extends AppCompatActivity {
                     .addOnCompleteListener(taskCreareUtilizator -> { // listener pentru efectuarea actiunilor la finalizarea crearii utilizatorului
                         // daca utilizatorul s-a creat cu succes
                         if (taskCreareUtilizator.isSuccessful()) {
-                            Utilizator utilizator = new Utilizator(nume, email, ServerValue.TIMESTAMP); // memoreaza datele utilizatorului curent intr-un obiect Utilizator
+                            Utilizator utilizator = new Utilizator(nume, email); // memoreaza datele utilizatorului curent intr-un obiect Utilizator
 
                             firebaseDatabase.getReference("utilizatori") // obtine referinta spre "utilizatori"
                                     .child(firebaseAuth.getCurrentUser().getUid()) // adauga child lui "utilizatori" avand ca nume UID-ul utilizatorului curent
