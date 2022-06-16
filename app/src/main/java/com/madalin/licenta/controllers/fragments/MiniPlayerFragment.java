@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -29,7 +28,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.madalin.licenta.NumeExtra;
+import com.madalin.licenta.global.NumeExtra;
 import com.madalin.licenta.R;
 import com.madalin.licenta.controllers.MainActivity;
 import com.madalin.licenta.controllers.PlayerActivity;
@@ -51,10 +50,11 @@ public class MiniPlayerFragment extends Fragment
 
     MuzicaService muzicaService; // instanta serviciu muzical
 
-    public static String URL_MELODIE_FRAGMENT = null;
-    public static String IMAGINE_MELODIE_FRAGMENT = null;
-    public static String NUME_ARTIST_FRAGMENT = null;
-    public static String NUME_MELODIE_FRAGMENT = null;
+    // variabile pentru memorarea datelor melodiei stocate in baza de date locala a sistemului
+    public static String urlMelodie = null;
+    public static String imagineMelodie = null;
+    public static String numeArtist = null;
+    public static String numeMelodie = null;
 
     public MiniPlayerFragment() {
         // Required empty public constructor
@@ -130,7 +130,7 @@ public class MiniPlayerFragment extends Fragment
         obtineDateMelodieStocata(); // obtine datele melodiei stocate in baza de date locala a sistemului
 
         if (MainActivity.arataMiniplayer) { // verifica starea de afisarea miniplayer-ului
-            if (URL_MELODIE_FRAGMENT != null) { // verifica daca exista locatiea spre melodie
+            if (urlMelodie != null) { // verifica daca exista locatie spre melodie
                 afisareDateMelodie(); // afiseaza datele melodiei in miniplayer
 
                 // leaga MiniPlayerFragment la serviciul muzical MuzicaService
@@ -186,49 +186,49 @@ public class MiniPlayerFragment extends Fragment
 
     /**
      * Obtine datele melodiei stocate in baza de date locala a sistemului folosind {@link SharedPreferences}
-     * din fisierul cu preferinte {@link MuzicaService#ULTIMA_MELODIE_REDATA}. Adauga datele obtinute
-     * in {@link #URL_MELODIE_FRAGMENT}, {@link #IMAGINE_MELODIE_FRAGMENT},
-     * {@link #NUME_MELODIE_FRAGMENT} si {@link #NUME_ARTIST_FRAGMENT}.
+     * din fisierul cu preferinte {@link MuzicaService#KEY_ULTIMA_MELODIE_REDATA}. Adauga datele obtinute
+     * in {@link #urlMelodie}, {@link #imagineMelodie},
+     * {@link #numeMelodie} si {@link #numeArtist}.
      */
     public void obtineDateMelodieStocata() {
         // obtine datele melodiei stocate in baza de date locala a sistemului
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(MuzicaService.ULTIMA_MELODIE_REDATA, Context.MODE_PRIVATE);
-        URL_MELODIE_FRAGMENT = sharedPreferences.getString(MuzicaService.URL_MELODIE, null); // obtine URL-ul melodiei la cheia "URL_MELODIE"
-        IMAGINE_MELODIE_FRAGMENT = sharedPreferences.getString(MuzicaService.IMAGINE_MELODIE, null); // obtine imaginea melodiei la cheia "IMAGINE_MELODIE"
-        NUME_MELODIE_FRAGMENT = sharedPreferences.getString(MuzicaService.NUME_MELODIE, null); // obtine numele melodiei la cheia "NUME_MELODIE"
-        NUME_ARTIST_FRAGMENT = sharedPreferences.getString(MuzicaService.NUME_ARTIST, null); // obtine numele artistului la cheia "NUME_ARTIST"
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(MuzicaService.KEY_ULTIMA_MELODIE_REDATA, Context.MODE_PRIVATE);
+        urlMelodie = sharedPreferences.getString(MuzicaService.KEY_URL_MELODIE, null); // obtine URL-ul melodiei la cheia "URL_MELODIE"
+        imagineMelodie = sharedPreferences.getString(MuzicaService.KEY_IMAGINE_MELODIE, null); // obtine imaginea melodiei la cheia "IMAGINE_MELODIE"
+        numeMelodie = sharedPreferences.getString(MuzicaService.KEY_NUME_MELODIE, null); // obtine numele melodiei la cheia "NUME_MELODIE"
+        numeArtist = sharedPreferences.getString(MuzicaService.KEY_NUME_ARTIST, null); // obtine numele artistului la cheia "NUME_ARTIST"
 
-        if (URL_MELODIE_FRAGMENT != null) {
+        if (urlMelodie != null) {
             MainActivity.arataMiniplayer = true;
         } else {
             MainActivity.arataMiniplayer = false;
 
-            URL_MELODIE_FRAGMENT = null;
-            IMAGINE_MELODIE_FRAGMENT = null;
-            NUME_MELODIE_FRAGMENT = null;
-            NUME_ARTIST_FRAGMENT = null;
+            urlMelodie = null;
+            imagineMelodie = null;
+            numeMelodie = null;
+            numeArtist = null;
         }
     }
 
     /**
-     * Populeaza fragmentul {@link MiniPlayerFragment} cu datele din {@link #IMAGINE_MELODIE_FRAGMENT},
-     * {@link #NUME_MELODIE_FRAGMENT} si {@link #NUME_ARTIST_FRAGMENT}.
+     * Populeaza fragmentul {@link MiniPlayerFragment} cu datele din {@link #imagineMelodie},
+     * {@link #numeMelodie} si {@link #numeArtist}.
      */
     public void afisareDateMelodie() {
         // populeaza campurile din miniplayer
-        textViewNumeMelodie.setText(NUME_MELODIE_FRAGMENT);
+        textViewNumeMelodie.setText(numeMelodie);
         textViewNumeMelodie.setSelected(true); // pentru marquee
 
-        textViewNumeArtist.setText(NUME_ARTIST_FRAGMENT);
+        textViewNumeArtist.setText(numeArtist);
         textViewNumeArtist.setSelected(true); // pentru marquee
 
         // setare imagine melodie si paleta de culori
-        if (IMAGINE_MELODIE_FRAGMENT == null) { // daca melodia nu are link spre imagine
+        if (imagineMelodie == null) { // daca melodia nu are link spre imagine
             imageViewImagineMelodie.setImageResource(R.drawable.ic_nota_muzicala); // se adauga o resursa inlocuitoare
         }
         // daca melodia are link spre imagine, aceasta se obtine ca bitmap, se adauga in card si se aplica paleta de culori
         else {
-            Glide.with(this).asBitmap().load(IMAGINE_MELODIE_FRAGMENT) // obtine imaginea ca bitmap
+            Glide.with(this).asBitmap().load(imagineMelodie) // obtine imaginea ca bitmap
                     .into(new CustomTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(@NonNull Bitmap resursaBitmapImagineMelodie, @Nullable Transition<? super Bitmap> transition) {
