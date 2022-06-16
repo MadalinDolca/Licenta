@@ -1,19 +1,20 @@
 package com.madalin.licenta.controllers;
 
-import static com.madalin.licenta.EdgeToEdge.*;
+import static com.madalin.licenta.global.EdgeToEdge.*;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -24,18 +25,24 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.madalin.licenta.R;
 import com.madalin.licenta.controllers.fragments.AcasaFragment;
 import com.madalin.licenta.controllers.fragments.AdaugaFragment;
 import com.madalin.licenta.controllers.fragments.BibliotecaFragment;
 import com.madalin.licenta.controllers.fragments.CautaFragment;
-import com.madalin.licenta.controllers.fragments.MiniPlayerFragment;
+import com.madalin.licenta.models.Utilizator;
 
 public class MainActivity extends AppCompatActivity {
 
-    FirebaseAuth firebaseAuth;
     BottomNavigationView bottomNavigationView;
+
+    private FirebaseAuth firebaseAuth; // punctul de intrare al SDK-ului Firebase Authentication
+    private FirebaseDatabase firebaseDatabase;
+    public static Utilizator utilizator; // memoreaza datele utilizatorului curent
 
     // instantele fragmentelor din activitate
     final Fragment fragmentAcasa = new AcasaFragment();
@@ -71,6 +78,9 @@ ft.commit();
         verificarePermisiuni();
 
         firebaseAuth = FirebaseAuth.getInstance(); // initializare Firebase Auth
+        firebaseDatabase = FirebaseDatabase.getInstance();
+
+        getDateUtilizatorCurent();
 
         bottomNavigationView = findViewById(R.id.main_bottomNavigationView); // obtinere vedere bara de navigare
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -81,8 +91,8 @@ ft.commit();
                     return true; // marcare buton bara navigare ca checked
 
                 case R.id.adauga:
-                    afisareFragment(fragmentAdauga, "adauga", 1);
-                    afisareMiniPlayerFragment(false);
+                    afisareFragment(fragmentAdauga, "adauga", 1); // afiseaza fragmentul AdaugaFragment
+                    afisareMiniPlayerFragment(false); // ascunde miniplayer-ul
                     return true;
 
                 case R.id.cauta:
@@ -109,13 +119,13 @@ ft.commit();
     protected void onStart() {
         super.onStart();
 
-        // verifica daca utilizatorul curent Firebase este autentificat
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-
-        // daca nu este autentificat, se lanseaza activitatea de autentificare
-        if (currentUser == null) {
-            startActivity(new Intent(MainActivity.this, AutentificareActivity.class));
-        }
+//        // verifica daca utilizatorul curent Firebase este autentificat
+//        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+//
+//        // daca nu este autentificat, se lanseaza activitatea de autentificare
+//        if (currentUser == null) {
+//            startActivity(new Intent(MainActivity.this, AutentificareActivity.class));
+//        }
     }
 
     @Override
@@ -138,6 +148,15 @@ ft.commit();
         } else { // daca fragmentul activ NU este fragmentul acasa
             afisareFragment(fragmentAcasa, "acasa", 0); // se afiseaza fragmentul acasa
         }
+    }
+
+    /**
+     * Apelata atunci cand o activitate lansata (din fragmente) este inchisa. Ofera un requestCode
+     * identic cu cel oferit la lansare, un resultCode returnat și orice date suplimentare din aceasta.
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     // metoda pentru verificarea si solicitarea permisiunilor
@@ -239,26 +258,70 @@ ft.commit();
     // metoda pentru afisarea dialogului meniu
     private void afisareDialogMeniu() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogMeniuTheme);
-        View bottomSheetDialogView = getLayoutInflater().inflate(R.layout.layout_bottom_sheet_meniu, null, false); // inflate layout din xml
+        View bottomSheetDialogView = getLayoutInflater().inflate(R.layout.layout_bottom_sheet_meniu, null, false); // inflate layout bottom sheet dialog meniu din XML
         bottomSheetDialog.setContentView(bottomSheetDialogView); // setare continut bottom sheet
 
-        // adaugare email in bottom sheet dialog
+        // initializare vederi bottom sheet dialog
+        LinearLayout linearLayoutProfil = bottomSheetDialog.findViewById(R.id.bottom_sheet_meniu_linearLayoutProfil);
         TextView textViewNume = bottomSheetDialog.findViewById(R.id.bottom_sheet_meniu_textViewNume);
-        textViewNume.setText(firebaseAuth.getCurrentUser().getEmail().toString());
+        Button buttonDeconectare = bottomSheetDialog.findViewById(R.id.bottom_sheet_meniu_buttonDeconectare);
 
-        // accesare activitate profil
-        bottomSheetDialog.findViewById(R.id.bottom_sheet_meniu_linearLayoutProfil).setOnClickListener(view -> {
-            bottomSheetDialog.dismiss();
-            startActivity(new Intent(MainActivity.this, ProfilActivity.class));
-        });
+        // daca utilizatorul este conectat
+        if (firebaseAuth.getCurrentUser() != null) {
+            textViewNume.setText(utilizator.nume); // adauga numele utilizatorului in bottom sheet dialog
 
-        // deconectare de la firebase
-        bottomSheetDialog.findViewById(R.id.bottom_sheet_meniu_buttonDeconectare).setOnClickListener(view -> {
-            firebaseAuth.signOut();
-            bottomSheetDialog.dismiss();
-            startActivity(new Intent(MainActivity.this, AutentificareActivity.class));
-        });
+            // accesare activitate profil
+            linearLayoutProfil.setOnClickListener(view -> {
+                bottomSheetDialog.dismiss(); // inchide dialogul
+                startActivity(new Intent(MainActivity.this, ProfilActivity.class)); // lanseaza activitatea ProfilActivity
+            });
 
-        bottomSheetDialog.show(); // afisare bottom sheet
+            // deconectare de la Firebase
+            buttonDeconectare.setOnClickListener(view -> {
+                firebaseAuth.signOut(); // deconecteaza utilizatorul si il sterge din cache-ul disk-ului
+                bottomSheetDialog.dismiss(); // inchide dialogul
+                startActivity(new Intent(MainActivity.this, AutentificareActivity.class)); // lanseaza activitatea AutentificareActivity
+            });
+        }
+        // daca utilizatorul nu este conectat
+        else {
+            textViewNume.setText("Autentifică-te pentru a vedea mai multe");
+            buttonDeconectare.setText("Autentifică-te");
+
+            linearLayoutProfil.setOnClickListener(view -> {
+                bottomSheetDialog.dismiss();
+                startActivity(new Intent(MainActivity.this, AutentificareActivity.class));
+            });
+
+            buttonDeconectare.setOnClickListener(view -> {
+                bottomSheetDialog.dismiss();
+                startActivity(new Intent(MainActivity.this, AutentificareActivity.class));
+            });
+        }
+
+        bottomSheetDialog.show(); // afiseaza bottom sheet dialog meniu
+    }
+
+    /**
+     * Daca utilizatorul este conectat, obtine datele utilizatorului curent din baza de date de
+     * fiecare data cand acestea se modifica si le memoreaza in {@link #utilizator}.
+     */
+    private void getDateUtilizatorCurent() {
+        if (firebaseAuth.getCurrentUser() != null) {
+            firebaseDatabase.getReference("utilizatori/" + firebaseAuth.getCurrentUser().getUid()) // locatia datelor utilizatorului curent
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) { // obtine datele utilizatorului curent la fiecare modificare a acestora
+                            utilizator = snapshot.getValue(Utilizator.class);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(MainActivity.this, "Eroare preluare date utilizator: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+        } else {
+            Log.e("", "Utilizatorul nu este autentificat!");
+        }
     }
 }
