@@ -25,7 +25,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.madalin.licenta.ApplicationClass;
-import com.madalin.licenta.NumeExtra;
+import com.madalin.licenta.global.NumeExtra;
 import com.madalin.licenta.R;
 import com.madalin.licenta.controllers.MainActivity;
 import com.madalin.licenta.controllers.PlayerActivity;
@@ -47,7 +47,7 @@ public class MuzicaService extends Service
         MediaPlayer.OnCompletionListener,
         MediaPlayer.OnBufferingUpdateListener {
 
-    MuzicaServiceBinder muzicaServiceBinder = new MuzicaServiceBinder();
+    MuzicaServiceBinder muzicaServiceBinder = new MuzicaServiceBinder(); // rol de canal de comunicare dintre client (activitate / fragment) si acest serviciu
 
     PlayerInterface playerInterface; // referinta a interfetei de comunicare dintre PlayerActivity si MuzicaService
     MiniPlayerInterface miniPlayerInterface; // referinta a interfetei de comunicare dintre MiniPlayerFragment si MuzicaService
@@ -60,11 +60,11 @@ public class MuzicaService extends Service
     MediaSessionCompat mediaSessionCompat; // sesiune interactiuni cu controalele media din notificare
 
     // variabile finale folosite drept chei pentru stocarea datelor unei melodii in baza de date locala
-    public static final String ULTIMA_MELODIE_REDATA = "ULTIMA_MELODIE_REDATA";
-    public static final String URL_MELODIE = "URL_MELODIE";
-    public static final String IMAGINE_MELODIE = "IMAGINE_MELODIE";
-    public static final String NUME_MELODIE = "NUME_MELODIE";
-    public static final String NUME_ARTIST = "NUME_ARTIST";
+    public static final String KEY_ULTIMA_MELODIE_REDATA = "ULTIMA_MELODIE_REDATA";
+    public static final String KEY_URL_MELODIE = "URL_MELODIE";
+    public static final String KEY_IMAGINE_MELODIE = "IMAGINE_MELODIE";
+    public static final String KEY_NUME_MELODIE = "NUME_MELODIE";
+    public static final String KEY_NUME_ARTIST = "NUME_ARTIST";
 
     @Override
     public void onCreate() {
@@ -79,6 +79,7 @@ public class MuzicaService extends Service
      * Returneaza {@link #muzicaServiceBinder} pe post de canal de comunicare dintre client
      * (activitate / fragment) si acest serviciu {@link MuzicaService}.
      *
+     * @param intent {@link Intent}-ul folosit pentru conectarea la acest serviciu
      * @return {@link #muzicaServiceBinder} ca instanta a serviciului curent
      */
     @Nullable
@@ -200,21 +201,21 @@ public class MuzicaService extends Service
     /**
      * Creeaza un {@link MediaPlayer} pentru {@link #mediaPlayer} folosind ca {@link Uri} adresa
      * melodiei de la pozitia data. Stocheaza datele melodiei in baza de date locala a sistemului
-     * folosind {@link SharedPreferences} la cheile {@link #URL_MELODIE}, {@link #NUME_MELODIE}
-     * si {@link #NUME_ARTIST}.
+     * folosind {@link SharedPreferences} la cheile {@link #KEY_URL_MELODIE}, {@link #KEY_NUME_MELODIE}
+     * si {@link #KEY_NUME_ARTIST}.
      *
      * @param pozitieData pozitia melodiei pentru redare din lista
      */
     public void creeazaMediaPlayer(int pozitieData) {
         pozitieMelodie = pozitieData;
-        uri = Uri.parse(listaMelodiiService.get(pozitieMelodie).getUrl()); // obtine adresa resursei melodiei
+        uri = Uri.parse(listaMelodiiService.get(pozitieMelodie).getUrlMelodie()); // obtine adresa resursei melodiei
 
         // stocheaza datele melodiei in baza de date locala a sistemului
-        SharedPreferences.Editor editor = getSharedPreferences(ULTIMA_MELODIE_REDATA, MODE_PRIVATE).edit(); // obtine si pastreaza continutul fisierului cu preferinte "ULTIMA_MELODIE_REDATA" si creeaza un editor
-        editor.putString(URL_MELODIE, listaMelodiiService.get(pozitieMelodie).getUrl()); // seteaza adresa melodiei la cheia "URL_MELODIE"
-        editor.putString(IMAGINE_MELODIE, listaMelodiiService.get(pozitieMelodie).getImagineMelodie()); // seteaza imaginea melodiei la cheia "IMAGINE_MELODIE"
-        editor.putString(NUME_MELODIE, listaMelodiiService.get(pozitieMelodie).getNumeMelodie()); // seteaza numele melodiei la cheia "NUME_MELODIE"
-        editor.putString(NUME_ARTIST, listaMelodiiService.get(pozitieMelodie).getNumeArtist()); // seteaza numele artistului la cheia "NUME_ARTIST"
+        SharedPreferences.Editor editor = getSharedPreferences(KEY_ULTIMA_MELODIE_REDATA, MODE_PRIVATE).edit(); // obtine si pastreaza continutul fisierului cu preferinte "ULTIMA_MELODIE_REDATA" si creeaza un editor
+        editor.putString(KEY_URL_MELODIE, listaMelodiiService.get(pozitieMelodie).getUrlMelodie()); // seteaza adresa melodiei la cheia "URL_MELODIE"
+        editor.putString(KEY_IMAGINE_MELODIE, listaMelodiiService.get(pozitieMelodie).getImagineMelodie()); // seteaza imaginea melodiei la cheia "IMAGINE_MELODIE"
+        editor.putString(KEY_NUME_MELODIE, listaMelodiiService.get(pozitieMelodie).getNumeMelodie()); // seteaza numele melodiei la cheia "NUME_MELODIE"
+        editor.putString(KEY_NUME_ARTIST, listaMelodiiService.get(pozitieMelodie).getNumeArtist()); // seteaza numele artistului la cheia "NUME_ARTIST"
         editor.apply(); // comite noile preferinte inapoi editorului
 
         mediaPlayer = MediaPlayer.create(getBaseContext(), uri); // creaza MediaPlayer cu noul URI
@@ -222,13 +223,12 @@ public class MuzicaService extends Service
 
     /**
      * Apeleaza metoda {@link PlayerActivity#butonPlayPauseClicked()} prin intermediul
-     * instantei {@link #playerInterface}. Actualizeaza {@link MiniPlayerFragment} folosind
-     * {@link #actualizareMiniPlayer()}.
+     * instantei {@link #playerInterface}.
      */
     public void butonPlayPauseClicked() {
         if (playerInterface != null) {
             playerInterface.butonPlayPauseClicked();
-            actualizareMiniPlayer();
+            //actualizareMiniPlayer();
         }
     }
 
@@ -351,7 +351,7 @@ public class MuzicaService extends Service
      */
     void actualizareMiniPlayer() {
         if (MainActivity.arataMiniplayer) { // verifica starea de afisarea miniplayer-ului
-            if (MiniPlayerFragment.URL_MELODIE_FRAGMENT != null) { // verifica daca exista locatia spre melodie
+            if (MiniPlayerFragment.urlMelodie != null) { // verifica daca exista locatia spre melodie
                 if (miniPlayerInterface != null) { // verifica daca s-a setat callback-ul
                     miniPlayerInterface.obtineDateMelodieStocata(); // obtine datele melodiei stocate in baza de date locala a sistemului
                     miniPlayerInterface.afisareDateMelodie(); // afiseaza datele melodiei in miniplayer
@@ -458,10 +458,6 @@ public class MuzicaService extends Service
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
-
-    }
-
-    public void onBufferingUpdate() {
 
     }
 }
