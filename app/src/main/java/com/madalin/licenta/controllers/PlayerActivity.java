@@ -1,8 +1,8 @@
 package com.madalin.licenta.controllers;
 
-import static com.madalin.licenta.EdgeToEdge.Directie;
-import static com.madalin.licenta.EdgeToEdge.Spatiere;
-import static com.madalin.licenta.EdgeToEdge.edgeToEdge;
+import static com.madalin.licenta.global.EdgeToEdge.Directie;
+import static com.madalin.licenta.global.EdgeToEdge.Spatiere;
+import static com.madalin.licenta.global.EdgeToEdge.edgeToEdge;
 import static com.madalin.licenta.controllers.MainActivity.repeatBoolean;
 import static com.madalin.licenta.controllers.MainActivity.shuffleBoolean;
 
@@ -38,7 +38,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.madalin.licenta.NumeExtra;
+import com.madalin.licenta.global.NumeExtra;
 import com.madalin.licenta.R;
 import com.madalin.licenta.adapters.CardMelodieAdapter;
 import com.madalin.licenta.controllers.fragments.AcasaFragment;
@@ -226,7 +226,7 @@ public class PlayerActivity extends AppCompatActivity
     /**
      * La conectarea la serviciul {@link MuzicaService} se obtine o instanta a acestuia si se
      * initializeaza {@link #muzicaService} pentru a face posibila manipularea serviciului muzical.
-     * Permite instantei {@link MuzicaService#actiuniRedareInterface} din MuzicaService sa
+     * Permite instantei {@link MuzicaService#playerInterface} din MuzicaService sa
      * foloseasca implementarea din aceasta clasa. Seteaza valoarea maxima a {@link #seekBar}-ului
      * si apeleaza {@link #afisareDateMelodie()} pentru afisarea datelor melodiei curente.
      * Apeleaza {@link MuzicaService#onTerminareMelodie()} pentru reactionarea la terminarea melodiei.
@@ -237,7 +237,7 @@ public class PlayerActivity extends AppCompatActivity
         MuzicaService.MuzicaServiceBinder playerMuzicaServiceBinder = (MuzicaService.MuzicaServiceBinder) service;
         muzicaService = playerMuzicaServiceBinder.getServiciu(); // obtine instanta serviciul MuzicaService
 
-        muzicaService.setCallbackPlayerInterface(this); // permite instantei ActiuniRedareInterface din MuzicaService sa foloseasca implementarea din PlayerActivity
+        muzicaService.setCallbackPlayerInterface(this); // permite instantei PlayerInterface din MuzicaService sa foloseasca implementarea din PlayerActivity
 
         Log.e("", "PlayerActivity#onServiceConnected(ComponentName, IBinder) " + muzicaService);
 
@@ -318,7 +318,7 @@ public class PlayerActivity extends AppCompatActivity
                 pozitieMelodie = ((pozitieMelodie - 1) < 0 ? listaMelodiiPlayer.size() - 1 : pozitieMelodie - 1); // obtine pozitia melodiei anterioare din lista
             }
 
-            uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrl()); // obtine adresa resursei melodiei
+            uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrlMelodie()); // obtine adresa resursei melodiei
             //mediaPlayer = MediaPlayer.create(getApplicationContext(), uri); // creare player cu noul URI
             muzicaService.creeazaMediaPlayer(pozitieMelodie); // creeaza player pentru melodia de la pozitia data
 
@@ -345,7 +345,7 @@ public class PlayerActivity extends AppCompatActivity
                 pozitieMelodie = ((pozitieMelodie - 1) < 0 ? listaMelodiiPlayer.size() - 1 : pozitieMelodie - 1); // obtine pozitia melodiei anterioare din lista
             }
 
-            uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrl()); // obtine adresa resursei melodiei
+            uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrlMelodie()); // obtine adresa resursei melodiei
             //mediaPlayer = MediaPlayer.create(getApplicationContext(), uri); // creare player cu noul URI
             muzicaService.creeazaMediaPlayer(pozitieMelodie);
 
@@ -383,7 +383,7 @@ public class PlayerActivity extends AppCompatActivity
             }
 
             // altfel pozitia melodiei ramane neschimbata
-            uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrl()); // obtine adresa resursei melodiei
+            uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrlMelodie()); // obtine adresa resursei melodiei
             //mediaPlayer = MediaPlayer.create(getApplicationContext(), uri); // creare player cu noul URI
             muzicaService.creeazaMediaPlayer(pozitieMelodie);
 
@@ -410,7 +410,7 @@ public class PlayerActivity extends AppCompatActivity
                 pozitieMelodie = ((pozitieMelodie + 1) % listaMelodiiPlayer.size()); // obtine pozitia urmatoarei melodii din lista
             }
 
-            uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrl()); // obtine adresa resursei melodiei
+            uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrlMelodie()); // obtine adresa resursei melodiei
             //mediaPlayer = MediaPlayer.create(getApplicationContext(), uri); // creare player cu noul URI
             muzicaService.creeazaMediaPlayer(pozitieMelodie);
 
@@ -439,7 +439,7 @@ public class PlayerActivity extends AppCompatActivity
             // daca lista cu melodii nu este goala, se va obtine URI-ul melodiei din aceasta
             if (listaMelodiiPlayer != null) {
                 floatingActionButtonPlayPause.setImageResource(R.drawable.ic_pause);
-                uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrl());
+                uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrlMelodie());
             }
 
             // pregatire si lansare serviciu muzical
@@ -596,7 +596,7 @@ public class PlayerActivity extends AppCompatActivity
         // daca lista cu melodii nu este goala, se va obtine URI-ul melodiei din aceasta
         if (listaMelodiiPlayer != null) {
             floatingActionButtonPlayPause.setImageResource(R.drawable.ic_pause);
-            uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrl());
+            uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrlMelodie());
         }
 
 /*
