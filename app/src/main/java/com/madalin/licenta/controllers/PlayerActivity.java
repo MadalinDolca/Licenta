@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -28,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,7 +39,13 @@ import androidx.palette.graphics.Palette;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.madalin.licenta.global.NumeExtra;
 import com.madalin.licenta.R;
 import com.madalin.licenta.adapters.CardMelodieAdapter;
@@ -46,7 +54,9 @@ import com.madalin.licenta.interfaces.PlayerInterface;
 import com.madalin.licenta.models.Melodie;
 import com.madalin.licenta.services.MuzicaService;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -60,7 +70,6 @@ public class PlayerActivity extends AppCompatActivity
     private TextView textViewInCursDeRedare;
     private TextView textViewNumeMelodie;
     private TextView textViewNumeArtist;
-    private TextView textViewDescriereMelodie;
     private TextView textViewDurataRedata;
     private TextView textViewDurataMelodie;
 
@@ -76,6 +85,7 @@ public class PlayerActivity extends AppCompatActivity
     private FloatingActionButton floatingActionButtonPlayPause;
 
     private Button buttonSolicitaPermisiunea;
+    private Button buttonAfiseazaDateMelodie;
 
     MuzicaService muzicaService; // public static MediaPlayer mediaPlayer;
     private int pozitieMelodie = -1; // pozitia implicita a melodiei curente
@@ -86,19 +96,20 @@ public class PlayerActivity extends AppCompatActivity
     //MediaSessionCompat mediaSessionCompat; // sesiune interactiuni cu controalele media din notificare
     static boolean isActivitatePlayerActiva = false; // specifica daca activitatea este activa sau nu pentru utilizarea sigura a serviciului muzical & notificarii
 
+    Palette.Swatch swatchCuloareDominanta; // memoreaza culoarea dominanta a imaginii melodiei
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
         edgeToEdge(this, findViewById(R.id.player_linearLayoutContainer), Spatiere.PADDING, Directie.SUS);
-        edgeToEdge(this, findViewById(R.id.player_textViewDescriereMelodie), Spatiere.MARGIN, Directie.JOS);
+        edgeToEdge(this, findViewById(R.id.player_buttonAfiseazaDateMelodie), Spatiere.MARGIN, Directie.JOS);
 
         //mediaSessionCompat = new MediaSessionCompat(getBaseContext(), "madAudio"); // initializare sesiunea media cu token-ul "madAudio"
 
         initializareVederi();
         textViewNumeMelodie.setText("Se încarcă...");
         textViewNumeArtist.setText("Se încarcă...");
-        textViewDescriereMelodie.setText("Se încarcă descrierea...");
 
         // listener buton inapoi
         imageViewButonInapoi.setOnClickListener(v -> {
@@ -165,6 +176,9 @@ public class PlayerActivity extends AppCompatActivity
                 imageViewButonRepeat.setImageResource(R.drawable.ic_repeat_pornit);
             }
         });
+
+        // listener afisare dialog cu datele melodiei
+        buttonAfiseazaDateMelodie.setOnClickListener(v -> afisareDialogDetaliiMelodie());
     }
 
     /**
@@ -661,7 +675,7 @@ public class PlayerActivity extends AppCompatActivity
 
                                 // generare paleta de culori
                                 Palette.from(resursaBitmapImagineMelodie).generate(palette -> {
-                                    Palette.Swatch swatchCuloareDominanta = palette.getDominantSwatch(); // obtine culoarea dominanta a imaginii melodiei
+                                    swatchCuloareDominanta = palette.getDominantSwatch(); // obtine culoarea dominanta a imaginii melodiei
 
                                     if (swatchCuloareDominanta != null) {
                                         setareCuloriElemente(swatchCuloareDominanta); // aplica culoarea swatch-ului pe elementele player-ului
@@ -852,6 +866,63 @@ public class PlayerActivity extends AppCompatActivity
         imageView.startAnimation(animationOut);
     }
 
+    private void afisareDialogDetaliiMelodie() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogMeniuTheme);
+        View bottomSheetDialogView = getLayoutInflater().inflate(R.layout.layout_bottom_sheet_date_melodie, null, false); // inflate layout bottom sheet dialog din XML
+        bottomSheetDialog.setContentView(bottomSheetDialogView); // setare continut bottom sheet
+
+        // initializare vederi bottom sheet dialog
+        LinearLayout linearLayoutContainer = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_linearLayoutContainer);
+        TextView textViewNumarRedari = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_textViewNumarRedari);
+        TextView textViewGenMuzical = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_textViewGenMuzical);
+        TextView textViewDataIncarcarii = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_textViewDataIncarcarii);
+        TextView textViewTitluDescriereMelodie = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_textViewTitluDescriereMelodie);
+        TextView textViewDescriereMelodie = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_textViewDescriereMelodie);
+        ImageView imageViewPill = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_imageViewPill);
+        ImageView imageViewNumarRedari = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_imageViewNumarRedari);
+        ImageView imageViewGenMuzical = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_imageViewGenMuzical);
+        ImageView imageViewDataIncarcarii = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_imageViewDataIncarcarii);
+
+        if (swatchCuloareDominanta != null) {
+            ColorStateList colorStateListElement = ColorStateList.valueOf(swatchCuloareDominanta.getBodyTextColor()); // culoare elemente
+            ColorStateList colorStateListFundal = ColorStateList.valueOf(swatchCuloareDominanta.getRgb()); // culoare fundal
+
+            // schimbare culori elemente
+            linearLayoutContainer.setBackgroundTintList(colorStateListFundal);
+            textViewNumarRedari.setTextColor(colorStateListElement);
+            textViewGenMuzical.setTextColor(colorStateListElement);
+            textViewDataIncarcarii.setTextColor(colorStateListElement);
+            textViewTitluDescriereMelodie.setTextColor(colorStateListElement);
+            textViewDescriereMelodie.setTextColor(colorStateListElement);
+            imageViewPill.setImageTintList(colorStateListElement);
+            imageViewNumarRedari.setImageTintList(colorStateListElement);
+            imageViewGenMuzical.setImageTintList(colorStateListElement);
+            imageViewDataIncarcarii.setImageTintList(colorStateListElement);
+        }
+
+        FirebaseDatabase.getInstance().getReference("melodii/" + listaMelodiiPlayer.get(pozitieMelodie).getCheie()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    Melodie melodie = snapshot.getValue(Melodie.class);
+
+                    // adaugare date in elemente
+                    textViewNumarRedari.setText(melodie.getNumarRedari() + " redări");
+                    textViewGenMuzical.setText(melodie.getGenMelodie());
+                    textViewDataIncarcarii.setText(new SimpleDateFormat("dd.MM.yyyy").format(new Date(melodie.getDataCreariiLong())));
+                    textViewDescriereMelodie.setText(melodie.getDescriere());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(PlayerActivity.this, "Eroare: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        bottomSheetDialog.show(); // afiseaza bottom sheet dialog meniu
+    }
+
     /**
      * Initializeaza toate vederile din cadrul acestei activitati.
      */
@@ -862,7 +933,6 @@ public class PlayerActivity extends AppCompatActivity
 
         textViewNumeMelodie = findViewById(R.id.player_textViewNumeMelodie);
         textViewNumeArtist = findViewById(R.id.player_textViewNumeArtist);
-        textViewDescriereMelodie = findViewById(R.id.player_textViewDescriereMelodie);
         textViewDurataRedata = findViewById(R.id.player_textViewDurataRedata);
         textViewDurataMelodie = findViewById(R.id.player_textViewDurataMelodie);
 
@@ -878,6 +948,7 @@ public class PlayerActivity extends AppCompatActivity
         floatingActionButtonPlayPause = findViewById(R.id.player_floatingActionButtonPlayPause);
 
         buttonSolicitaPermisiunea = findViewById(R.id.player_buttonSolicitaPermisiunea);
+        buttonAfiseazaDateMelodie = findViewById(R.id.player_buttonAfiseazaDateMelodie);
     }
 
 //    /**
