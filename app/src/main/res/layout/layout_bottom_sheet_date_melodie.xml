@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet_date_melodie_linearLayoutContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_bottom_sheet"
+    android:orientation="vertical"
+    android:paddingHorizontal="20dp">
+
+    <!-- pill -->
+    <ImageView
+        android:id="@+id/bottom_sheet_date_melodie_imageViewPill"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_pill"
+        app:tint="@color/text" />
+
+    <!-- layout date superioare -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="15dp"
+        android:orientation="horizontal">
+
+        <!-- numarul de redari -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/bottom_sheet_date_melodie_imageViewNumarRedari"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_play"
+                app:tint="@color/text" />
+
+            <TextView
+                android:id="@+id/bottom_sheet_date_melodie_textViewNumarRedari"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Numărul de redări"
+                android:textAlignment="center"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard" />
+
+        </LinearLayout>
+
+        <!-- layout genul muzical -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/bottom_sheet_date_melodie_imageViewGenMuzical"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_nota_muzicala"
+                app:tint="@color/text" />
+
+            <TextView
+                android:id="@+id/bottom_sheet_date_melodie_textViewGenMuzical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gen muzical"
+                android:textAlignment="center"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard" />
+
+        </LinearLayout>
+
+        <!-- layout data incarcarii -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/bottom_sheet_date_melodie_imageViewDataIncarcarii"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_calendar"
+                app:tint="@color/text" />
+
+            <TextView
+                android:id="@+id/bottom_sheet_date_melodie_textViewDataIncarcarii"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Data încărcării"
+                android:textAlignment="center"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- separator -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#13000000" />
+
+    <!-- layout descriere melodie -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- titlu descriere melodie -->
+        <TextView
+            android:id="@+id/bottom_sheet_date_melodie_textViewTitluDescriereMelodie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="15dp"
+            android:text="Descriere melodie"
+            android:textAlignment="center"
+            android:textColor="@color/text"
+            android:textSize="@dimen/text_standard"
+            android:textStyle="bold" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- descriere melodie -->
+            <TextView
+                android:id="@+id/bottom_sheet_date_melodie_textViewDescriereMelodie"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="15dp"
+                android:text="Se încarcă descrierea..."
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard" />
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</LinearLayout>
