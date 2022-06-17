@@ -50,6 +50,8 @@
                         android:id="@+id/adauga_imageViewImagineMelodie"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/ic_imagine" />
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
