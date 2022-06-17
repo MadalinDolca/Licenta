@@ -6,10 +6,11 @@ import com.google.firebase.database.ServerValue;
 import java.util.Map;
 
 public class Utilizator {
-    public String nume;
-    public String email;
-    public String grad;
-    public Long dataCrearii;
+    private String cheie;
+    private String nume;
+    private String email;
+    private String grad;
+    private Long dataCrearii;
 
     public Utilizator() {
     }
@@ -17,6 +18,14 @@ public class Utilizator {
     public Utilizator(String nume, String email) {
         this.nume = nume;
         this.email = email;
+    }
+
+    public String getCheie() {
+        return cheie;
+    }
+
+    public void setCheie(String cheie) {
+        this.cheie = cheie;
     }
 
     public String getNume() {

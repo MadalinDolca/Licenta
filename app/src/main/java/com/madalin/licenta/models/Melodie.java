@@ -4,13 +4,12 @@ import com.google.firebase.database.Exclude;
 import com.google.firebase.database.ServerValue;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class Melodie {
     private String cheie;
 
-    private String uidArtist;
+    private String cheieArtist;
 
     @SerializedName("artistName")
     private String numeArtist;
@@ -34,11 +33,10 @@ public class Melodie {
 
     }
 
-    public Melodie(String cheie, String uidArtist, String numeArtist, String numeMelodie,
+    public Melodie(String cheieArtist, String numeArtist, String numeMelodie,
                    String imagineMelodie, String urlMelodie, String genMelodie, String descriere,
                    int numarRedari, int numarAprecieri/*, Map<String, String> dataCrearii*/) {
-        this.cheie = cheie;
-        this.uidArtist = uidArtist;
+        this.cheieArtist = cheieArtist;
         this.numeArtist = numeArtist;
         this.numeMelodie = numeMelodie;
         this.imagineMelodie = imagineMelodie;
@@ -58,12 +56,12 @@ public class Melodie {
         this.cheie = cheie;
     }
 
-    public String getUidArtist() {
-        return uidArtist;
+    public String getCheieArtist() {
+        return cheieArtist;
     }
 
-    public void setUidArtist(String uidArtist) {
-        this.uidArtist = uidArtist;
+    public void setCheieArtist(String cheieArtist) {
+        this.cheieArtist = cheieArtist;
     }
 
     public String getNumeArtist() {
