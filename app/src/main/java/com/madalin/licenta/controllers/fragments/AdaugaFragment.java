@@ -231,14 +231,13 @@ public class AdaugaFragment extends Fragment {
 
                         storageReferenceMelodie.getDownloadUrl().addOnSuccessListener(uri -> { // obtine locatia la care s-a incarcat melodia
                             Melodie melodie = new Melodie(
-                                    cheieIncarcare, // cheia la care se afla melodia
-                                    firebaseAuth.getCurrentUser().getUid(), // UID utilizator
-                                    MainActivity.utilizator.getNume(), // numele utilizatorului
-                                    numeMelodie, // numele melodiei
+                                    firebaseAuth.getCurrentUser().getUid(), // cheie artist
+                                    MainActivity.utilizator.getNume(), // nume artist
+                                    numeMelodie, // nume melodie
                                     null,
                                     uri.toString(), // locatia fisierului audio
                                     genMelodie, // gen melodie
-                                    descriereMelodie, // descrierea melodiei
+                                    descriereMelodie, // descriere melodie
                                     0,
                                     0/*,
                                     ServerValue.TIMESTAMP // timpul curent*/
