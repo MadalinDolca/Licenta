@@ -73,7 +73,7 @@ public class AcasaFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         databaseReference = FirebaseDatabase.getInstance().getReference("melodii");
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 listaMelodii.clear();
@@ -81,8 +81,9 @@ public class AcasaFragment extends Fragment {
                 categorieCarduriArrayList.clear();
 
                 for (DataSnapshot melodieSnapshot : snapshot.getChildren()) { // parcurge toti descendentii nodului "melodii" din baza de date
-                    System.out.println(melodieSnapshot.toString());
                     Melodie melodie = melodieSnapshot.getValue(Melodie.class); // adauga valorile descendentului in obiect
+                    melodie.setCheie(melodieSnapshot.getKey()); // memoreaza cheia descendentului
+
                     listaMelodii.add(melodie); // adauga obiectul in lista
                     cardMelodieArrayList.add(new CardMelodie(melodie.getImagineMelodie(), melodie.getNumeMelodie(), melodie.getNumeArtist())); // adauga un nou CardMelodie in lista
                 }
