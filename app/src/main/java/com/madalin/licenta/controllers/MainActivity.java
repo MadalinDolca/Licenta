@@ -34,6 +34,7 @@ import com.madalin.licenta.controllers.fragments.AcasaFragment;
 import com.madalin.licenta.controllers.fragments.AdaugaFragment;
 import com.madalin.licenta.controllers.fragments.BibliotecaFragment;
 import com.madalin.licenta.controllers.fragments.CautaFragment;
+import com.madalin.licenta.global.NumeExtra;
 import com.madalin.licenta.models.Utilizator;
 
 public class MainActivity extends AppCompatActivity {
@@ -273,7 +274,9 @@ ft.commit();
             // accesare activitate profil
             linearLayoutProfil.setOnClickListener(view -> {
                 bottomSheetDialog.dismiss(); // inchide dialogul
-                startActivity(new Intent(MainActivity.this, ProfilActivity.class)); // lanseaza activitatea ProfilActivity
+                Intent intentProfil = new Intent(MainActivity.this, ProfilActivity.class);
+                intentProfil.putExtra(NumeExtra.CHEIE_UTILIZATOR, utilizator.getCheie()); // adauga cheia utilizatorului in extra
+                startActivity(intentProfil); // lanseaza activitatea ProfilActivity
             });
 
             // deconectare de la Firebase
