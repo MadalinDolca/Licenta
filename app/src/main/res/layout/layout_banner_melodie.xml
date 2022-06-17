@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/banner_melodie_relativeLayoutContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/background_rotunjit"
+    android:backgroundTint="@color/fundal_alt"
+    android:padding="10dp">
+
+    <!-- card imagine melodie -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/banner_melodie_cardViewMelodie"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="10dp"
+        app:cardBackgroundColor="@color/primara"
+        app:cardCornerRadius="@dimen/radius20"
+        app:cardElevation="0dp">
+
+        <ImageView
+            android:id="@+id/banner_melodie_imageViewImagine"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- nume melodie -->
+    <TextView
+        android:id="@+id/banner_melodie_textViewNumeMelodie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/banner_melodie_imageViewButonEdit"
+        android:layout_toEndOf="@+id/banner_melodie_cardViewMelodie"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:text="Nume melodie"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_standard"
+        android:textStyle="bold" />
+
+    <!-- numar redari -->
+    <ImageView
+        android:id="@+id/banner_melodie_imageViewPlay"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_below="@+id/banner_melodie_textViewNumeMelodie"
+        android:layout_toEndOf="@+id/banner_melodie_cardViewMelodie"
+        android:src="@drawable/ic_play"
+        app:tint="@color/text" />
+
+    <TextView
+        android:id="@+id/banner_melodie_textViewInformatie1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/banner_melodie_textViewNumeMelodie"
+        android:layout_marginStart="10dp"
+        android:layout_toStartOf="@+id/banner_melodie_imageViewButonEdit"
+        android:layout_toEndOf="@+id/banner_melodie_imageViewPlay"
+        android:text="Număr redări"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_mic" />
+
+    <!-- gen muzical -->
+    <ImageView
+        android:id="@+id/banner_melodie_imageViewNotaMuzicala"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_below="@+id/banner_melodie_imageViewPlay"
+        android:layout_toEndOf="@+id/banner_melodie_cardViewMelodie"
+        android:src="@drawable/ic_nota_muzicala"
+        app:tint="@color/text" />
+
+    <TextView
+        android:id="@+id/banner_melodie_textViewInformatie2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/banner_melodie_textViewInformatie1"
+        android:layout_marginStart="10dp"
+        android:layout_toStartOf="@+id/banner_melodie_imageViewButonEdit"
+        android:layout_toEndOf="@id/banner_melodie_imageViewNotaMuzicala"
+        android:text="Gen muzical"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_mic" />
+
+    <!-- buton edit -->
+    <ImageView
+        android:id="@+id/banner_melodie_imageViewButonEdit"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="10dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_edit"
+        app:tint="@color/text" />
+
+</RelativeLayout>
