@@ -55,9 +55,9 @@ public class ProfilActivity extends AppCompatActivity {
                 Utilizator profilUtilizator = snapshot.getValue(Utilizator.class);
 
                 if (profilUtilizator != null) {
-                    textViewSalut.setText("Salut, " + profilUtilizator.nume + "!");
-                    textViewNume.setText(profilUtilizator.nume);
-                    textViewEmail.setText(profilUtilizator.email);
+                    textViewSalut.setText("Salut, " + profilUtilizator.getNume() + "!");
+                    textViewNume.setText(profilUtilizator.getNume());
+                    textViewEmail.setText(profilUtilizator.getEmail());
                 }
             }
 
