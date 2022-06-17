@@ -127,6 +127,7 @@ public class PlayerActivity extends AppCompatActivity
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (muzicaService != null && fromUser) {
                     muzicaService.seekTo(progress * 1000); // cauta in melodie la pozitia de timp specificata de seekBar
+                    textViewDurataRedata.setText(formatareMilisecunde(muzicaService.getPozitieCurenta())); // actualizeaza TextView-ul duratei redate
                 }
             }
 
@@ -143,9 +144,11 @@ public class PlayerActivity extends AppCompatActivity
         PlayerActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (muzicaService != null) {
-                    seekBar.setProgress(muzicaService.getPozitieCurenta() / 1000);
-                    textViewDurataRedata.setText(formatareMilisecunde(muzicaService.getPozitieCurenta()));
+                if (muzicaService != null) { // daca exista serviciu
+                    if (muzicaService.isPlaying()) { // daca MediaPlayer-ul serviciului ruleaza
+                        seekBar.setProgress(muzicaService.getPozitieCurenta() / 1000);
+                        textViewDurataRedata.setText(formatareMilisecunde(muzicaService.getPozitieCurenta()));
+                    }
                 }
 
                 handlerProgresMelodie.postDelayed(this, 1000); // intarzieri de o secunda intre actualizari
@@ -735,56 +738,32 @@ public class PlayerActivity extends AppCompatActivity
      */
     private void setareCuloriElemente(Palette.Swatch swatchCuloareDominanta) {
         GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{swatchCuloareDominanta.getRgb(), 0xFF000000}); // culoare fundal cu gradient
-        ColorStateList colorStateList = ColorStateList.valueOf(swatchCuloareDominanta.getBodyTextColor()); // culoare elemente
-
-        /*
-        int culoareAlba = Color.parseColor("#FFFFFF");
-        ColorStateList culoareAlbaState = ColorStateList.valueOf(culoareAlba);
-
-        imageViewButonInapoi.setColorFilter(culoareAlba);
-        textViewInCursDeRedare.setTextColor(culoareAlba);
-
-        seekBar.setThumbTintList(culoareAlbaState);
-        seekBar.setProgressTintList(culoareAlbaState);
-        //seekBar.setSecondaryProgressTintList(swatchColorState);
-        seekBar.setProgressBackgroundTintList(swatchColorState);
-
-        textViewNumeMelodie.setTextColor(culoareAlba);
-        textViewNumeArtist.setTextColor(culoareAlba);
-        textViewDurataRedata.setTextColor(culoareAlba);
-        textViewDurataMelodie.setTextColor(culoareAlba);
-
-        floatingActionButtonPlayPause.setBackgroundTintList(swatchColorState);
-        imageViewButonShuffle.setImageTintList(culoareAlbaState);
-        imageViewButonSkipPrevious.setImageTintList(culoareAlbaState);
-        imageViewButonSkipNext.setImageTintList(culoareAlbaState);
-        imageViewButonRepeat.setImageTintList(culoareAlbaState);
-
-        buttonSolicitaPermisiunea.setBackgroundTintList(swatchColorState);
-        */
+        ColorStateList colorStateListElement = ColorStateList.valueOf(swatchCuloareDominanta.getBodyTextColor()); // culoare elemente
+        ColorStateList colorStateListDominant = ColorStateList.valueOf(swatchCuloareDominanta.getRgb()); // culoare dominanta
 
         linearLayoutContainer.setBackground(gradientDrawable); // setare culoare fundal
 
-        imageViewButonInapoi.setImageTintList(colorStateList);
-        textViewInCursDeRedare.setTextColor(colorStateList);
+        imageViewButonInapoi.setImageTintList(colorStateListElement);
+        textViewInCursDeRedare.setTextColor(colorStateListElement);
 
-        seekBar.setThumbTintList(colorStateList);
-        seekBar.setProgressTintList(colorStateList);
+        seekBar.setThumbTintList(colorStateListElement);
+        seekBar.setProgressTintList(colorStateListElement);
         //seekBar.setSecondaryProgressTintList(swatchColorState);
-        seekBar.setProgressBackgroundTintList(colorStateList);
+        seekBar.setProgressBackgroundTintList(colorStateListElement);
 
-        textViewNumeMelodie.setTextColor(colorStateList);
-        textViewNumeArtist.setTextColor(colorStateList);
-        textViewDurataRedata.setTextColor(colorStateList);
-        textViewDurataMelodie.setTextColor(colorStateList);
+        textViewNumeMelodie.setTextColor(colorStateListElement);
+        textViewNumeArtist.setTextColor(colorStateListElement);
+        textViewDurataRedata.setTextColor(colorStateListElement);
+        textViewDurataMelodie.setTextColor(colorStateListElement);
 
-        floatingActionButtonPlayPause.setBackgroundTintList(colorStateList);
-        imageViewButonShuffle.setImageTintList(colorStateList);
-        imageViewButonSkipPrevious.setImageTintList(colorStateList);
-        imageViewButonSkipNext.setImageTintList(colorStateList);
-        imageViewButonRepeat.setImageTintList(colorStateList);
+        floatingActionButtonPlayPause.setBackgroundTintList(colorStateListElement);
+        imageViewButonShuffle.setImageTintList(colorStateListElement);
+        imageViewButonSkipPrevious.setImageTintList(colorStateListElement);
+        imageViewButonSkipNext.setImageTintList(colorStateListElement);
+        imageViewButonRepeat.setImageTintList(colorStateListElement);
 
-        buttonSolicitaPermisiunea.setBackgroundTintList(colorStateList);
+        buttonSolicitaPermisiunea.setBackgroundTintList(colorStateListElement);
+        buttonAfiseazaDateMelodie.setBackgroundTintList(colorStateListDominant);
     }
 
     /**
@@ -900,25 +879,26 @@ public class PlayerActivity extends AppCompatActivity
             imageViewDataIncarcarii.setImageTintList(colorStateListElement);
         }
 
-        FirebaseDatabase.getInstance().getReference("melodii/" + listaMelodiiPlayer.get(pozitieMelodie).getCheie()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    Melodie melodie = snapshot.getValue(Melodie.class);
+        FirebaseDatabase.getInstance().getReference("melodii/" + listaMelodiiPlayer.get(pozitieMelodie).getCheie())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            Melodie melodieCurenta = snapshot.getValue(Melodie.class);
 
-                    // adaugare date in elemente
-                    textViewNumarRedari.setText(melodie.getNumarRedari() + " redări");
-                    textViewGenMuzical.setText(melodie.getGenMelodie());
-                    textViewDataIncarcarii.setText(new SimpleDateFormat("dd.MM.yyyy").format(new Date(melodie.getDataCreariiLong())));
-                    textViewDescriereMelodie.setText(melodie.getDescriere());
-                }
-            }
+                            // adaugare date in elemente
+                            textViewNumarRedari.setText(melodieCurenta.getNumarRedari() + " redări");
+                            textViewGenMuzical.setText(melodieCurenta.getGenMelodie());
+                            textViewDataIncarcarii.setText(new SimpleDateFormat("dd.MM.yyyy").format(new Date(melodieCurenta.getDataCreariiLong())));
+                            textViewDescriereMelodie.setText(melodieCurenta.getDescriere());
+                        }
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(PlayerActivity.this, "Eroare: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(PlayerActivity.this, "Eroare: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
 
         bottomSheetDialog.show(); // afiseaza bottom sheet dialog meniu
     }
