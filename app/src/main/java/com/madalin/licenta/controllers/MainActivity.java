@@ -268,7 +268,7 @@ ft.commit();
 
         // daca utilizatorul este conectat
         if (firebaseAuth.getCurrentUser() != null) {
-            textViewNume.setText(utilizator.nume); // adauga numele utilizatorului in bottom sheet dialog
+            textViewNume.setText(utilizator.getNume()); // adauga numele utilizatorului in bottom sheet dialog
 
             // accesare activitate profil
             linearLayoutProfil.setOnClickListener(view -> {
@@ -312,7 +312,8 @@ ft.commit();
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) { // obtine datele utilizatorului curent la fiecare modificare a acestora
-                            utilizator = snapshot.getValue(Utilizator.class);
+                            utilizator = snapshot.getValue(Utilizator.class); // memoreaza valorile
+                            utilizator.setCheie(snapshot.getKey()); // memoreaza cheia
                         }
 
                         @Override
