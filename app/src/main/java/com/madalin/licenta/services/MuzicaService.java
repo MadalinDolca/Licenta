@@ -16,6 +16,7 @@ import android.os.IBinder;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +25,10 @@ import androidx.core.app.NotificationCompat;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.madalin.licenta.ApplicationClass;
 import com.madalin.licenta.global.NumeExtra;
 import com.madalin.licenta.R;
@@ -202,13 +207,16 @@ public class MuzicaService extends Service
      * Creeaza un {@link MediaPlayer} pentru {@link #mediaPlayer} folosind ca {@link Uri} adresa
      * melodiei de la pozitia data. Stocheaza datele melodiei in baza de date locala a sistemului
      * folosind {@link SharedPreferences} la cheile {@link #KEY_URL_MELODIE}, {@link #KEY_NUME_MELODIE}
-     * si {@link #KEY_NUME_ARTIST}.
+     * si {@link #KEY_NUME_ARTIST}. Obtine datele melodiei din baza de date si actualizeaza numarul
+     * de redari.
      *
      * @param pozitieData pozitia melodiei pentru redare din lista
      */
     public void creeazaMediaPlayer(int pozitieData) {
         pozitieMelodie = pozitieData;
         uri = Uri.parse(listaMelodiiService.get(pozitieMelodie).getUrlMelodie()); // obtine adresa resursei melodiei
+
+        mediaPlayer = MediaPlayer.create(getBaseContext(), uri); // creaza MediaPlayer cu noul URI
 
         // stocheaza datele melodiei in baza de date locala a sistemului
         SharedPreferences.Editor editor = getSharedPreferences(KEY_ULTIMA_MELODIE_REDATA, MODE_PRIVATE).edit(); // obtine si pastreaza continutul fisierului cu preferinte "ULTIMA_MELODIE_REDATA" si creeaza un editor
@@ -218,7 +226,25 @@ public class MuzicaService extends Service
         editor.putString(KEY_NUME_ARTIST, listaMelodiiService.get(pozitieMelodie).getNumeArtist()); // seteaza numele artistului la cheia "NUME_ARTIST"
         editor.apply(); // comite noile preferinte inapoi editorului
 
-        mediaPlayer = MediaPlayer.create(getBaseContext(), uri); // creaza MediaPlayer cu noul URI
+        // obtine datele melodiei curente din baza de date si incrementeaza numarul de redari
+        FirebaseDatabase.getInstance().getReference("melodii/" + listaMelodiiService.get(pozitieMelodie).getCheie())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Melodie melodieCurenta = snapshot.getValue(Melodie.class); // obtine datele melodiei curente
+                        melodieCurenta.setCheie(snapshot.getKey()); // obtine cheia melodiei
+
+                        melodieCurenta.setNumarRedari(melodieCurenta.getNumarRedari() + 1); // incrementeaza numarul de redari
+
+                        FirebaseDatabase.getInstance().getReference("melodii/" + melodieCurenta.getCheie())
+                                .child("numarRedari").setValue(melodieCurenta.getNumarRedari()); // actualizeaza numarul de redari al melodiei curente in baza de date
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(MuzicaService.this, "Eroare: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     /**
