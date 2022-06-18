@@ -35,11 +35,9 @@ public class CategorieCarduriAdapter extends RecyclerView.Adapter<CategorieCardu
 
     @Override
     public void onBindViewHolder(@NonNull CategorieCarduriViewHolder holder, int position) {
-        holder.textViewTitlu.setText(listaCategorieCarduri.get(position).titluCategorie);
+        holder.textViewTitlu.setText(listaCategorieCarduri.get(position).getTitluCategorie()); // seteaza numele categoriei
 
-        CardMelodieAdapter cardMelodieAdapter;
-        cardMelodieAdapter = new CardMelodieAdapter(context, listaCategorieCarduri.get(position).listaCardMelodie);
-        
+        CardMelodieAdapter cardMelodieAdapter = new CardMelodieAdapter(context, listaCategorieCarduri.get(position).getListaMelodii()); // creeaza un adapter pentru cardurile cu melodii
         holder.recyclerViewCarduri.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         holder.recyclerViewCarduri.setAdapter(cardMelodieAdapter);
         cardMelodieAdapter.notifyDataSetChanged();
@@ -52,14 +50,14 @@ public class CategorieCarduriAdapter extends RecyclerView.Adapter<CategorieCardu
 
     public class CategorieCarduriViewHolder extends RecyclerView.ViewHolder {
 
+        TextView textViewTitlu; // titlul categoriei
         RecyclerView recyclerViewCarduri;
-        TextView textViewTitlu;
 
         public CategorieCarduriViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            recyclerViewCarduri = itemView.findViewById(R.id.categorie_carduri_recyclerViewCarduri);
             textViewTitlu = itemView.findViewById(R.id.categorie_carduri_textViewTitlu);
+            recyclerViewCarduri = itemView.findViewById(R.id.categorie_carduri_recyclerViewCarduri);
         }
     }
 }
