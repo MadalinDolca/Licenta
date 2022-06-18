@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:contentInsetStart="0dp"
+    android:contentInsetLeft="0dp"
+    android:contentInsetEnd="0dp"
+    android:contentInsetRight="0dp"
+    app:contentInsetEnd="0dp"
+    app:contentInsetLeft="0dp"
+    app:contentInsetRight="0dp"
+    app:contentInsetStart="0dp">
+
+    <!-- bara superioara -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="10dp">
+
+        <!-- buton inapoi -->
+        <ImageView
+            android:id="@+id/toolbar_imageViewButonInapoi"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_arrow_down"
+            app:tint="@color/text" />
+
+        <!-- titlu -->
+        <TextView
+            android:id="@+id/toolbar_textViewTitlu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Titlu"
+            android:textColor="@color/text"
+            android:textSize="@dimen/text_standard"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+</androidx.appcompat.widget.Toolbar>
