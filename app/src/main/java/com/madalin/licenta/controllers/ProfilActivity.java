@@ -5,6 +5,8 @@ import static com.madalin.licenta.global.EdgeToEdge.Spatiere;
 import static com.madalin.licenta.global.EdgeToEdge.edgeToEdge;
 
 import android.os.Bundle;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +33,7 @@ import java.util.Objects;
 
 public class ProfilActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
+    private LinearLayout toolbar;
     private RecyclerView recyclerView;
     private TextView textViewNumeUtilizator;
     private TextView textViewGrad;
