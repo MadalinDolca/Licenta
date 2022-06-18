@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_rotunjit"
+    android:backgroundTint="@color/fundal"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <!-- mesaj -->
+    <TextView
+        android:id="@+id/alert_dialog_textViewMesaj"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mesaj"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_standard" />
+
+    <!-- optiune 1 -->
+    <Button
+        android:id="@+id/alert_dialog_buttonOptiune1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/background_rotunjit"
+        android:backgroundTint="@color/primara"
+        android:gravity="center"
+        android:text="Opțiune 1"
+        android:textAllCaps="false"
+        android:textColor="@color/text_pe_primara"
+        android:textSize="@dimen/text_standard" />
+
+    <!-- optiune 2 -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/alert_dialog_buttonOptiune2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/background_rotunjit"
+        android:backgroundTint="@color/fundal_alt"
+        android:gravity="center"
+        android:text="Opțiune 2"
+        android:textAllCaps="false"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_standard" />
+
+</LinearLayout>
