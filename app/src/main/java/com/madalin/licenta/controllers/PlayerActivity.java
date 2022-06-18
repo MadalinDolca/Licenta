@@ -1,12 +1,11 @@
 package com.madalin.licenta.controllers;
 
+import static com.madalin.licenta.controllers.MainActivity.repeatBoolean;
+import static com.madalin.licenta.controllers.MainActivity.shuffleBoolean;
 import static com.madalin.licenta.global.EdgeToEdge.Directie;
 import static com.madalin.licenta.global.EdgeToEdge.Spatiere;
 import static com.madalin.licenta.global.EdgeToEdge.edgeToEdge;
-import static com.madalin.licenta.controllers.MainActivity.repeatBoolean;
-import static com.madalin.licenta.controllers.MainActivity.shuffleBoolean;
 
-import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -15,8 +14,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -39,21 +36,20 @@ import androidx.palette.graphics.Palette;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.madalin.licenta.global.NumeExtra;
 import com.madalin.licenta.R;
 import com.madalin.licenta.adapters.CardMelodieAdapter;
-import com.madalin.licenta.controllers.fragments.AcasaFragment;
+import com.madalin.licenta.global.NumeExtra;
 import com.madalin.licenta.interfaces.PlayerInterface;
 import com.madalin.licenta.models.Melodie;
 import com.madalin.licenta.services.MuzicaService;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,37 +62,29 @@ public class PlayerActivity extends AppCompatActivity
         ServiceConnection {
 
     private LinearLayout linearLayoutContainer;
-
     private TextView textViewInCursDeRedare;
     private TextView textViewNumeMelodie;
     private TextView textViewNumeArtist;
     private TextView textViewDurataRedata;
     private TextView textViewDurataMelodie;
-
     private SeekBar seekBar;
-
     private ImageView imageViewImagineMelodie;
     private ImageView imageViewButonInapoi;
     private ImageView imageViewButonSkipPrevious;
     private ImageView imageViewButonSkipNext;
     private ImageView imageViewButonShuffle;
     private ImageView imageViewButonRepeat;
-
     private FloatingActionButton floatingActionButtonPlayPause;
-
     private Button buttonSolicitaPermisiunea;
     private Button buttonAfiseazaDateMelodie;
 
-    MuzicaService muzicaService; // public static MediaPlayer mediaPlayer;
+    private MuzicaService muzicaService; // instanta serviciu muzical
+    private List<Melodie> listaMelodiiPlayer; // lista melodiilor
     private int pozitieMelodie = -1; // pozitia implicita a melodiei curente
-    public static List<Melodie> listaMelodiiPlayer = new ArrayList<>(); // lista melodiilor
-    public static Uri uri; // adresa melodiei
-    private Handler handlerProgresMelodie = new Handler(); // handler pentru postarea delay-urilor in UI Thread
     private Thread playThread, previousThread, nextThread;
-    //MediaSessionCompat mediaSessionCompat; // sesiune interactiuni cu controalele media din notificare
-    static boolean isActivitatePlayerActiva = false; // specifica daca activitatea este activa sau nu pentru utilizarea sigura a serviciului muzical & notificarii
+    private Palette.Swatch swatchCuloareDominanta; // memoreaza culoarea dominanta a imaginii melodiei
 
-    Palette.Swatch swatchCuloareDominanta; // memoreaza culoarea dominanta a imaginii melodiei
+    static boolean isActivitatePlayerActiva = false; // specifica daca activitatea este activa sau nu pentru utilizarea sigura a serviciului muzical & notificarii
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,8 +92,6 @@ public class PlayerActivity extends AppCompatActivity
         setContentView(R.layout.activity_player);
         edgeToEdge(this, findViewById(R.id.player_linearLayoutContainer), Spatiere.PADDING, Directie.SUS);
         edgeToEdge(this, findViewById(R.id.player_buttonAfiseazaDateMelodie), Spatiere.MARGIN, Directie.JOS);
-
-        //mediaSessionCompat = new MediaSessionCompat(getBaseContext(), "madAudio"); // initializare sesiunea media cu token-ul "madAudio"
 
         initializareVederi();
         textViewNumeMelodie.setText("Se încarcă...");
@@ -117,9 +103,7 @@ public class PlayerActivity extends AppCompatActivity
         });
 
         //new PregatirePlayerAsyncTask().execute(); // pregatire mediaPlayer si afisare date melodie
-        pregatireMediaPlayer();
-
-        //muzicaService.onTerminareMelodie(); // mutat la onServiceConnected()
+        lansareMuzicaService();
 
         // listener pentru schimbarea starii seekBar-ului
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -150,8 +134,7 @@ public class PlayerActivity extends AppCompatActivity
                         textViewDurataRedata.setText(formatareMilisecunde(muzicaService.getPozitieCurenta()));
                     }
                 }
-
-                handlerProgresMelodie.postDelayed(this, 1000); // intarzieri de o secunda intre actualizari
+                new Handler().postDelayed(this, 1000); // intarzieri de o secunda intre actualizari
             }
         });
 
@@ -195,8 +178,6 @@ public class PlayerActivity extends AppCompatActivity
         isActivitatePlayerActiva = true; // marcheaza activitatea ca activa
     }
 
-    // la reintoarcerea la activitate
-
     /**
      * Cand activitatea este vizibila utilizatorului, iar acesta poate interactiona cu ea sau se
      * intoarce la aceasta, {@link PlayerActivity} se leaga la serviciul {@link MuzicaService} si
@@ -206,6 +187,7 @@ public class PlayerActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         Log.e("", "PlayerActivity#onResume()");
+
         // leaga PlayerActivity la serviciul muzical
         Intent intent = new Intent(this, MuzicaService.class);
         bindService(intent, this, BIND_AUTO_CREATE);
@@ -258,10 +240,10 @@ public class PlayerActivity extends AppCompatActivity
 
         Log.e("", "PlayerActivity#onServiceConnected(ComponentName, IBinder) " + muzicaService);
 
-        seekBar.setMax(muzicaService.getDurataMelodie() / 1000); // mutat de la getIntentMethod()
-        afisareDateMelodie(); // mutat de la getIntentMethod()
+        seekBar.setMax(muzicaService.getDurataMelodie() / 1000); // mutat de la pregatireMediaPlayer()
+        afisareDateMelodie(); // mutat de la pregatireMediaPlayer()
 
-        muzicaService.onTerminareMelodie();
+        muzicaService.onTerminareMelodie(); // mutat de la onCreate()
         muzicaService.afisareNotificare(R.drawable.ic_pause); // afisare notificare
     }
 
@@ -293,9 +275,8 @@ public class PlayerActivity extends AppCompatActivity
 
     /**
      * Porneste si opreste {@link #muzicaService}-ul si schimba imaginea butonului
-     * {@link #floatingActionButtonPlayPause}. Apeleaza {@link #actualizareSeekBar()} pentru
-     * actualizarea seekBar-ului. Apeleaza {@link MuzicaService#afisareNotificare(int)} pentru
-     * afisarea notificarii.
+     * {@link #floatingActionButtonPlayPause}. Actualizeaza valoarea maxima a seekBar-ului.
+     * Apeleaza {@link MuzicaService#afisareNotificare(int)} pentru afisarea notificarii.
      */
     public void butonPlayPauseClicked() {
         // pauza player daca melodia este in curs de redare
@@ -303,21 +284,21 @@ public class PlayerActivity extends AppCompatActivity
             muzicaService.afisareNotificare(R.drawable.ic_play); // afisare notificare
             floatingActionButtonPlayPause.setImageResource(R.drawable.ic_play);
             muzicaService.pauza();
-            actualizareSeekBar(); // actualizare progres seekBar
+            seekBar.setMax(muzicaService.getDurataMelodie() / 1000); // setare valoare maxima seekBar in functie de durata melodiei din mediaPlayer
         }
         // pornire player daca melodia NU este in curs de redare
         else {
             muzicaService.afisareNotificare(R.drawable.ic_pause); // afisare notificare
             floatingActionButtonPlayPause.setImageResource(R.drawable.ic_pause);
             muzicaService.start();
-            actualizareSeekBar();
+            seekBar.setMax(muzicaService.getDurataMelodie() / 1000); // actualizare progres seekBar
         }
     }
 
     /**
      * Trece la melodia precedenta in functie de starea {@link #muzicaService}-ului. Afiseaza datele
-     * noii melodii prin {@link #afisareDateMelodie()}. Actualizeaza seekBar-ul prin
-     * {@link #actualizareSeekBar()}. Apeleaza listener-ul {@link MuzicaService#onTerminareMelodie()}.
+     * noii melodii prin {@link #afisareDateMelodie()}. Actualizeaza valoarea maxima a seekBar-ului.
+     * Apeleaza listener-ul {@link MuzicaService#onTerminareMelodie()}.
      * Apeleaza {@link MuzicaService#afisareNotificare(int)} pentru afisarea notificarii.
      */
     public void butonPreviousClicked() {
@@ -335,21 +316,16 @@ public class PlayerActivity extends AppCompatActivity
                 pozitieMelodie = ((pozitieMelodie - 1) < 0 ? listaMelodiiPlayer.size() - 1 : pozitieMelodie - 1); // obtine pozitia melodiei anterioare din lista
             }
 
-            uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrlMelodie()); // obtine adresa resursei melodiei
-            //mediaPlayer = MediaPlayer.create(getApplicationContext(), uri); // creare player cu noul URI
             muzicaService.creeazaMediaPlayer(pozitieMelodie); // creeaza player pentru melodia de la pozitia data
-
             afisareDateMelodie(); // actualizare UI cu datele noii melodii
-            actualizareSeekBar(); // actualizare progres seekBar
-
-            //mediaPlayer.setOnCompletionListener(this); // apelare listener pentru schimbarea melodiei la finalizare
+            seekBar.setMax(muzicaService.getDurataMelodie() / 1000); // actualizare progres seekBar
             muzicaService.onTerminareMelodie(); // apelare listener pentru schimbarea melodiei la finalizare
-
             muzicaService.afisareNotificare(R.drawable.ic_pause); // afisare notificare
-
             floatingActionButtonPlayPause.setBackgroundResource(R.drawable.ic_pause); // schimba imaginea butonului PlayPause in "pause"
             muzicaService.start(); // porneste player-ul
-        } else {
+        }
+        // daca MediaPlayer-ul nu este in curs de redare
+        else {
             muzicaService.stop(); // opreste player-ul
             muzicaService.eliberare(); // elibereaza resursele
 
@@ -362,26 +338,19 @@ public class PlayerActivity extends AppCompatActivity
                 pozitieMelodie = ((pozitieMelodie - 1) < 0 ? listaMelodiiPlayer.size() - 1 : pozitieMelodie - 1); // obtine pozitia melodiei anterioare din lista
             }
 
-            uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrlMelodie()); // obtine adresa resursei melodiei
-            //mediaPlayer = MediaPlayer.create(getApplicationContext(), uri); // creare player cu noul URI
             muzicaService.creeazaMediaPlayer(pozitieMelodie);
-
             afisareDateMelodie(); // actualizare UI cu datele noii melodii
-            actualizareSeekBar(); // actualizare progres seekBar
-
-            //mediaPlayer.setOnCompletionListener(this); // apelare listener pentru schimbarea melodiei la finalizare
-            muzicaService.onTerminareMelodie();
-
+            seekBar.setMax(muzicaService.getDurataMelodie() / 1000); // actualizare progres seekBar
+            muzicaService.onTerminareMelodie(); // apelare listener pentru schimbarea melodiei la finalizare
             muzicaService.afisareNotificare(R.drawable.ic_play); // afisare notificare
-
             floatingActionButtonPlayPause.setBackgroundResource(R.drawable.ic_play); // schimba imaginea butonului PlayPause in "play"
         }
     }
 
     /**
      * Trece la melodia urmatoare in functie de starea {@link #muzicaService}-ului. Afiseaza datele
-     * noii melodii prin {@link #afisareDateMelodie()}. Actualizeaza seekBar-ul prin
-     * {@link #actualizareSeekBar()}. Apeleaza listener-ul {@link MuzicaService#onTerminareMelodie()}.
+     * noii melodii prin {@link #afisareDateMelodie()}. Actualizeaza valoarea maxima a seekBar-ului.
+     * Apeleaza listener-ul {@link MuzicaService#onTerminareMelodie()}.
      * Apeleaza {@link MuzicaService#afisareNotificare(int)} pentru afisarea notificarii.
      */
     public void butonNextClicked() {
@@ -399,22 +368,17 @@ public class PlayerActivity extends AppCompatActivity
                 pozitieMelodie = ((pozitieMelodie + 1) % listaMelodiiPlayer.size()); // obtine pozitia urmatoarei melodii din lista
             }
 
-            // altfel pozitia melodiei ramane neschimbata
-            uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrlMelodie()); // obtine adresa resursei melodiei
-            //mediaPlayer = MediaPlayer.create(getApplicationContext(), uri); // creare player cu noul URI
+            // ALTFEL pozitia melodiei ramane neschimbata
             muzicaService.creeazaMediaPlayer(pozitieMelodie);
-
             afisareDateMelodie(); // actualizare UI cu datele noii melodii
-            actualizareSeekBar(); // actualizare progres seekBar
-
-            //mediaPlayer.setOnCompletionListener(this); // apelare listener pentru schimbarea melodiei la finalizare
-            muzicaService.onTerminareMelodie();
-
+            seekBar.setMax(muzicaService.getDurataMelodie() / 1000); // actualizare progres seekBar
+            muzicaService.onTerminareMelodie(); // apelare listener pentru schimbarea melodiei la finalizare
             muzicaService.afisareNotificare(R.drawable.ic_pause); // afisare notificare
-
             floatingActionButtonPlayPause.setBackgroundResource(R.drawable.ic_pause); // schimba imaginea butonului PlayPause in "pause"
             muzicaService.start(); // porneste player-ul
-        } else {
+        }
+        // daca MediaPlayer-ul nu este in curs de redare
+        else {
             muzicaService.stop(); // opreste player-ul
             muzicaService.eliberare(); // elibereaza resursele
 
@@ -427,23 +391,16 @@ public class PlayerActivity extends AppCompatActivity
                 pozitieMelodie = ((pozitieMelodie + 1) % listaMelodiiPlayer.size()); // obtine pozitia urmatoarei melodii din lista
             }
 
-            uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrlMelodie()); // obtine adresa resursei melodiei
-            //mediaPlayer = MediaPlayer.create(getApplicationContext(), uri); // creare player cu noul URI
             muzicaService.creeazaMediaPlayer(pozitieMelodie);
-
             afisareDateMelodie(); // actualizare UI cu datele noii melodii
-            actualizareSeekBar(); // actualizare progres seekBar
-
-            //mediaPlayer.setOnCompletionListener(this); // apelare listener pentru schimbarea melodiei la finalizare
-            muzicaService.onTerminareMelodie();
-
+            seekBar.setMax(muzicaService.getDurataMelodie() / 1000); // actualizare progres seekBar
+            muzicaService.onTerminareMelodie(); // apelare listener pentru schimbarea melodiei la finalizare
             muzicaService.afisareNotificare(R.drawable.ic_play); // afisare notificare
-
             floatingActionButtonPlayPause.setBackgroundResource(R.drawable.ic_play); // schimba imaginea butonului PlayPause in "play"
         }
     }
 
-    @SuppressLint("StaticFieldLeak")
+    /*@SuppressLint("StaticFieldLeak")
     public class PregatirePlayerAsyncTask extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -451,16 +408,16 @@ public class PlayerActivity extends AppCompatActivity
             //pregatireMediaPlayer(); // pregatire mediaPlayer
 
             pozitieMelodie = getIntent().getIntExtra(NumeExtra.POZITIE_MELODIE, -1); // obtine pozitia melodiei selectate din intent AcasaFragment
-            listaMelodiiPlayer = AcasaFragment.listaMelodii; // obtine lista cu melodii din AcasaFragment
+            listaMelodiiPlayer = (List<Melodie>) getIntent().getSerializableExtra(NumeExtra.LISTA_MELODII);
 
             // daca lista cu melodii nu este goala, se va obtine URI-ul melodiei din aceasta
             if (listaMelodiiPlayer != null) {
                 floatingActionButtonPlayPause.setImageResource(R.drawable.ic_pause);
-                uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrlMelodie());
             }
 
             // pregatire si lansare serviciu muzical
             Intent intent = new Intent(PlayerActivity.this, MuzicaService.class);
+            intent.putExtra(NumeExtra.LISTA_MELODII, (Serializable) listaMelodiiPlayer);
             intent.putExtra(NumeExtra.POZITIE_MELODIE_SERVICE, pozitieMelodie); // extra cu pozitia melodiei curente
             startService(intent); // lansare serviciu
 
@@ -474,7 +431,7 @@ public class PlayerActivity extends AppCompatActivity
             super.onPostExecute(unused);
 
             afisareDateMelodie();
-            actualizareSeekBar();//////////////
+            seekBar.setMax(muzicaService.getDurataMelodie() / 1000);//////////////
 
             // runnable pentru setarea progresului de redare al melodiei in seekBar si textViewDurataRedata
 //            PlayerActivity.this.runOnUiThread(new Runnable() {
@@ -535,7 +492,7 @@ public class PlayerActivity extends AppCompatActivity
 //            mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
 //                @Override
 //                public void onBufferingUpdate(MediaPlayer mp, int percent) {
-//                    seekBar.setSecondaryProgress(percent /*(mediaPlayer.getDuration() / 1000)*/);
+//                    seekBar.setSecondaryProgress(percent (mediaPlayer.getDuration() / 1000));
 //                }
 //            });
 
@@ -561,85 +518,29 @@ public class PlayerActivity extends AppCompatActivity
                     imageViewButonRepeat.setImageResource(R.drawable.ic_repeat_pornit);
                 }
             });
-
-//            // listener repornire melodie dupa finalizare
-//            mediaPlayer.setOnCompletionListener(mp -> {
-//                nextBtnClicked();
-//
-//                if (mediaPlayer != null) {
-//                    mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
-//                    mediaPlayer.start();
-//                }
-//
-////                seekBar.setProgress(0);
-////                floatingActionButtonPlayPause.setImageResource(R.drawable.ic_play);
-////                textViewDurataRedata.setText("0:00");
-////                textViewDurataMelodie.setText("0:00");
-////                mediaPlayer.reset();
-////                pregatireMediaPlayer();
-//            });
         }
-    }
+    }*/
 
     /**
-     * Listener pentru schimbarea melodiei dupa finalizarea acesteia. Apeleaza
-     * {@link #butonNextClicked()} pentru a trece la urmatoarea melodie. In cazul in
-     * care nu exista un {@link #muzicaService}, creeaza unul.
+     * Obtine din {@link Intent} lista cu melodii si pozitia melodiei de redat.
+     * Lanseaza serviciul {@link MuzicaService} prin intermediul unui {@link Intent} furnizand
+     * drept extra lista cu melodii si pozitia melodiei de redat obtinute anterior.
      */
-//    @Override
-//    public void onCompletion(MediaPlayer mp) {
-//        butonNextClicked(); // trece la urmatoarea melodie
-//
-//        // creeaza un nou mediaPlayer in cazul in care nu exista deja unul
-//        if (muzicaService != null) {
-//            muzicaService.creeazaMediaPlayer(pozitieMelodie);
-//            muzicaService.start();
-//            muzicaService.onTerminareMelodie();
-//        }
-//    }
+    private void lansareMuzicaService() {
+        listaMelodiiPlayer = new ArrayList<>();
+        listaMelodiiPlayer = (List<Melodie>) getIntent().getSerializableExtra(NumeExtra.LISTA_MELODII); // obtine lista cu melodii din intent
+        pozitieMelodie = getIntent().getIntExtra(NumeExtra.POZITIE_MELODIE, -1); // obtine pozitia melodiei selectate din intent
 
-    /**
-     * Pregateste {@link #muzicaService}-ul pentru redarea unei melodii din lista de melodii pe baza
-     * pozitiei specificate in {@link Intent}-ul transmis de {@link CardMelodieAdapter}. Copiaza
-     * lista de melodii {@link AcasaFragment#listaMelodii}. Apeleaza
-     * {@link MuzicaService#afisareNotificare(int)} pentru afisarea notificarii. Lanseaza serviciul
-     * {@link MuzicaService} prin intermediul unui {@link Intent} care are ca date pozitia melodiei
-     * transmisa de {@link CardMelodieAdapter}.
-     */
-    private void pregatireMediaPlayer() {
-        pozitieMelodie = getIntent().getIntExtra(NumeExtra.POZITIE_MELODIE, -1); // obtinere pozitie melodie selectata din intent
-        listaMelodiiPlayer = AcasaFragment.listaMelodii; // obtine lista cu melodii din AcasaFragment
-
-        // daca lista cu melodii nu este goala, se va obtine URI-ul melodiei din aceasta
+        // daca lista cu melodii nu este goala, seteaza resursa Pause
         if (listaMelodiiPlayer != null) {
             floatingActionButtonPlayPause.setImageResource(R.drawable.ic_pause);
-            uri = Uri.parse(listaMelodiiPlayer.get(pozitieMelodie).getUrlMelodie());
         }
-
-/*
-        // daca mediaPlayer-ul ruleaza
-        if (muzicaService != null) {
-            muzicaService.stop(); // opreste redarea
-            muzicaService.eliberare(); // elibereaza resursele curente
-            muzicaService.creeazaMediaPlayer(pozitieMelodie);
-            muzicaService.start(); // porneste redarea cu noua melodie /////// ???
-        }
-        // daca mediaPlayer-ul NU ruleaza
-        else {
-            muzicaService.creeazaMediaPlayer(pozitieMelodie);
-            muzicaService.start();
-        }
-*/
-
-        //muzicaService.afisareNotificare(R.drawable.ic_pause); // afisare notificare
 
         // pregatire si lansare serviciu muzical
         Intent intent = new Intent(this, MuzicaService.class);
+        intent.putExtra(NumeExtra.LISTA_MELODII, (Serializable) listaMelodiiPlayer); // extra cu lista melodiilor
         intent.putExtra(NumeExtra.POZITIE_MELODIE_SERVICE, pozitieMelodie); // extra cu pozitia melodiei curente
-        startService(intent); // lansare serviciu
-
-        //seekBar.setMax(muzicaService.getDurataMelodie() / 1000); // mutat la onServiceConnected()
-        //afisareDateMelodie(); // mutat la onServiceConnected()
+        startService(intent); // lanseaza serviciul muzical
     }
 
     /**
@@ -695,29 +596,66 @@ public class PlayerActivity extends AppCompatActivity
     }
 
     /**
-     * Seteaza valoarea maxima a {@link #seekBar}-ului in functie de lungimea melodiei din
-     * {@link #muzicaService}. Lanseaza un thread pe UiThread pentru actualizarea continua a
-     * progresului {@link #seekBar}-ului si a {@link #textViewDurataRedata} in functie de pozitia
-     * curenta a {@link #muzicaService}-ului.
+     * Afiseaza datele unei melodii in {@link BottomSheetDialog}. Initializeaza vederile acestuia si
+     * seteaza culorile elementelor. Obtine din {@link FirebaseDatabase} datele melodiei curente
+     * din lista in functie de cheia acesteia.
      */
-    public void actualizareSeekBar() {
-        seekBar.setMax(muzicaService.getDurataMelodie() / 1000); // setare valoare maxima seekBar in functie de durata melodiei din mediaPlayer
+    private void afisareDialogDetaliiMelodie() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogMeniuTheme);
+        View bottomSheetDialogView = getLayoutInflater().inflate(R.layout.layout_bottom_sheet_date_melodie, null, false); // inflate layout bottom sheet dialog din XML
+        bottomSheetDialog.setContentView(bottomSheetDialogView); // setare continut bottom sheet
 
-        /*
-        // actualizeaza progresul seekBar-ului in functie de progresul mediaPlayer-ului
-        PlayerActivity.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (muzicaService != null) {
-                    seekBar.setProgress(muzicaService.getDurataMelodie() / 1000);
-                    //textViewDurataRedata.setText(formatareMilisecunde(muzicaService.getPozitieCurenta()));
-                }
+        // initializare vederi bottom sheet dialog
+        LinearLayout linearLayoutContainer = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_linearLayoutContainer);
+        TextView textViewNumarRedari = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_textViewNumarRedari);
+        TextView textViewGenMuzical = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_textViewGenMuzical);
+        TextView textViewDataIncarcarii = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_textViewDataIncarcarii);
+        TextView textViewTitluDescriereMelodie = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_textViewTitluDescriereMelodie);
+        TextView textViewDescriereMelodie = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_textViewDescriereMelodie);
+        ImageView imageViewPill = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_imageViewPill);
+        ImageView imageViewNumarRedari = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_imageViewNumarRedari);
+        ImageView imageViewGenMuzical = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_imageViewGenMuzical);
+        ImageView imageViewDataIncarcarii = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_imageViewDataIncarcarii);
 
-                handlerProgresMelodie.postDelayed(this, 1000); // intarzieri de o secunda intre actualizari
+        if (swatchCuloareDominanta != null) {
+            ColorStateList colorStateListElement = ColorStateList.valueOf(swatchCuloareDominanta.getBodyTextColor()); // culoare elemente
+            ColorStateList colorStateListFundal = ColorStateList.valueOf(swatchCuloareDominanta.getRgb()); // culoare fundal
 
-            }
-        });
-        */
+            // schimbare culori elemente
+            linearLayoutContainer.setBackgroundTintList(colorStateListFundal);
+            textViewNumarRedari.setTextColor(colorStateListElement);
+            textViewGenMuzical.setTextColor(colorStateListElement);
+            textViewDataIncarcarii.setTextColor(colorStateListElement);
+            textViewTitluDescriereMelodie.setTextColor(colorStateListElement);
+            textViewDescriereMelodie.setTextColor(colorStateListElement);
+            imageViewPill.setImageTintList(colorStateListElement);
+            imageViewNumarRedari.setImageTintList(colorStateListElement);
+            imageViewGenMuzical.setImageTintList(colorStateListElement);
+            imageViewDataIncarcarii.setImageTintList(colorStateListElement);
+        }
+
+        FirebaseDatabase.getInstance().getReference("melodii/" + listaMelodiiPlayer.get(pozitieMelodie).getCheie())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            Melodie melodieCurenta = snapshot.getValue(Melodie.class);
+
+                            // adaugare date in elemente
+                            textViewNumarRedari.setText(melodieCurenta.getNumarRedari() + " redări");
+                            textViewGenMuzical.setText(melodieCurenta.getGenMelodie());
+                            textViewDataIncarcarii.setText(new SimpleDateFormat("dd.MM.yyyy").format(new Date(melodieCurenta.getDataCreariiLong())));
+                            textViewDescriereMelodie.setText(melodieCurenta.getDescriere());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(PlayerActivity.this, "Eroare: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        bottomSheetDialog.show(); // afiseaza bottom sheet dialog meniu
     }
 
     /**
@@ -845,64 +783,6 @@ public class PlayerActivity extends AppCompatActivity
         imageView.startAnimation(animationOut);
     }
 
-    private void afisareDialogDetaliiMelodie() {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogMeniuTheme);
-        View bottomSheetDialogView = getLayoutInflater().inflate(R.layout.layout_bottom_sheet_date_melodie, null, false); // inflate layout bottom sheet dialog din XML
-        bottomSheetDialog.setContentView(bottomSheetDialogView); // setare continut bottom sheet
-
-        // initializare vederi bottom sheet dialog
-        LinearLayout linearLayoutContainer = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_linearLayoutContainer);
-        TextView textViewNumarRedari = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_textViewNumarRedari);
-        TextView textViewGenMuzical = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_textViewGenMuzical);
-        TextView textViewDataIncarcarii = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_textViewDataIncarcarii);
-        TextView textViewTitluDescriereMelodie = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_textViewTitluDescriereMelodie);
-        TextView textViewDescriereMelodie = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_textViewDescriereMelodie);
-        ImageView imageViewPill = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_imageViewPill);
-        ImageView imageViewNumarRedari = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_imageViewNumarRedari);
-        ImageView imageViewGenMuzical = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_imageViewGenMuzical);
-        ImageView imageViewDataIncarcarii = bottomSheetDialog.findViewById(R.id.bottom_sheet_date_melodie_imageViewDataIncarcarii);
-
-        if (swatchCuloareDominanta != null) {
-            ColorStateList colorStateListElement = ColorStateList.valueOf(swatchCuloareDominanta.getBodyTextColor()); // culoare elemente
-            ColorStateList colorStateListFundal = ColorStateList.valueOf(swatchCuloareDominanta.getRgb()); // culoare fundal
-
-            // schimbare culori elemente
-            linearLayoutContainer.setBackgroundTintList(colorStateListFundal);
-            textViewNumarRedari.setTextColor(colorStateListElement);
-            textViewGenMuzical.setTextColor(colorStateListElement);
-            textViewDataIncarcarii.setTextColor(colorStateListElement);
-            textViewTitluDescriereMelodie.setTextColor(colorStateListElement);
-            textViewDescriereMelodie.setTextColor(colorStateListElement);
-            imageViewPill.setImageTintList(colorStateListElement);
-            imageViewNumarRedari.setImageTintList(colorStateListElement);
-            imageViewGenMuzical.setImageTintList(colorStateListElement);
-            imageViewDataIncarcarii.setImageTintList(colorStateListElement);
-        }
-
-        FirebaseDatabase.getInstance().getReference("melodii/" + listaMelodiiPlayer.get(pozitieMelodie).getCheie())
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            Melodie melodieCurenta = snapshot.getValue(Melodie.class);
-
-                            // adaugare date in elemente
-                            textViewNumarRedari.setText(melodieCurenta.getNumarRedari() + " redări");
-                            textViewGenMuzical.setText(melodieCurenta.getGenMelodie());
-                            textViewDataIncarcarii.setText(new SimpleDateFormat("dd.MM.yyyy").format(new Date(melodieCurenta.getDataCreariiLong())));
-                            textViewDescriereMelodie.setText(melodieCurenta.getDescriere());
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(PlayerActivity.this, "Eroare: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-        bottomSheetDialog.show(); // afiseaza bottom sheet dialog meniu
-    }
-
     /**
      * Initializeaza toate vederile din cadrul acestei activitati.
      */
@@ -930,112 +810,4 @@ public class PlayerActivity extends AppCompatActivity
         buttonSolicitaPermisiunea = findViewById(R.id.player_buttonSolicitaPermisiunea);
         buttonAfiseazaDateMelodie = findViewById(R.id.player_buttonAfiseazaDateMelodie);
     }
-
-//    /**
-//     * Creeaza {@link Intent}-uri spre {@link NotificarePlayerReceiver} cu actiunile definite in
-//     * {@link ApplicationClass}. Obtine {@link PendingIntent}-uri pentru efectuarea broadcast-urilor.
-//     * Creeaza notificarea player-ului avand ca actiuni {@link PendingIntent}-urile definite anterior
-//     * pentru invocare spre {@link NotificarePlayerReceiver}. Obtine si seteaza imaginea melodiei.
-//     *
-//     * @param imaginePlayPause resursa care se va afisa in notificare pentru actiunea de Play/Pause
-//     */
-//    void afisareNotificare(int imaginePlayPause) {
-//        // continut
-//        Intent intent = new Intent(this, PlayerActivity.class); // la click pe notificare se deschide PlayerActivity
-//        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
-//
-//        // intent din notificare spre NotificareReceiver cu actiunea ApplicationClass.ACTION_PLAY
-//        Intent pauseIntent = new Intent(this, NotificarePlayerReceiver.class).setAction(ApplicationClass.ACTION_PLAY); // la click pe notificare se deschide NotificareReceiver
-//        PendingIntent pausePending = PendingIntent.getBroadcast(this, 0, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT); // invocat de actiunea "Pause" din notificare
-//
-//        // intent din notificare spre NotificareReceiver cu actiunea ApplicationClass.ACTION_PREVIOUS
-//        Intent previousIntent = new Intent(this, NotificarePlayerReceiver.class).setAction(ApplicationClass.ACTION_PREVIOUS); // la click pe notificare se deschide NotificareReceiver
-//        PendingIntent previousPending = PendingIntent.getBroadcast(this, 0, previousIntent, PendingIntent.FLAG_UPDATE_CURRENT); // invocat de actiunea "Previous" din notificare
-//
-//        // intent din notificare spre NotificareReceiver cu actiunea ApplicationClass.ACTION_NEXT
-//        Intent nextIntent = new Intent(this, NotificarePlayerReceiver.class).setAction(ApplicationClass.ACTION_NEXT); // la click pe notificare se deschide NotificareReceiver
-//        PendingIntent nextPending = PendingIntent.getBroadcast(this, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT); // invocat de actiunea "Next" din notificare
-//
-//        /*Bitmap thumbnail = null;
-//
-//        NotificationCompat.Builder notificationBuilder =
-//                new NotificationCompat.Builder(PlayerActivity.this, ApplicationClass.CHANNEL_ID_2)
-//                        .setSmallIcon(imaginePlayPause)
-//                        .setLargeIcon(thumbnail)
-//
-//                        .setContentTitle(listaMelodiiPlayer.get(pozitieMelodie).getNumeMelodie())
-//                        .setContentText(listaMelodiiPlayer.get(pozitieMelodie).getNumeArtist())
-//
-//                        .addAction(R.drawable.ic_skip_previous, "Previous", previousPending)
-//                        .addAction(imaginePlayPause, "Pause", pausePending)
-//                        .addAction(R.drawable.ic_skip_next, "Next", nextPending)
-//
-//                        //.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediaSessionCompat.getSessionToken()))
-//                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-//                        .setOnlyAlertOnce(true);
-//
-//        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-//
-//        Glide.with(this)
-//                .asBitmap()
-//                .load(listaMelodiiPlayer.get(pozitieMelodie).getImagineMelodie()) // obtine imaginea ca bitmap
-//                .into(new CustomTarget<Bitmap>() {
-//                    @Override
-//                    public void onResourceReady(@NonNull Bitmap resursaBitmapImagineMelodie, @Nullable Transition<? super Bitmap> transition) {
-//                        notificationBuilder.setLargeIcon(resursaBitmapImagineMelodie);
-//                        notificationBuilder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediaSessionCompat.getSessionToken()));
-//
-//                        Notification notification = notificationBuilder.build();
-//                        notificationManager.notify(0, notification);
-//                    }
-//
-//                    @Override
-//                    public void onLoadCleared(@Nullable Drawable placeholder) {
-//
-//                    }
-//                });*/
-//
-//        // obtine imaginea melodiei si creeaza notificarea playerului
-//        Glide.with(this).asBitmap().load(listaMelodiiPlayer.get(pozitieMelodie).getImagineMelodie()) // obtine imaginea ca bitmap
-//                .into(new CustomTarget<Bitmap>() {
-//                    @Override
-//                    public void onResourceReady(@NonNull Bitmap resursaBitmapImagineMelodie, @Nullable Transition<? super Bitmap> transition) {
-//                        Bitmap thumbnail; // imaginea melodiei de afisat in notificare
-//
-//                        // daca melodia are link spre imagine, se foloseste resursa Bitmap obtinuta
-//                        if (listaMelodiiPlayer.get(pozitieMelodie).getImagineMelodie() != null) {
-//                            thumbnail = resursaBitmapImagineMelodie; // setare bitmap obtinut ca imagine pentru melodie
-//                        }
-//                        // daca melodia nu are link spre imagine, se foloseste o resursa inlocuitoare
-//                        else {
-//                            thumbnail = BitmapFactory.decodeResource(getResources(), R.drawable.logo_music);
-//                        }
-//
-//                        // crearea notificarii playerului cu datele melodiei in curs de rulare si a controalelor media
-//                        Notification notificarePlayer = new NotificationCompat.Builder(PlayerActivity.this, ApplicationClass.CHANNEL_ID_2)
-//                                .setSmallIcon(imaginePlayPause) // imaginea "Play/Pause" din bara de stare
-//                                .setLargeIcon(thumbnail) // imaginea melodiei
-//
-//                                .setContentTitle(listaMelodiiPlayer.get(pozitieMelodie).getNumeMelodie()) // numele melodiei
-//                                .setContentText(listaMelodiiPlayer.get(pozitieMelodie).getNumeArtist()) // numele artistului
-//
-//                                .addAction(R.drawable.ic_skip_previous, "Previous", previousPending) // buton "Previous", invoca PendingIntent spre NotificareReceiver
-//                                .addAction(imaginePlayPause, "Pause", pausePending) // buton "Play/Pause", invoca PendingIntent spre NotificareReceiver
-//                                .addAction(R.drawable.ic_skip_next, "Next", nextPending) // buton "Next", invoca PendingIntent spre NotificareReceiver
-//
-//                                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediaSessionCompat.getSessionToken())) // aplica stilul notificarii si ataseaza sesiunea de interactiuni cu controalele media din notificare
-//                                .setPriority(NotificationCompat.PRIORITY_HIGH) // prioritatea inalta a notificarii
-//                                .setOnlyAlertOnce(true)
-//                                .build(); // combina optiunile setate si returneaza noul obiect Notification
-//
-//                        // notificare utilizator in legatura cu evenimentele din fundal
-//                        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE); // obtine handle la serviciul de sistem "NOTIFICATION_SERVICE" pentru informarea utilizatorului despre evenimentele de fundal
-//                        notificationManager.notify(0, notificarePlayer); // publica notificarea cu melodia in curs de rulare si inlocuieste notificarile cu acelasi ID
-//                    }
-//
-//                    @Override
-//                    public void onLoadCleared(@Nullable Drawable placeholder) {
-//                    }
-//                });
-//    }
 }
