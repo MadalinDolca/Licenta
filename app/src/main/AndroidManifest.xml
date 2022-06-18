@@ -4,9 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" /> <!-- permite utilizarea internetului -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- permite rularea notificarii in foreground -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- permite scrierea in memorie -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <!-- speficicare subclasa personalizata ApplicationClass -->
     <application
         android:name=".ApplicationClass"
         android:allowBackup="true"
@@ -15,6 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Licenta">
+        <activity
+            android:name=".controllers.SolicitaPermisiuneaActivity"
+            android:exported="false" />
         <activity
             android:name=".controllers.PlayerActivity"
             android:exported="false" />
@@ -43,16 +45,13 @@
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- serciviu redare muzica -->
+        </activity> <!-- serciviu redare muzica -->
         <service
             android:name=".services.MuzicaService"
-            android:enabled="true" />
-
-        <!-- receptionare comenzi de la notificarea din PlayerActivity cu actiunile din ApplicationClass spre MuzicaService -->
+            android:enabled="true" /> <!-- receptionare comenzi de la notificarea din PlayerActivity cu actiunile din ApplicationClass spre MuzicaService -->
         <receiver
             android:name=".receivers.NotificarePlayerReceiver"
             android:enabled="true"
