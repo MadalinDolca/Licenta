@@ -1,5 +1,6 @@
 package com.madalin.licenta.controllers;
 
+import static com.madalin.licenta.global.EdgeToEdge.Directie;
 import static com.madalin.licenta.global.EdgeToEdge.Spatiere;
 import static com.madalin.licenta.global.EdgeToEdge.edgeToEdge;
 
@@ -9,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,7 +21,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.madalin.licenta.R;
 import com.madalin.licenta.adapters.BannerMelodieAdapter;
-import com.madalin.licenta.global.EdgeToEdge;
 import com.madalin.licenta.global.NumeExtra;
 import com.madalin.licenta.models.Melodie;
 import com.madalin.licenta.models.Utilizator;
@@ -30,6 +31,7 @@ import java.util.Objects;
 
 public class ProfilActivity extends AppCompatActivity {
 
+    private Toolbar toolbar;
     private RecyclerView recyclerView;
     private TextView textViewNumeUtilizator;
     private TextView textViewGrad;
@@ -48,8 +50,8 @@ public class ProfilActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profil);
 
         initializareVederi(); // initializeaza vederile activitatii
-        edgeToEdge(this, findViewById(R.id.profil_scrollViewContainer), Spatiere.PADDING, EdgeToEdge.Directie.SUS);
-        edgeToEdge(this, recyclerView, Spatiere.MARGIN, EdgeToEdge.Directie.JOS);
+        edgeToEdge(this, toolbar, Spatiere.PADDING, Directie.SUS);
+        edgeToEdge(this, recyclerView, Spatiere.MARGIN, Directie.JOS);
 
         listaMelodii = new ArrayList<>();
         cheieUtilizator = getIntent().getStringExtra(NumeExtra.CHEIE_UTILIZATOR); // obtine cheia utilizatorului oferita in extra
@@ -89,12 +91,11 @@ public class ProfilActivity extends AppCompatActivity {
 
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) { // parcurge toti descendentii nodului "melodii" din baza de date
                     Melodie melodie = dataSnapshot.getValue(Melodie.class); // adauga valorile descendentului in obiect
-                    System.out.println(numarRedari);
+                    melodie.setCheie(dataSnapshot.getKey()); // adauga cheia descendentului in obiect
 
                     if (Objects.equals(melodie.getCheieArtist(), cheieUtilizator)) { // daca cheia utilizatorului din melodie corespunde cu cheia utilizatorului selectat
                         listaMelodii.add(melodie); // adauga datele melodiei in lista
                         numarRedari += melodie.getNumarRedari(); // incrementeaza numarul de redari
-                        System.out.println(numarRedari);
                     }
                 }
 
@@ -119,10 +120,15 @@ public class ProfilActivity extends AppCompatActivity {
      * Initializeaza toate vederile din {@link ProfilActivity}.
      */
     private void initializareVederi() {
+        toolbar = findViewById(R.id.toolbar);
         recyclerView = findViewById(R.id.profil_recyclerViewMelodii);
         textViewNumeUtilizator = findViewById(R.id.profil_textViewNumeUtilizator);
         textViewGrad = findViewById(R.id.profil_textViewGrad);
         textViewNumarMelodii = findViewById(R.id.profil_textViewNumarMelodii);
         textViewNumarRedari = findViewById(R.id.profil_textViewNumarRedari);
+
+        toolbar.findViewById(R.id.toolbar_imageViewButonInapoi).setOnClickListener(v -> super.onBackPressed());
+        TextView textView = toolbar.findViewById(R.id.toolbar_textViewTitlu);
+        textView.setText("Profil");
     }
 }
