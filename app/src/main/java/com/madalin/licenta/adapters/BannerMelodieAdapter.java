@@ -20,6 +20,7 @@ import com.madalin.licenta.controllers.PlayerActivity;
 import com.madalin.licenta.global.NumeExtra;
 import com.madalin.licenta.models.Melodie;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -74,7 +75,8 @@ public class BannerMelodieAdapter extends RecyclerView.Adapter<BannerMelodieAdap
         // lansare activitate Player la apasarea cardului
         holder.relativeLayoutContainer.setOnClickListener(v -> {
             Intent intent = new Intent(context, PlayerActivity.class);
-            intent.putExtra(NumeExtra.POZITIE_MELODIE, position);
+            intent.putExtra(NumeExtra.LISTA_MELODII, (Serializable) listaMelodii); // extra cu lista cu melodii
+            intent.putExtra(NumeExtra.POZITIE_MELODIE, position); // extra cu pozitia melodiei selectate
             context.startActivity(intent);
         });
     }
