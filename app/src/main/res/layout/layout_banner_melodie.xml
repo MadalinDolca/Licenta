@@ -38,6 +38,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:marqueeRepeatLimit="marquee_forever"
+        android:maxLines="1"
         android:scrollHorizontally="true"
         android:singleLine="true"
         android:text="Nume melodie"

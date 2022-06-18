@@ -12,122 +12,132 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="15dp">
+        android:orientation="vertical">
 
-        <!-- layout date cont -->
+        <!-- toolbar -->
+        <include layout="@layout/layout_toolbar" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/background_rotunjit"
-            android:backgroundTint="@color/fundal_alt"
             android:orientation="vertical"
-            android:padding="@dimen/padding_ecran">
+            android:padding="15dp">
 
-            <!-- nume utilizator -->
-            <TextView
-                android:id="@+id/profil_textViewNumeUtilizator"
+            <!-- layout date cont -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Nume utilizator"
+                android:background="@drawable/background_rotunjit"
+                android:backgroundTint="@color/fundal_alt"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_ecran">
+
+                <!-- nume utilizator -->
+                <TextView
+                    android:id="@+id/profil_textViewNumeUtilizator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nume utilizator"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/text_mare"
+                    android:textStyle="bold" />
+
+                <!-- grad -->
+                <TextView
+                    android:id="@+id/profil_textViewGrad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Grad"
+                    android:textColor="@color/primara"
+                    android:textSize="@dimen/text_standard"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!-- layout statistici -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <!-- numarul de melodii -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_rotunjit"
+                    android:backgroundTint="@color/fundal_alt"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_nota_muzicala"
+                        app:tint="@color/text" />
+
+                    <TextView
+                        android:id="@+id/profil_textViewNumarMelodii"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Numărul de melodii"
+                        android:textAlignment="center"
+                        android:textColor="@color/text"
+                        android:textSize="@dimen/text_standard" />
+
+                </LinearLayout>
+
+                <!-- numarul de redari -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_rotunjit"
+                    android:backgroundTint="@color/fundal_alt"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_play"
+                        app:tint="@color/text" />
+
+                    <TextView
+                        android:id="@+id/profil_textViewNumarRedari"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Numărul de redări"
+                        android:textAlignment="center"
+                        android:textColor="@color/text"
+                        android:textSize="@dimen/text_standard" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/profil_textViewTitluListaMelodii"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Melodiile artistului"
                 android:textColor="@color/text"
                 android:textSize="@dimen/text_mare"
                 android:textStyle="bold" />
 
-            <!-- grad -->
-            <TextView
-                android:id="@+id/profil_textViewGrad"
+            <!-- RecyclerView melodii artist -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/profil_recyclerViewMelodii"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Grad"
-                android:textColor="@color/primara"
-                android:textSize="@dimen/text_standard"
-                android:textStyle="bold" />
+                android:layout_marginTop="20dp" />
 
         </LinearLayout>
-
-        <!-- layout statistici -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal">
-
-            <!-- numarul de melodii -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/background_rotunjit"
-                android:backgroundTint="@color/fundal_alt"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:padding="10dp">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_nota_muzicala"
-                    app:tint="@color/text" />
-
-                <TextView
-                    android:id="@+id/profil_textViewNumarMelodii"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Numărul de melodii"
-                    android:textAlignment="center"
-                    android:textColor="@color/text"
-                    android:textSize="@dimen/text_standard" />
-
-            </LinearLayout>
-
-            <!-- numarul de redari -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/background_rotunjit"
-                android:backgroundTint="@color/fundal_alt"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:padding="10dp">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_play"
-                    app:tint="@color/text" />
-
-                <TextView
-                    android:id="@+id/profil_textViewNumarRedari"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Numărul de redări"
-                    android:textAlignment="center"
-                    android:textColor="@color/text"
-                    android:textSize="@dimen/text_standard" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/profil_textViewTitluListaMelodii"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Melodiile artistului"
-            android:textColor="@color/text"
-            android:textSize="@dimen/text_mare"
-            android:textStyle="bold" />
-
-        <!-- RecyclerView melodii artist -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/profil_recyclerViewMelodii"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" />
 
     </LinearLayout>
 
