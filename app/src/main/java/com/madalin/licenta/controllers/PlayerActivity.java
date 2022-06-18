@@ -6,18 +6,23 @@ import static com.madalin.licenta.global.EdgeToEdge.Directie;
 import static com.madalin.licenta.global.EdgeToEdge.Spatiere;
 import static com.madalin.licenta.global.EdgeToEdge.edgeToEdge;
 
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -30,6 +35,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.palette.graphics.Palette;
 
@@ -38,6 +44,7 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -105,6 +112,26 @@ public class PlayerActivity extends AppCompatActivity
         //new PregatirePlayerAsyncTask().execute(); // pregatire mediaPlayer si afisare date melodie
         lansareMuzicaService();
 
+        // thread pentru actualizarea seekBar-ului si a duratei redate
+        PlayerActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (muzicaService != null) { // daca exista serviciu
+                    if (muzicaService.isPlaying()) { // daca MediaPlayer-ul serviciului ruleaza
+                        seekBar.setProgress(muzicaService.getPozitieCurenta() / 1000);
+                        textViewDurataRedata.setText(formatareMilisecunde(muzicaService.getPozitieCurenta()));
+                    }
+                }
+                new Handler().postDelayed(this, 1000); // intarzieri de o secunda intre actualizari
+            }
+        });
+
+        textViewNumeArtist.setOnClickListener(v -> {
+            Intent intent = new Intent(PlayerActivity.this, ProfilActivity.class);
+            intent.putExtra(NumeExtra.CHEIE_UTILIZATOR, listaMelodiiPlayer.get(pozitieMelodie).getCheieArtist());
+            startActivity(intent);
+        });
+
         // listener pentru schimbarea starii seekBar-ului
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -121,20 +148,6 @@ public class PlayerActivity extends AppCompatActivity
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
-
-        // thread pentru actualizarea seekBar-ului si a duratei redate
-        PlayerActivity.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (muzicaService != null) { // daca exista serviciu
-                    if (muzicaService.isPlaying()) { // daca MediaPlayer-ul serviciului ruleaza
-                        seekBar.setProgress(muzicaService.getPozitieCurenta() / 1000);
-                        textViewDurataRedata.setText(formatareMilisecunde(muzicaService.getPozitieCurenta()));
-                    }
-                }
-                new Handler().postDelayed(this, 1000); // intarzieri de o secunda intre actualizari
             }
         });
 
@@ -160,6 +173,19 @@ public class PlayerActivity extends AppCompatActivity
             } else {
                 repeatBoolean = true;
                 imageViewButonRepeat.setImageResource(R.drawable.ic_repeat_pornit);
+            }
+        });
+
+        // listener buton solicita permisiunea
+        buttonSolicitaPermisiunea.setOnClickListener(v -> {
+            if (FirebaseAuth.getInstance().getCurrentUser() == null) { // daca utilizatorul nu este autentificat
+                afisareDialogAlerta(); // afiseaza dialogul de alerta
+            }
+            // daca utilizatorul este autentificat se lanseaza daca utilizatorul nu este autentificat
+            else {
+                Intent intent = new Intent(PlayerActivity.this, SolicitaPermisiuneaActivity.class);
+                intent.putExtra(NumeExtra.SOLICITA_PERMISIUNEA, listaMelodiiPlayer.get(pozitieMelodie)); // extra cu datele melodiei curente
+                startActivity(intent);
             }
         });
 
@@ -656,6 +682,40 @@ public class PlayerActivity extends AppCompatActivity
                 });
 
         bottomSheetDialog.show(); // afiseaza bottom sheet dialog meniu
+    }
+
+    /**
+     * Afiseaza un dialog de alerta pentru autentificare in scenariul in care se doreste solicitarea
+     * permisiunii de utilizare a unei melodii.
+     */
+    private void afisareDialogAlerta() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.layout_alert_dialog); // layout dialog
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // fundal transparent
+
+        // initializare vederi
+        TextView textViewMesaj = dialog.findViewById(R.id.alert_dialog_textViewMesaj);
+        Button buttonAutentificare = dialog.findViewById(R.id.alert_dialog_buttonOptiune1);
+        Button buttonRenunta = dialog.findViewById(R.id.alert_dialog_buttonOptiune2);
+
+        // setare continut
+        textViewMesaj.setText("Pentru a solicita permisiunea de utilizare a melodiei va trebui să te autentifici!");
+        buttonRenunta.setText("Renunță");
+        buttonAutentificare.setText("Autentifică-te");
+
+        // listener text renunta
+        buttonRenunta.setOnClickListener(v -> {
+            dialog.dismiss(); // inlatura dialogul
+        });
+
+        // listener buton autentificare
+        buttonAutentificare.setOnClickListener(v -> {
+            muzicaService.butonPlayPauseClicked(); // intrerupe redarea melodiei
+            dialog.dismiss();
+            startActivity(new Intent(PlayerActivity.this, AutentificareActivity.class)); // lanseaza AutentificareActivity
+        });
+
+        dialog.show(); // afiseaza dialogul
     }
 
     /**
