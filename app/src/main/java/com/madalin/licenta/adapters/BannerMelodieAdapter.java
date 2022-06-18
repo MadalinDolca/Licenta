@@ -55,8 +55,9 @@ public class BannerMelodieAdapter extends RecyclerView.Adapter<BannerMelodieAdap
                     .into(holder.imageViewImagineMelodie);
         }
 
-        // daca utilizatorul curent este proprietarul melodiei, se afiseaza butonul de edit
-        if (Objects.equals(MainActivity.utilizator.getCheie(), listaMelodii.get(position).getCheieArtist())) {
+        // daca utilizatorul curent este proprietarul melodiei sau admin, se afiseaza butonul de edit
+        if (Objects.equals(MainActivity.utilizator.getCheie(), listaMelodii.get(position).getCheieArtist())
+                || Objects.equals(MainActivity.utilizator.getGrad(), "admin")) {
             holder.imageViewButonEdit.setVisibility(View.VISIBLE);
         } else {
             holder.imageViewButonEdit.setVisibility(View.GONE);
