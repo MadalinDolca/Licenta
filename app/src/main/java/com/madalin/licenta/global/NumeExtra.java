@@ -10,4 +10,5 @@ public class NumeExtra {
     public static final String POZITIE_MELODIE = "com.madalin.licenta.POZITIE_MELODIE";
     public static final String POZITIE_MELODIE_SERVICE = "com.madalin.licenta.POZITIE_MELODIE_SERVICE";
     public static final String ACTIUNE_NOTIFICARE = "com.madalin.licenta.ACTIUNE_NOTIFICARE";
+    public static final String SOLICITA_PERMISIUNEA = "com.madalin.licenta.SOLICITA_PERMISIUNEA";
 }
