@@ -4,9 +4,10 @@ import com.google.firebase.database.Exclude;
 import com.google.firebase.database.ServerValue;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class Melodie {
+public class Melodie implements Serializable {
     private String cheie;
 
     private String cheieArtist;
