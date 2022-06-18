@@ -1,5 +1,6 @@
 package com.madalin.licenta.controllers.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,60 +8,46 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.madalin.licenta.R;
+import com.madalin.licenta.controllers.AutentificareActivity;
+import com.madalin.licenta.global.UtilitareFragment;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link BibliotecaFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class BibliotecaFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    FirebaseAuth firebaseAuth;
 
     public BibliotecaFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BibliotecaFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static BibliotecaFragment newInstance(String param1, String param2) {
-        BibliotecaFragment fragment = new BibliotecaFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
+        firebaseAuth = FirebaseAuth.getInstance(); // obtinere instanta Firebase Auth
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_biblioteca, container, false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Button buttonAutentificare;
+
+        // daca utilizatorul nu este conectat
+        if (firebaseAuth.getCurrentUser() == null) {
+            UtilitareFragment.inlocuireLayoutVedereFragment(BibliotecaFragment.this, R.layout.layout_solicitare_autentificare); // inlocuieste layout-ul vederii fragmentului cu cel pentru solicitarea autentificarii
+
+            buttonAutentificare = requireView().findViewById(R.id.solicitare_autentificare_buttonAutentificare); // obtine vederea butonului de autentificare
+            buttonAutentificare.setOnClickListener(view -> startActivity(new Intent(getActivity(), AutentificareActivity.class))); // seteaza un listener pentru lansarea AutentificareActivity la apasarea butonului
+        }
     }
 }
