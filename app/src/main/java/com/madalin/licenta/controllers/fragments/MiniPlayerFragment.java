@@ -35,20 +35,22 @@ import com.madalin.licenta.controllers.PlayerActivity;
 import com.madalin.licenta.interfaces.MiniPlayerInterface;
 import com.madalin.licenta.services.MuzicaService;
 
+import java.io.Serializable;
+
 public class MiniPlayerFragment extends Fragment
         implements
         MiniPlayerInterface,
         ServiceConnection {
 
-    RelativeLayout relativeLayoutMiniPlayer;
-    ImageView imageViewImagineMelodie;
-    ImageView imageViewButonNext;
-    FloatingActionButton floatingActionButtonButonPlayPause;
-    TextView textViewNumeMelodie;
-    TextView textViewNumeArtist;
-    View viewMiniPlayer;
+    private RelativeLayout relativeLayoutMiniPlayer;
+    private ImageView imageViewImagineMelodie;
+    private ImageView imageViewButonNext;
+    private FloatingActionButton floatingActionButtonButonPlayPause;
+    private TextView textViewNumeMelodie;
+    private TextView textViewNumeArtist;
+    private View viewMiniPlayer;
 
-    MuzicaService muzicaService; // instanta serviciu muzical
+    private MuzicaService muzicaService; // instanta serviciu muzical
 
     // variabile pentru memorarea datelor melodiei stocate in baza de date locala a sistemului
     public static String urlMelodie = null;
@@ -62,18 +64,20 @@ public class MiniPlayerFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        viewMiniPlayer = inflater.inflate(R.layout.fragment_mini_player, container, false); // obtine vederea fragment_mini_player
+        viewMiniPlayer = inflater.inflate(R.layout.fragment_mini_player, container, false); // obtine layout-ul fragment_mini_player
 
-        initializareVederi(); // initializare vederi fragment
+        initializareVederi(); // initializeaza vederile fragmentului
 
+        // listener lansare PlayerActivity la apasarea miniplayer-ului
         relativeLayoutMiniPlayer.setOnClickListener(v -> {
-            if (muzicaService != null) {
-                if (muzicaService.mediaPlayer != null) {
-                    if (muzicaService.pozitieMelodie != -1) {
+            if (muzicaService != null) { // daca serviciul ruleaza
+                if (muzicaService.mediaPlayer != null) { // daca MediaPlayer-ul din serviciu exista
+                    if (muzicaService.pozitieMelodie != -1) { // daca pozitia melodiei din serviciu este specificata
                         Intent intent = new Intent(getContext(), PlayerActivity.class);
-                        intent.putExtra(NumeExtra.POZITIE_MELODIE, muzicaService.pozitieMelodie); // adaugare pozitie melodie selectata in intent
+                        intent.putExtra(NumeExtra.LISTA_MELODII, (Serializable) muzicaService.listaMelodiiService); // ofera PlayerActivity-ului lista cu melodii din MuzicaService
+                        intent.putExtra(NumeExtra.POZITIE_MELODIE, muzicaService.pozitieMelodie); // ofera PlayerActivity-ului pozitia melodiei curente din MuzicaService
                         //intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                        getActivity().startActivity(intent);
+                        requireActivity().startActivity(intent); // lanseaza PlayerActivity
                     }
                 } else {
                     Toast.makeText(getContext(), "Selecteaza o melodie!", Toast.LENGTH_SHORT).show();
@@ -164,6 +168,7 @@ public class MiniPlayerFragment extends Fragment
     /**
      * La conectarea la serviciul {@link MuzicaService} se obtine o instanta a acestuia si se
      * initializeaza {@link #muzicaService} pentru a face posibila manipularea serviciului muzical.
+     * Schimba resursa {@link #floatingActionButtonButonPlayPause} in functie de starea media player-ului din serviciu.
      * Permite instantei {@link MuzicaService#miniPlayerInterface} din {@link MuzicaService} sa
      * foloseasca implementarea din aceasta clasa.
      */
@@ -171,6 +176,17 @@ public class MiniPlayerFragment extends Fragment
     public void onServiceConnected(ComponentName name, IBinder service) {
         MuzicaService.MuzicaServiceBinder miniPlayerMuzicaServiceBinder = (MuzicaService.MuzicaServiceBinder) service;
         muzicaService = miniPlayerMuzicaServiceBinder.getServiciu(); // obtine instanta serviciul MuzicaService si initializeaza "muzicaService"
+
+        // schimba imaginea butonului play/pause in functie de starea serviciului
+        if (muzicaService != null) {
+            if (muzicaService.mediaPlayer != null) {
+                if (muzicaService.isPlaying()) {
+                    floatingActionButtonButonPlayPause.setImageResource(R.drawable.ic_pause);
+                } else {
+                    floatingActionButtonButonPlayPause.setImageResource(R.drawable.ic_play);
+                }
+            }
+        }
 
         muzicaService.setCallbackMiniPlayerInterface(this); // permite instantei ActiuniRedareInterface din MuzicaService sa foloseasca implementarea din PlayerActivity
     }
@@ -212,7 +228,8 @@ public class MiniPlayerFragment extends Fragment
 
     /**
      * Populeaza fragmentul {@link MiniPlayerFragment} cu datele din {@link #imagineMelodie},
-     * {@link #numeMelodie} si {@link #numeArtist}.
+     * {@link #numeMelodie} si {@link #numeArtist}. Schimba culorile elementelor in functie de
+     * culoarea dominanta a imaginii melodiei.
      */
     public void afisareDateMelodie() {
         // populeaza campurile din miniplayer
