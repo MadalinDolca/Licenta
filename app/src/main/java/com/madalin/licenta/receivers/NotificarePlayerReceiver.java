@@ -14,6 +14,11 @@ import com.madalin.licenta.services.MuzicaService;
  */
 public class NotificarePlayerReceiver extends BroadcastReceiver {
 
+    // comenzile oferite de notificare pentru MuzicaService prin Intent
+    public static final String PLAY_PAUSE = "playPause";
+    public static final String NEXT = "next";
+    public static final String PREVIOUS = "previous";
+
     /**
      * Receptioneaza {@link Intent} broadcast-urile emise ca actiuni din notificarea
      * {@link MuzicaService#afisareNotificare(int)}. Identifica
@@ -33,17 +38,17 @@ public class NotificarePlayerReceiver extends BroadcastReceiver {
         if (numeActiune != null) {
             switch (numeActiune) {
                 case ApplicationClass.ACTION_PLAY:
-                    notificareMuzicaServiceIntent.putExtra(NumeExtra.NUME_ACTIUNE_NOTIFICARE, "playPause");
+                    notificareMuzicaServiceIntent.putExtra(NumeExtra.ACTIUNE_NOTIFICARE, PLAY_PAUSE);
                     context.startService(notificareMuzicaServiceIntent); // lanseaza serviciul spre MuzicaService cu datele "playPause"
                     break;
 
                 case ApplicationClass.ACTION_NEXT:
-                    notificareMuzicaServiceIntent.putExtra(NumeExtra.NUME_ACTIUNE_NOTIFICARE, "next");
+                    notificareMuzicaServiceIntent.putExtra(NumeExtra.ACTIUNE_NOTIFICARE, NEXT);
                     context.startService(notificareMuzicaServiceIntent); // lanseaza serviciul spre MuzicaService cu datele "previous"
                     break;
 
                 case ApplicationClass.ACTION_PREVIOUS:
-                    notificareMuzicaServiceIntent.putExtra(NumeExtra.NUME_ACTIUNE_NOTIFICARE, "previous");
+                    notificareMuzicaServiceIntent.putExtra(NumeExtra.ACTIUNE_NOTIFICARE, PREVIOUS);
                     context.startService(notificareMuzicaServiceIntent); // lanseaza serviciul spre MuzicaService cu datele "previous"
                     break;
             }
