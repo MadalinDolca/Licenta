@@ -5,7 +5,9 @@ package com.madalin.licenta.global;
  * din cadrul aplicatiei.
  */
 public class NumeExtra {
+    public static final String CHEIE_UTILIZATOR = "com.madalin.licenta.CHEIE_UTILIZATOR";
+    public static final String LISTA_MELODII = "com.madalin.licenta.LISTA_MELODII";
     public static final String POZITIE_MELODIE = "com.madalin.licenta.POZITIE_MELODIE";
     public static final String POZITIE_MELODIE_SERVICE = "com.madalin.licenta.POZITIE_MELODIE_SERVICE";
-    public static final String NUME_ACTIUNE_NOTIFICARE = "com.madalin.licenta.NUME_ACTIUNE_NOTIFICARE";
+    public static final String ACTIUNE_NOTIFICARE = "com.madalin.licenta.ACTIUNE_NOTIFICARE";
 }
