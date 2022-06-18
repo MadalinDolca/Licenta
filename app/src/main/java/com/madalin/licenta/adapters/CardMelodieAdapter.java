@@ -16,20 +16,21 @@ import com.bumptech.glide.request.RequestOptions;
 import com.madalin.licenta.global.NumeExtra;
 import com.madalin.licenta.R;
 import com.madalin.licenta.controllers.PlayerActivity;
-import com.madalin.licenta.models.CardMelodie;
+import com.madalin.licenta.models.Melodie;
 
+import java.io.Serializable;
 import java.util.List;
 
 // Adapter pentru legarea setului de date al cardului melodiei la vederile acesteia care sunt afisate intr-un RecyclerView
 public class CardMelodieAdapter extends RecyclerView.Adapter<CardMelodieAdapter.CardMelodieViewHolder> {
 
     Context context;
-    List<CardMelodie> listaCardMelodie;
+    List<Melodie> listaMelodii;
 
     // carui context trebuie sa i se ofere datele
-    public CardMelodieAdapter(Context context, List<CardMelodie> listaCardMelodie) {
+    public CardMelodieAdapter(Context context, List<Melodie> listaMelodii) {
         this.context = context;
-        this.listaCardMelodie = listaCardMelodie;
+        this.listaMelodii = listaMelodii;
     }
 
     // returneaza un nou ViewHolder cu un View umflat cu layout-ul cardului din XML atunci cand RecyclerView-ul are nevoie
@@ -44,34 +45,32 @@ public class CardMelodieAdapter extends RecyclerView.Adapter<CardMelodieAdapter.
     // leaga datele de vederea item-ului de la pozitia specificata atunci cand este apelata de RecyclerView
     @Override
     public void onBindViewHolder(@NonNull CardMelodieViewHolder holder, int position) {
-        //Log.d("ggggggggggg", listaCardMelodie.get(position).numeMelodie);
-        //holder.imageViewImagineMelodie.setImageResource(listaCardMelodie.get(position).imagineMelodie);
-
-        if (listaCardMelodie.get(position).imagineMelodie == null) { // daca melodia nu are link spre imagine
+        if (listaMelodii.get(position).getImagineMelodie() == null) { // daca melodia nu are link spre imagine
             holder.imageViewImagineMelodie.setImageResource(R.drawable.ic_nota_muzicala); // se adauga o resursa inlocuitoare
         } else { // daca melodia are link spre imagine, aceasta se obtine si se adauga in card-ul melodiei
-            Glide.with(context).load(listaCardMelodie.get(position).imagineMelodie)
+            Glide.with(context).load(listaMelodii.get(position).getImagineMelodie())
                     .apply(RequestOptions.centerCropTransform())
                     .placeholder(R.drawable.logo_music)
                     .error(R.drawable.ic_eroare) // in caz ca nu s-a putut incarca imaginea, se adauga o resursa inlocuitoare
                     .into(holder.imageViewImagineMelodie);
         }
 
-        holder.textViewNumeMelodie.setText(listaCardMelodie.get(position).numeMelodie);
-        holder.textViewNumeArtist.setText(listaCardMelodie.get(position).numeArtist);
+        holder.textViewNumeMelodie.setText(listaMelodii.get(position).getNumeMelodie());
+        holder.textViewNumeArtist.setText(listaMelodii.get(position).getNumeArtist());
 
-        // lansare activitate Player la apasarea cardului
+        // lansare PlayerActivity la apasarea cardului
         holder.imageViewImagineMelodie.setOnClickListener(v -> {
             Intent intent = new Intent(context, PlayerActivity.class);
-            intent.putExtra(NumeExtra.POZITIE_MELODIE, position); // adaugare pozitie melodie selectata in intent
-            context.startActivity(intent);
+            intent.putExtra(NumeExtra.LISTA_MELODII, (Serializable) listaMelodii); // adauga lista cu melodii in intent
+            intent.putExtra(NumeExtra.POZITIE_MELODIE, position); // adauga pozitia melodiei selectate in intent
+            context.startActivity(intent); // lanseaza PlayerActivity
         });
     }
 
     // numarul total de randuri
     @Override
     public int getItemCount() {
-        return listaCardMelodie.size();
+        return listaMelodii.size();
     }
 
     // ViewHolder-ul descrie vederea unui item si metadatele despre locul acesteia intr-un RecyclerView
