@@ -40,7 +40,7 @@ import com.madalin.licenta.interfaces.MiniPlayerInterface;
 import com.madalin.licenta.models.Melodie;
 import com.madalin.licenta.receivers.NotificarePlayerReceiver;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -52,17 +52,15 @@ public class MuzicaService extends Service
         MediaPlayer.OnCompletionListener,
         MediaPlayer.OnBufferingUpdateListener {
 
-    MuzicaServiceBinder muzicaServiceBinder = new MuzicaServiceBinder(); // rol de canal de comunicare dintre client (activitate / fragment) si acest serviciu
-
-    PlayerInterface playerInterface; // referinta a interfetei de comunicare dintre PlayerActivity si MuzicaService
-    MiniPlayerInterface miniPlayerInterface; // referinta a interfetei de comunicare dintre MiniPlayerFragment si MuzicaService
+    private MuzicaServiceBinder muzicaServiceBinder = new MuzicaServiceBinder(); // rol de canal de comunicare dintre client (activitate / fragment) si acest serviciu
+    private PlayerInterface playerInterface; // referinta a interfetei de comunicare dintre PlayerActivity si MuzicaService
+    private MiniPlayerInterface miniPlayerInterface; // referinta a interfetei de comunicare dintre MiniPlayerFragment si MuzicaService
 
     public MediaPlayer mediaPlayer;
-    public List<Melodie> listaMelodiiService = new ArrayList<>();
-    Uri uri; // adresa melodiei
+    public List<Melodie> listaMelodiiService; // lista cu melodii
     public int pozitieMelodie = -1; // pozitia implicita a melodiei din lista
-
-    MediaSessionCompat mediaSessionCompat; // sesiune interactiuni cu controalele media din notificare
+    private Uri uri; // adresa melodiei
+    private MediaSessionCompat mediaSessionCompat; // sesiune interactiuni cu controalele media din notificare
 
     // variabile finale folosite drept chei pentru stocarea datelor unei melodii in baza de date locala
     public static final String KEY_ULTIMA_MELODIE_REDATA = "ULTIMA_MELODIE_REDATA";
@@ -74,11 +72,8 @@ public class MuzicaService extends Service
     @Override
     public void onCreate() {
         super.onCreate();
-
         mediaSessionCompat = new MediaSessionCompat(getBaseContext(), "madAudio"); // initializare sesiunea media cu token-ul "madAudio"
     }
-
-    // se apeleaza la legarea serviciului de activitate
 
     /**
      * Returneaza {@link #muzicaServiceBinder} pe post de canal de comunicare dintre client
@@ -108,12 +103,12 @@ public class MuzicaService extends Service
 
     /**
      * Apelata de catre sistem de fiecare data cand clientul porneste explicit serviciul folosind
-     * {@link #startService(Intent)}. Obtine pozitia melodiei oferita de {@link PlayerActivity} si
-     * numele actiunii media din notificare oferit de {@link NotificarePlayerReceiver} prin
-     * intermediul {@link Intent}-urilor. Lanseaza melodia folosind {@link #playMelodie(int)} si
-     * pozitia din intent. Apeleaza metodele {@link #butonPlayPauseClicked()},
-     * {@link #butonNextClicked()} si {@link #butonPreviousClicked()} in functie de actiunea
-     * specificata in intent.
+     * {@link #startService(Intent)}.
+     * Obtine prin {@link Intent} lista cu melodii si pozitia melodiei de redat oferite de {@link PlayerActivity}.
+     * Obtine prin {@link Intent} numele actiunii media din notificare oferit de {@link NotificarePlayerReceiver}.
+     * Verifica stadiul actual al {@link #mediaPlayer}-ului si ii aplica comenzi dupa utilizarea {@link #creeazaMediaPlayer(int)}.
+     * Apeleaza metodele {@link #butonPlayPauseClicked()}, {@link #butonNextClicked()} si
+     * {@link #butonPreviousClicked()} in functie de actiunea specificata in intent.
      *
      * @param intent tipul de {@link Intent} furnizat
      * @return START_STICKY - daca procesul acestui serviciu este oprit in timp ce este pornit
@@ -123,25 +118,43 @@ public class MuzicaService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         int pozitieMelodiePlayer = intent.getIntExtra(NumeExtra.POZITIE_MELODIE_SERVICE, -1); // pozitia melodiei oferita de PlayerActivity prin Intent
-        String numeActiuneNotificare = intent.getStringExtra(NumeExtra.NUME_ACTIUNE_NOTIFICARE); // numele actiunii din notificare oferit de NotificarePlayerReceiver prin Intent
+        String numeActiuneNotificare = intent.getStringExtra(NumeExtra.ACTIUNE_NOTIFICARE); // numele actiunii din notificare oferit de NotificarePlayerReceiver prin Intent
 
-        // daca s-a furnizat o pozitie a melodiei, se lanseaza melodia
+        // daca serviciul a fost lansat de PlayerActivity, se opereaza mediaPlayer-ul
         if (pozitieMelodiePlayer != -1) {
-            playMelodie(pozitieMelodiePlayer);
+            listaMelodiiService = (List<Melodie>) intent.getSerializableExtra(NumeExtra.LISTA_MELODII); // obtine lista cu melodii oferita de PlayerActivity prin Intent
+            pozitieMelodie = pozitieMelodiePlayer; // obtine pozitia melodiei din Intent
+
+            // verifica daca mediaPlayer-ul este in curs de rulare
+            if (mediaPlayer != null) {
+                mediaPlayer.stop(); // opreste mediaPlayer-ul
+                mediaPlayer.release(); // elibereaza resursele mediaPlayer-ului
+
+                // verifica daca lista cu melodii NU este goala
+                if (listaMelodiiService != null) {
+                    creeazaMediaPlayer(pozitieMelodie); // creeaza un mediaPlayer pe baza pozitiei melodiei din lista
+                    mediaPlayer.start(); // lanseaza mediaPlayer-ul
+                }
+            }
+            // daca mediaPlayer-ul este null (nu a inceput inca / nu este in curs de redare)
+            else {
+                creeazaMediaPlayer(pozitieMelodie); // creeaza un mediaPlayer pe baza pozitiei melodiei din lista
+                mediaPlayer.start(); // lanseaza mediaPlayer-ul
+            }
         }
 
-        // daca s-a furnizat numele actiunii in NotificarePlayerReceiver, se verifica si se apeleaza tipul de actiune
+        // daca serviciul a fost lansat de NotificarePlayerReceiver, se apeleaza tipul de actiune
         if (numeActiuneNotificare != null) {
             switch (numeActiuneNotificare) {
-                case "playPause":
+                case NotificarePlayerReceiver.PLAY_PAUSE:
                     butonPlayPauseClicked();
                     break;
 
-                case "next":
+                case NotificarePlayerReceiver.NEXT:
                     butonNextClicked();
                     break;
 
-                case "previous":
+                case NotificarePlayerReceiver.PREVIOUS:
                     butonPreviousClicked();
                     break;
             }
@@ -149,58 +162,6 @@ public class MuzicaService extends Service
 
         Log.e("", "MuzicaService#onStartCommand(Intent, int, int)");
         return START_STICKY; // return super.onStartCommand(intent, flags, startId);
-    }
-
-    /**
-     * Permite {@link #playerInterface} sa foloseasca implementarea
-     * {@link PlayerInterface} din {@link PlayerActivity} pentru controlul actiunilor din
-     * cadrul notificarii playerului {@link PlayerActivity} > {@link NotificarePlayerReceiver} >
-     * {@link MuzicaService#onStartCommand(Intent, int, int)}.
-     *
-     * @param playerInterface clasa care implementeaza interfata {@link PlayerInterface}
-     */
-    public void setCallbackPlayerInterface(PlayerInterface playerInterface) {
-        this.playerInterface = playerInterface;
-    }
-
-    /**
-     * Permite {@link #miniPlayerInterface} sa foloseasca implementarea {@link MiniPlayerInterface}
-     * din {@link MiniPlayerFragment} pentru controlul obtinerii si afisarii datelor in miniplayer-ul
-     * din {@link MiniPlayerFragment}.
-     *
-     * @param miniPlayerInterface clasa care implementeaza interfata {@link MiniPlayerInterface}
-     */
-    public void setCallbackMiniPlayerInterface(MiniPlayerInterface miniPlayerInterface) {
-        this.miniPlayerInterface = miniPlayerInterface;
-    }
-
-    /**
-     * Copiaza lista cu melodii din {@link PlayerActivity#listaMelodiiPlayer}. Pregateste
-     * {@link #mediaPlayer}-ul pentru redarea unei melodii din lista de melodii copiata pe baza unei
-     * pozitii specificate.
-     *
-     * @param pozitieMelodiePlayer pozitia melodiei din lista
-     */
-    private void playMelodie(int pozitieMelodiePlayer) {
-        listaMelodiiService = PlayerActivity.listaMelodiiPlayer; // obtine lista cu melodii din PlayerActivity
-        pozitieMelodie = pozitieMelodiePlayer; // obtine pozitia melodiei din PlayerActivity
-
-        // verifica daca mediaPlayer-ul este in curs de rulare
-        if (mediaPlayer != null) {
-            mediaPlayer.stop(); // opreste mediaPlayer-ul
-            mediaPlayer.release(); // elibereaza resursele mediaPlayer-ului
-
-            // verifica daca lista cu melodii NU este goala
-            if (listaMelodiiService != null) {
-                creeazaMediaPlayer(pozitieMelodie); // creeaza un mediaPlayer pe baza pozitiei melodiei din lista
-                mediaPlayer.start(); // lanseaza mediaPlayer-ul
-            }
-        }
-        // daca mediaPlayer-ul este null (nu a inceput inca / nu este in curs de redare)
-        else {
-            creeazaMediaPlayer(pozitieMelodie); // creeaza un mediaPlayer pe baza pozitiei melodiei din lista
-            mediaPlayer.start(); // lanseaza mediaPlayer-ul
-        }
     }
 
     /**
@@ -215,7 +176,6 @@ public class MuzicaService extends Service
     public void creeazaMediaPlayer(int pozitieData) {
         pozitieMelodie = pozitieData;
         uri = Uri.parse(listaMelodiiService.get(pozitieMelodie).getUrlMelodie()); // obtine adresa resursei melodiei
-
         mediaPlayer = MediaPlayer.create(getBaseContext(), uri); // creaza MediaPlayer cu noul URI
 
         // stocheaza datele melodiei in baza de date locala a sistemului
@@ -248,13 +208,35 @@ public class MuzicaService extends Service
     }
 
     /**
+     * Permite {@link #playerInterface} sa foloseasca implementarea
+     * {@link PlayerInterface} din {@link PlayerActivity} pentru controlul actiunilor din
+     * cadrul notificarii playerului {@link PlayerActivity} > {@link NotificarePlayerReceiver} >
+     * {@link MuzicaService#onStartCommand(Intent, int, int)}.
+     *
+     * @param playerInterface clasa care implementeaza interfata {@link PlayerInterface}
+     */
+    public void setCallbackPlayerInterface(PlayerInterface playerInterface) {
+        this.playerInterface = playerInterface;
+    }
+
+    /**
+     * Permite {@link #miniPlayerInterface} sa foloseasca implementarea {@link MiniPlayerInterface}
+     * din {@link MiniPlayerFragment} pentru controlul obtinerii si afisarii datelor in miniplayer-ul
+     * din {@link MiniPlayerFragment}.
+     *
+     * @param miniPlayerInterface clasa care implementeaza interfata {@link MiniPlayerInterface}
+     */
+    public void setCallbackMiniPlayerInterface(MiniPlayerInterface miniPlayerInterface) {
+        this.miniPlayerInterface = miniPlayerInterface;
+    }
+
+    /**
      * Apeleaza metoda {@link PlayerActivity#butonPlayPauseClicked()} prin intermediul
      * instantei {@link #playerInterface}.
      */
     public void butonPlayPauseClicked() {
         if (playerInterface != null) {
             playerInterface.butonPlayPauseClicked();
-            //actualizareMiniPlayer();
         }
     }
 
@@ -294,6 +276,7 @@ public class MuzicaService extends Service
         // intent pentru deschiderea PlayerActivity la apasarea notificatii
         Intent contentIntent = new Intent(this, PlayerActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); // la click pe notificare se deschide PlayerActivity
         //contentIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        contentIntent.putExtra(NumeExtra.LISTA_MELODII, (Serializable) listaMelodiiService); /////////////////////// ?
         contentIntent.putExtra(NumeExtra.POZITIE_MELODIE, pozitieMelodie);
         PendingIntent contentPending = PendingIntent.getActivity(this, 0, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -466,9 +449,7 @@ public class MuzicaService extends Service
             if (mediaPlayer != null) {
                 creeazaMediaPlayer(pozitieMelodie);
                 mediaPlayer.start();
-
                 actualizareMiniPlayer(); // actualizeaza miniplayer-ul
-
                 onTerminareMelodie();
             }
         }
