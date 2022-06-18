@@ -18,7 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.madalin.licenta.R;
 import com.madalin.licenta.adapters.CategorieCarduriAdapter;
-import com.madalin.licenta.models.CategorieMelodii;
+import com.madalin.licenta.models.CategorieCarduri;
 import com.madalin.licenta.models.Melodie;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class AcasaFragment extends Fragment {
 
     private List<Melodie> listaMelodii; // lista pentru memorarea datelor melodiilor din baza de date
     private List<Melodie> listaMelodiiGitHub; // lista pentru memorarea datelor melodiilor din request API
-    private ArrayList<CategorieMelodii> listaCategorii; // pentru memorarea categoriilor
+    private ArrayList<CategorieCarduri> listaCategorii; // pentru memorarea categoriilor
 
     // constructor gol folosit atunci cand Android decide sa recreeze fragmentul
     public AcasaFragment() {
@@ -70,7 +70,7 @@ public class AcasaFragment extends Fragment {
                             listaMelodii.add(melodie); // adauga obiectul in lista
                         }
 
-                        listaCategorii.add(new CategorieMelodii("🎶 Toate Încărcările", listaMelodii)); // adauga lista cu melodii in lista categoriilor
+                        listaCategorii.add(new CategorieCarduri("🎶 Toate Încărcările", listaMelodii)); // adauga lista cu melodii in lista categoriilor
 
                         CategorieCarduriAdapter categorieCarduriAdapter = new CategorieCarduriAdapter(getContext(), listaCategorii); // creeaza un adapter pentru categoria cardurilor
                         recyclerView = requireActivity().findViewById(R.id.acasa_recyclerViewCategoriiCarduri); // obtinere vedere RecyclerView
