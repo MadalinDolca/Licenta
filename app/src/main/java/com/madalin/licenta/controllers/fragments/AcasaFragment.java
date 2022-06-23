@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,6 +27,7 @@ import java.util.List;
 
 public class AcasaFragment extends Fragment {
 
+    private SwipeRefreshLayout swipeRefreshLayoutContainer;
     private RecyclerView recyclerView;
 
     private List<Melodie> listaMelodii; // lista pentru memorarea datelor melodiilor din baza de date
@@ -46,16 +48,33 @@ public class AcasaFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View viewFragmentAcasa = inflater.inflate(R.layout.fragment_acasa, container, false); // obtinere vedere fragment_acasa din MainActivity
+        View view = inflater.inflate(R.layout.fragment_acasa, container, false); // obtinere vedere fragment_acasa din MainActivity
+        swipeRefreshLayoutContainer = view.findViewById(R.id.acasa_swipeRefreshLayoutContainer);
 
-        return viewFragmentAcasa;
+        return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // obtine datele melodiilor din baza de date, le memoreaza in array-uri si le adauga in RecyclerView
+        getMelodiiFirebase(view); // obtine melodiile din firebase
+
+        // reincarca melodiile la glisarea fragmentului
+        swipeRefreshLayoutContainer.setOnRefreshListener(() -> {
+            getMelodiiFirebase(view);
+        });
+
+        //getMelodiiGitHub(view);
+    }
+
+    /**
+     * Obtine datele melodiilor din baza de date, le memoreaza in array-uri si le adauga in
+     * RecyclerView.
+     *
+     * @param view vederea fragmentului
+     */
+    private void getMelodiiFirebase(View view) {
         FirebaseDatabase.getInstance().getReference("melodii")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -78,6 +97,7 @@ public class AcasaFragment extends Fragment {
                         recyclerView.setAdapter(categorieCarduriAdapter); // setare adapter pe recyclerView pentru a furniza child views la cerere
 
                         view.findViewById(R.id.acasa_lottieAnimationView).setVisibility(View.GONE); // ascunde animatia Lottie dupa afisarea cardurilor
+                        swipeRefreshLayoutContainer.setRefreshing(false); // inchide animatia de refresh
                     }
 
                     @Override
@@ -85,8 +105,6 @@ public class AcasaFragment extends Fragment {
                         Toast.makeText(getContext(), "Eroare: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
-        //getMelodiiGitHub(view);
     }
 
 //    void getMelodiiGitHub(View view) {
