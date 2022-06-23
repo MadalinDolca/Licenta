@@ -21,6 +21,7 @@ public class Solicitare implements Serializable {
     // date folosite pentru afisare
     private String temp_numeSolicitant;
     private String temp_numeArtist;
+    private String temp_numeMelodie;
     private String temp_imagineMelodie;
 
     // stadiul in care se poate afla o solicitare
@@ -144,6 +145,14 @@ public class Solicitare implements Serializable {
 
     public void setTemp_numeArtist(String temp_numeArtist) {
         this.temp_numeArtist = temp_numeArtist;
+    }
+
+    public String getTemp_numeMelodie() {
+        return temp_numeMelodie;
+    }
+
+    public void setTemp_numeMelodie(String temp_numeMelodie) {
+        this.temp_numeMelodie = temp_numeMelodie;
     }
 
     public String getTemp_imagineMelodie() {
