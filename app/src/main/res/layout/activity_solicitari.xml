@@ -14,7 +14,9 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/solicitari_tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:background="#00000000"
         app:tabGravity="fill"
         app:tabIndicator="@drawable/background_rotunjit"
         app:tabIndicatorAnimationMode="elastic"
@@ -45,4 +47,5 @@
         android:id="@+id/solicitari_viewPager2"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 </LinearLayout>
