@@ -14,6 +14,7 @@ import com.madalin.licenta.models.Melodie;
 import com.madalin.licenta.models.Solicitare;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -24,15 +25,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class TrimitereSolicitareActivity extends AppCompatActivity {
 
     LinearLayout toolbar;
+    RelativeLayout relativeLayoutDateMelodie;
     ImageView imageViewImagineMelodie;
     TextView textViewNumeMelodie;
     TextView textViewNumeArtist;
@@ -88,6 +94,19 @@ public class TrimitereSolicitareActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+
+        // listener lansare PlayerActivity cu melodia curenta
+        relativeLayoutDateMelodie.setOnClickListener(v -> {
+            if (melodieSelectata != null) {
+                List<Melodie> listaMelodie = new ArrayList<>();
+                listaMelodie.add(melodieSelectata); // adauga melodia curenta intr-o lista
+
+                Intent intent = new Intent(TrimitereSolicitareActivity.this, PlayerActivity.class);
+                intent.putExtra(NumeExtra.LISTA_MELODII, (Serializable) listaMelodie); // adauga lista cu melodia curenta in extra
+                intent.putExtra(NumeExtra.POZITIE_MELODIE, 0); // adauga pozitia melodiei selectate
+                startActivity(intent); // lanseaza PlayerActivity
             }
         });
 
@@ -164,6 +183,7 @@ public class TrimitereSolicitareActivity extends AppCompatActivity {
      */
     private void initializareVederi() {
         toolbar = findViewById(R.id.toolbar);
+        relativeLayoutDateMelodie = findViewById(R.id.solicita_permisiunea_relativeLayoutDateMelodie);
         imageViewImagineMelodie = findViewById(R.id.solicita_permisiunea_imageViewImagineMelodie);
         textViewNumeMelodie = findViewById(R.id.solicita_permisiunea_textViewNumeMelodie);
         textViewNumeArtist = findViewById(R.id.solicita_permisiunea_textViewNumeArtist);
