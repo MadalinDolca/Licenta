@@ -116,7 +116,7 @@ public class InregistrareActivity extends AppCompatActivity {
                                             TextView textViewProgressDialog = progressDialog.findViewById(R.id.progress_dialog_textViewMesaj);
                                             textViewProgressDialog.setText("Te-ai înregistrat cu succes!");
 
-                                            new Handler().postDelayed(() -> progressDialog.dismiss(), 3000); // // inlatura progress dialog-ul dupa 3 secunde
+                                            new Handler().postDelayed(() -> progressDialog.dismiss(), 3000); // inlatura progress dialog-ul dupa 3 secunde
 
                                             startActivity(new Intent(InregistrareActivity.this, AutentificareActivity.class)); // lanseaza AutentificareActivity dupa crearea utilizatorului si adaugarea datelor acestuia in baza de date
                                         }
