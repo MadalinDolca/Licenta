@@ -3,8 +3,11 @@ package com.madalin.licenta.controllers;
 import static com.madalin.licenta.global.EdgeToEdge.*;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -299,11 +302,18 @@ ft.commit();
             textViewNume.setText("Autentifică-te pentru a vedea mai multe");
             buttonDeconectare.setText("Autentifică-te");
 
+            // layout profil
             linearLayoutProfil.setOnClickListener(view -> {
                 bottomSheetDialog.dismiss();
                 startActivity(new Intent(MainActivity.this, AutentificareActivity.class));
             });
 
+            // laytout solicitari
+            linearLayoutSolicitari.setOnClickListener(view -> {
+                afisareDialogAlerta();
+            });
+
+            // buton deconectare
             buttonDeconectare.setOnClickListener(view -> {
                 bottomSheetDialog.dismiss();
                 startActivity(new Intent(MainActivity.this, AutentificareActivity.class));
@@ -311,6 +321,40 @@ ft.commit();
         }
 
         bottomSheetDialog.show(); // afiseaza bottom sheet dialog meniu
+    }
+
+
+    /**
+     * Afiseaza un dialog de alerta pentru autentificare in scenariul in care se doreste utilizarea
+     * unei functionalitati care necesita autentificarea.
+     */
+    private void afisareDialogAlerta() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.layout_alert_dialog); // layout dialog
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // fundal transparent
+
+        // initializare vederi
+        TextView textViewMesaj = dialog.findViewById(R.id.alert_dialog_textViewMesaj);
+        Button buttonAutentificare = dialog.findViewById(R.id.alert_dialog_buttonOptiune1);
+        Button buttonRenunta = dialog.findViewById(R.id.alert_dialog_buttonOptiune2);
+
+        // setare continut
+        textViewMesaj.setText("Pentru a vedea solicitările va trebui să te autentifici!");
+        buttonRenunta.setText("Renunță");
+        buttonAutentificare.setText("Autentifică-te");
+
+        // listener text renunta
+        buttonRenunta.setOnClickListener(v -> {
+            dialog.dismiss(); // inlatura dialogul
+        });
+
+        // listener buton autentificare
+        buttonAutentificare.setOnClickListener(v -> {
+            dialog.dismiss();
+            startActivity(new Intent(MainActivity.this, AutentificareActivity.class)); // lanseaza AutentificareActivity
+        });
+
+        dialog.show(); // afiseaza dialogul
     }
 
     /**
