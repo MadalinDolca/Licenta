@@ -62,6 +62,11 @@ public class SolicitariActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Adapter pentru a oferi vederi de pagina la cerere. Furnizeaza instante ale
+     * {@link SolicitariStadiuFragment} ca pagini pentru {@link #viewPager2} in functie de tipul de
+     * {@link Solicitare}.
+     */
     public class SolicitariAdapter extends FragmentStateAdapter {
 
         public SolicitariAdapter(@NonNull FragmentActivity fragmentActivity) {
@@ -72,9 +77,9 @@ public class SolicitariActivity extends AppCompatActivity {
         @Override
         public Fragment createFragment(int position) {
             switch (position) {
-                case 1:
+                case 0:
                     return SolicitariStadiuFragment.newInstance(Solicitare.NEEVALUATA);
-                case 2:
+                case 1:
                     return SolicitariStadiuFragment.newInstance(Solicitare.ACCEPTATA);
                 default:
                     return SolicitariStadiuFragment.newInstance(Solicitare.RESPINSA);
