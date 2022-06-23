@@ -42,5 +42,4 @@
         <!-- bara de status luminoasa si continut intunecat -->
         <item name="android:windowLightStatusBar">true</item>
     </style>
-
 </resources>
