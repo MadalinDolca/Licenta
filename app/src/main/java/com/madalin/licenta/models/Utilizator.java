@@ -12,12 +12,16 @@ public class Utilizator {
     private String grad;
     private Long dataCrearii;
 
+    public static final String GRAD_ADMIN = "admin";
+    public static final String GRAD_NORMAL = "normal";
+
     public Utilizator() {
     }
 
-    public Utilizator(String nume, String email) {
+    public Utilizator(String nume, String email, String grad) {
         this.nume = nume;
         this.email = email;
+        this.grad = grad;
     }
 
     public String getCheie() {
