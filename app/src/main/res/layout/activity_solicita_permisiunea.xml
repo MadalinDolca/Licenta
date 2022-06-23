@@ -31,53 +31,63 @@
                 android:focusableInTouchMode="true"
                 android:orientation="horizontal">
 
-                <!-- card imagine melodie -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/solicita_permisiunea_cardViewMelodie"
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
-                    android:layout_marginEnd="10dp"
-                    app:cardBackgroundColor="@color/primara"
-                    app:cardCornerRadius="@dimen/radius20"
-                    app:cardElevation="0dp">
+                <RelativeLayout
+                    android:id="@+id/solicita_permisiunea_relativeLayoutDateMelodie"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_rotunjit"
+                    android:backgroundTint="@color/fundal_alt"
+                    android:padding="10dp">
 
-                    <ImageView
-                        android:id="@+id/solicita_permisiunea_imageViewImagineMelodie"
+                    <!-- card imagine melodie -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/solicita_permisiunea_cardViewMelodie"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:layout_marginEnd="10dp"
+                        app:cardBackgroundColor="@color/primara"
+                        app:cardCornerRadius="@dimen/radius20"
+                        app:cardElevation="0dp">
+
+                        <ImageView
+                            android:id="@+id/solicita_permisiunea_imageViewImagineMelodie"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:adjustViewBounds="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/logo_music" />
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- nume melodie -->
+                    <TextView
+                        android:id="@+id/solicita_permisiunea_textViewNumeMelodie"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:adjustViewBounds="true"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/logo_music" />
-                </androidx.cardview.widget.CardView>
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/solicita_permisiunea_cardViewMelodie"
+                        android:text="Nume melodie"
+                        android:textColor="@color/text"
+                        android:textSize="@dimen/text_standard"
+                        android:textStyle="bold" />
 
-                <!-- nume melodie -->
-                <TextView
-                    android:id="@+id/solicita_permisiunea_textViewNumeMelodie"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/solicita_permisiunea_cardViewMelodie"
-                    android:text="Nume melodie"
-                    android:textColor="@color/text"
-                    android:textSize="@dimen/text_standard"
-                    android:textStyle="bold" />
+                    <!-- nume artist -->
+                    <TextView
+                        android:id="@+id/solicita_permisiunea_textViewNumeArtist"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/solicita_permisiunea_textViewNumeMelodie"
+                        android:layout_toEndOf="@id/solicita_permisiunea_cardViewMelodie"
+                        android:text="Nume artist"
+                        android:textColor="@color/text"
+                        android:textSize="@dimen/text_standard" />
 
-                <!-- nume artist -->
-                <TextView
-                    android:id="@+id/solicita_permisiunea_textViewNumeArtist"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/solicita_permisiunea_textViewNumeMelodie"
-                    android:layout_toEndOf="@id/solicita_permisiunea_cardViewMelodie"
-                    android:text="Nume artist"
-                    android:textColor="@color/text"
-                    android:textSize="@dimen/text_standard" />
+                </RelativeLayout>
 
                 <!-- titlu scop -->
                 <TextView
                     android:id="@+id/solicita_permisiunea_textViewTitluScop"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/solicita_permisiunea_cardViewMelodie"
+                    android:layout_below="@+id/solicita_permisiunea_relativeLayoutDateMelodie"
                     android:layout_marginTop="15dp"
                     android:text="Selectează scopul utilizării"
                     android:textColor="@color/text"
