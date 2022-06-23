@@ -84,7 +84,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
-            android:text="Solicitări de permisiuni"
+            android:text="Solicitări &amp; Licențe"
             android:textColor="@color/text"
             android:textSize="@dimen/text_standard" />
     </LinearLayout>
@@ -120,7 +120,7 @@
         android:id="@+id/bottom_sheet_meniu_buttonDeconectare"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:layout_marginBottom="25dp"
         android:background="@drawable/background_rotunjit"
         android:backgroundTint="@color/primara"
