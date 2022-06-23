@@ -41,15 +41,10 @@ public class InregistrareActivity extends AppCompatActivity {
         setContentView(R.layout.activity_inregistrare);
         edgeToEdge(this, findViewById(R.id.inregistrare_linearLayoutAutentificate), Spatiere.MARGIN, Directie.JOS);
 
+        initializareVederi();
+
         firebaseAuth = FirebaseAuth.getInstance(); // initializare Firebase Auth
         firebaseDatabase = FirebaseDatabase.getInstance(); // initializare Firebase Database
-
-        // obtinere vederi
-        editTextNume = findViewById(R.id.inregistrare_editTextNume);
-        editTextEmail = findViewById(R.id.inregistrare_editTextEmail);
-        editTextParola = findViewById(R.id.inregistrare_editTextParola);
-        textViewAutentificate = findViewById(R.id.inregistrare_textViewAutentificate);
-        buttonInregistreazate = findViewById(R.id.inregistrare_buttonInregistreazate);
 
         // listeners
         buttonInregistreazate.setOnClickListener(view -> creazaUtilizator());
@@ -103,7 +98,7 @@ public class InregistrareActivity extends AppCompatActivity {
                     .addOnCompleteListener(taskCreareUtilizator -> { // listener pentru efectuarea actiunilor la finalizarea crearii utilizatorului
                         // daca utilizatorul s-a creat cu succes
                         if (taskCreareUtilizator.isSuccessful()) {
-                            Utilizator utilizator = new Utilizator(nume, email); // memoreaza datele utilizatorului curent intr-un obiect Utilizator
+                            Utilizator utilizator = new Utilizator(nume, email, Utilizator.GRAD_NORMAL); // memoreaza datele utilizatorului curent intr-un obiect Utilizator
 
                             firebaseDatabase.getReference("utilizatori") // obtine referinta spre "utilizatori"
                                     .child(firebaseAuth.getCurrentUser().getUid()) // adauga child lui "utilizatori" avand ca nume UID-ul utilizatorului curent
@@ -116,9 +111,10 @@ public class InregistrareActivity extends AppCompatActivity {
                                             TextView textViewProgressDialog = progressDialog.findViewById(R.id.progress_dialog_textViewMesaj);
                                             textViewProgressDialog.setText("Te-ai înregistrat cu succes!");
 
-                                            new Handler().postDelayed(() -> progressDialog.dismiss(), 3000); // inlatura progress dialog-ul dupa 3 secunde
-
-                                            startActivity(new Intent(InregistrareActivity.this, AutentificareActivity.class)); // lanseaza AutentificareActivity dupa crearea utilizatorului si adaugarea datelor acestuia in baza de date
+                                            new Handler().postDelayed(() -> {
+                                                progressDialog.dismiss();
+                                                startActivity(new Intent(InregistrareActivity.this, AutentificareActivity.class)); // lanseaza AutentificareActivity dupa crearea utilizatorului si adaugarea datelor acestuia in baza de date
+                                            }, 3000); // inlatura progress dialog-ul si lanseaza AutentificareActivity dupa 3 secunde
                                         }
                                         // daca datele nu s-au putut adauga
                                         else {
@@ -134,5 +130,16 @@ public class InregistrareActivity extends AppCompatActivity {
                         }
                     });
         }
+    }
+
+    /**
+     * Initializeaza toate vederile din cadrul acestei activitati.
+     */
+    private void initializareVederi() {
+        editTextNume = findViewById(R.id.inregistrare_editTextNume);
+        editTextEmail = findViewById(R.id.inregistrare_editTextEmail);
+        editTextParola = findViewById(R.id.inregistrare_editTextParola);
+        textViewAutentificate = findViewById(R.id.inregistrare_textViewAutentificate);
+        buttonInregistreazate = findViewById(R.id.inregistrare_buttonInregistreazate);
     }
 }
