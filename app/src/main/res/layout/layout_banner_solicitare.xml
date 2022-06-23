@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/banner_solicitare_relativeLayoutContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/background_rotunjit"
+    android:backgroundTint="@color/fundal_alt"
+    android:padding="10dp">
+
+    <!-- card imagine melodie -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/banner_solicitare_cardViewMelodie"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="10dp"
+        app:cardBackgroundColor="@color/primara"
+        app:cardCornerRadius="@dimen/radius20"
+        app:cardElevation="0dp">
+
+        <ImageView
+            android:id="@+id/banner_solicitare_imageViewImagine"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- nume melodie -->
+    <TextView
+        android:id="@+id/banner_solicitare_textViewNumeMelodie"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/banner_solicitare_cardViewMelodie"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:text="Nume melodie"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_standard"
+        android:textStyle="bold" />
+
+    <!-- nume persoana (artist sau solicitant) -->
+    <ImageView
+        android:id="@+id/banner_solicitare_imageViewPersoana"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_below="@+id/banner_solicitare_textViewNumeMelodie"
+        android:layout_toEndOf="@+id/banner_solicitare_cardViewMelodie"
+        android:src="@drawable/ic_persoana"
+        app:tint="@color/text" />
+
+    <TextView
+        android:id="@+id/banner_solicitare_textViewNumePersoana"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/banner_solicitare_textViewNumeMelodie"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@+id/banner_solicitare_imageViewPersoana"
+        android:text="Nume artist"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_mic" />
+
+    <!-- data solicitarii -->
+    <ImageView
+        android:id="@+id/banner_solicitare_imageViewCalendar"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_below="@+id/banner_solicitare_textViewNumePersoana"
+        android:layout_toEndOf="@+id/banner_solicitare_cardViewMelodie"
+        android:src="@drawable/ic_calendar"
+        app:tint="@color/text" />
+
+    <TextView
+        android:id="@+id/banner_solicitare_textViewDataSolicitarii"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/banner_solicitare_textViewNumePersoana"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@+id/banner_solicitare_imageViewCalendar"
+        android:text="Data solicitării"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_mic" />
+
+</RelativeLayout>
