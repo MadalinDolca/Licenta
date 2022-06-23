@@ -264,6 +264,7 @@ ft.commit();
 
         // initializare vederi bottom sheet dialog
         LinearLayout linearLayoutProfil = bottomSheetDialog.findViewById(R.id.bottom_sheet_meniu_linearLayoutProfil);
+        LinearLayout linearLayoutSolicitari = bottomSheetDialog.findViewById(R.id.bottom_sheet_meniu_linearLayoutSolicitari);
         TextView textViewNume = bottomSheetDialog.findViewById(R.id.bottom_sheet_meniu_textViewNume);
         Button buttonDeconectare = bottomSheetDialog.findViewById(R.id.bottom_sheet_meniu_buttonDeconectare);
 
@@ -277,6 +278,13 @@ ft.commit();
                 Intent intentProfil = new Intent(MainActivity.this, ProfilActivity.class);
                 intentProfil.putExtra(NumeExtra.CHEIE_UTILIZATOR, utilizator.getCheie()); // adauga cheia utilizatorului in extra
                 startActivity(intentProfil); // lanseaza activitatea ProfilActivity
+            });
+
+            // accesare activitate solicitari
+            linearLayoutSolicitari.setOnClickListener(view -> {
+                bottomSheetDialog.dismiss();
+                Intent intentSolicitari = new Intent(MainActivity.this, SolicitariActivity.class);
+                startActivity(intentSolicitari);
             });
 
             // deconectare de la Firebase
