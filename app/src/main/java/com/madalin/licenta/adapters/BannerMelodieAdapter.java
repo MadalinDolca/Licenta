@@ -19,6 +19,7 @@ import com.madalin.licenta.controllers.MainActivity;
 import com.madalin.licenta.controllers.PlayerActivity;
 import com.madalin.licenta.global.NumeExtra;
 import com.madalin.licenta.models.Melodie;
+import com.madalin.licenta.models.Utilizator;
 
 import java.io.Serializable;
 import java.util.List;
@@ -57,7 +58,7 @@ public class BannerMelodieAdapter extends RecyclerView.Adapter<BannerMelodieAdap
 
         // daca utilizatorul curent este proprietarul melodiei sau admin, se afiseaza butonul de edit
         if (Objects.equals(MainActivity.utilizator.getCheie(), listaMelodii.get(position).getCheieArtist())
-                || Objects.equals(MainActivity.utilizator.getGrad(), "admin")) {
+                || Objects.equals(MainActivity.utilizator.getGrad(), Utilizator.GRAD_ADMIN)) {
             holder.imageViewButonEdit.setVisibility(View.VISIBLE);
         } else {
             holder.imageViewButonEdit.setVisibility(View.GONE);
