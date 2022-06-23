@@ -11,8 +11,20 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/solicitari_neevaluate_recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="15dp" />
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/solicitari_neevaluate_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:paddingHorizontal="@dimen/padding_ecran"
+        android:text="Nu ai solicitări neevaluate"
+        android:textAlignment="center"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_mare"
+        android:visibility="gone" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/solicitari_neevaluate_lottieAnimationView"
