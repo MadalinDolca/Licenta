@@ -9,7 +9,6 @@ import static com.madalin.licenta.global.EdgeToEdge.edgeToEdge;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.ColorStateList;
@@ -22,7 +21,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -35,7 +33,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.palette.graphics.Palette;
 
@@ -50,7 +47,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.madalin.licenta.R;
-import com.madalin.licenta.adapters.CardMelodieAdapter;
 import com.madalin.licenta.global.NumeExtra;
 import com.madalin.licenta.interfaces.PlayerInterface;
 import com.madalin.licenta.models.Melodie;
@@ -61,6 +57,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class PlayerActivity extends AppCompatActivity
@@ -105,9 +102,7 @@ public class PlayerActivity extends AppCompatActivity
         textViewNumeArtist.setText("Se încarcă...");
 
         // listener buton inapoi
-        imageViewButonInapoi.setOnClickListener(v -> {
-            super.onBackPressed();
-        });
+        imageViewButonInapoi.setOnClickListener(v -> super.onBackPressed());
 
         //new PregatirePlayerAsyncTask().execute(); // pregatire mediaPlayer si afisare date melodie
         lansareMuzicaService();
@@ -126,9 +121,10 @@ public class PlayerActivity extends AppCompatActivity
             }
         });
 
+        // lanseaza la apasare ProfilActivity pentru artistul curent
         textViewNumeArtist.setOnClickListener(v -> {
             Intent intent = new Intent(PlayerActivity.this, ProfilActivity.class);
-            intent.putExtra(NumeExtra.CHEIE_UTILIZATOR, listaMelodiiPlayer.get(pozitieMelodie).getCheieArtist());
+            intent.putExtra(NumeExtra.CHEIE_UTILIZATOR, listaMelodiiPlayer.get(pozitieMelodie).getCheieArtist()); // extra cu cheia artistului curent
             startActivity(intent);
         });
 
@@ -183,7 +179,15 @@ public class PlayerActivity extends AppCompatActivity
             }
             // daca utilizatorul este autentificat se lanseaza daca utilizatorul nu este autentificat
             else {
-                Intent intent = new Intent(PlayerActivity.this, SolicitaPermisiuneaActivity.class);
+                // intrerupe redarea melodiei
+                if (muzicaService.isPlaying()) {
+                    muzicaService.afisareNotificare(R.drawable.ic_play); // afisare notificare
+                    floatingActionButtonPlayPause.setImageResource(R.drawable.ic_play);
+                    muzicaService.pauza();
+                    seekBar.setMax(muzicaService.getDurataMelodie() / 1000); // setare valoare maxima seekBar in functie de durata melodiei din mediaPlayer
+                }
+
+                Intent intent = new Intent(PlayerActivity.this, TrimitereSolicitareActivity.class);
                 intent.putExtra(NumeExtra.SOLICITA_PERMISIUNEA, listaMelodiiPlayer.get(pozitieMelodie)); // extra cu datele melodiei curente
                 startActivity(intent);
             }
@@ -587,6 +591,13 @@ public class PlayerActivity extends AppCompatActivity
         textViewNumeArtist.setFocusable(true); // pentru marquee
 
         textViewDurataMelodie.setText(formatareMilisecunde(muzicaService.getDurataMelodie()));
+
+        // ascunde butonul "Solicita permisiunea" fata de autorul melodiei curente
+        if (Objects.equals(listaMelodiiPlayer.get(pozitieMelodie).getCheieArtist(), MainActivity.utilizator.getCheie())) {
+            buttonSolicitaPermisiunea.setVisibility(View.GONE);
+        } else {
+            buttonSolicitaPermisiunea.setVisibility(View.VISIBLE);
+        }
 
         // verifica daca activitatea este activa (afisata utilizatorului) sau inchisa
         if (isActivitatePlayerActiva) {
