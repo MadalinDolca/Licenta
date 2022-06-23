@@ -85,6 +85,23 @@ public class SolicitariStadiuFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // obtine vederea RecyclerView-ului specific stadiului solicitarii
+        switch (stadiuSolicitare) {
+            case Solicitare.ACCEPTATA:
+                recyclerView = view.findViewById(R.id.solicitari_acceptate_recyclerView);
+                break;
+
+            case Solicitare.RESPINSA:
+                recyclerView = view.findViewById(R.id.solicitari_respinse_recyclerView);
+                break;
+
+            default:
+                recyclerView = view.findViewById(R.id.solicitari_neevaluate_recyclerView);
+                break;
+        }
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext())); // seteaza LayoutManager-ul pe care recyclerView-ul il va folosi
+
         FirebaseDatabase.getInstance().getReference("solicitari")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -101,61 +118,13 @@ public class SolicitariStadiuFragment extends Fragment {
 
                                 // daca stadiul solicitarii este egal cu stadiul furnizat la crearea fragmentului
                                 if (Objects.equals(solicitare.getStadiu(), stadiuSolicitare)) {
-
-                                    // obtine imaginea si numele artistului melodiei
-                                    FirebaseDatabase.getInstance().getReference("melodii")
-                                            .child(solicitare.getCheieMelodie())
-                                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                    Melodie melodie = snapshot.getValue(Melodie.class);
-
-                                                    solicitare.setTemp_imagineMelodie(melodie.getImagineMelodie());
-                                                    solicitare.setTemp_numeArtist(melodie.getNumeArtist());
-                                                    listaSolicitari.add(solicitare); // adauga obiectul in lista
-                                                }
-
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError error) {
-                                                    Toast.makeText(getContext(), "Eroare: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
+                                    listaSolicitari.add(solicitare); // adauga obiectul in lista
                                 }
                             }
                         }
 
-                        // obtine vederea RecyclerView-ului specific stadiului solicitarii
-                        switch (stadiuSolicitare) {
-                            case Solicitare.ACCEPTATA:
-                                recyclerView = requireActivity().findViewById(R.id.solicitari_acceptate_recyclerView);
-                                break;
-
-                            case Solicitare.RESPINSA:
-                                recyclerView = requireActivity().findViewById(R.id.solicitari_respinse_recyclerView);
-                                break;
-
-                            default:
-                                recyclerView = requireActivity().findViewById(R.id.solicitari_neevaluate_recyclerView);
-                                break;
-                        }
-
-                        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                         recyclerView.setAdapter(new BannerSolicitareAdapter(getContext(), listaSolicitari)); // creeeaza si seteaza adapter pe recyclerView pentru a furniza child views la cerere
-
-                        // ascunde animatia Lottie specifica layout-ului stadiului solicitarii dupa afisarea banner-elor
-                        switch (stadiuSolicitare) {
-                            case Solicitare.ACCEPTATA:
-                                view.findViewById(R.id.solicitari_acceptate_lottieAnimationView).setVisibility(View.GONE);
-                                break;
-
-                            case Solicitare.RESPINSA:
-                                view.findViewById(R.id.solicitari_respinse_lottieAnimationView).setVisibility(View.GONE);
-                                break;
-
-                            default:
-                                view.findViewById(R.id.solicitari_neevaluate_lottieAnimationView).setVisibility(View.GONE);
-                                break;
-                        }
+                        afiseazaMesaj(view);
                     }
 
                     @Override
@@ -163,5 +132,63 @@ public class SolicitariStadiuFragment extends Fragment {
                         Toast.makeText(getContext(), "Eroare: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    /**
+     * Ascunde {@link com.airbnb.lottie.LottieAnimationView}-ul specific layout-ului stadiului
+     * solicitarii dupa afisarea banner-elor.
+     */
+    private void ascundeLottie(View view) {
+        switch (stadiuSolicitare) {
+            case Solicitare.ACCEPTATA:
+                view.findViewById(R.id.solicitari_acceptate_lottieAnimationView).setVisibility(View.GONE);
+                break;
+
+            case Solicitare.RESPINSA:
+                view.findViewById(R.id.solicitari_respinse_lottieAnimationView).setVisibility(View.GONE);
+                break;
+
+            default:
+                view.findViewById(R.id.solicitari_neevaluate_lottieAnimationView).setVisibility(View.GONE);
+                break;
+        }
+    }
+
+    /**
+     * Afiseaza un {@link android.widget.TextView} daca nu exista solicitari in stadiul respectiv in
+     * {@link #listaSolicitari}.
+     * Apeleaza {@link #ascundeLottie(View)} pentru ascunderea animatiei.
+     *
+     * @param view vederea fragmentului
+     */
+    private void afiseazaMesaj(View view) {
+        switch (stadiuSolicitare) {
+            case Solicitare.ACCEPTATA:
+                ascundeLottie(view); // ascunde animatia
+
+                // afiseaza un mesaj daca lista solicitarilor acceptate este goala
+                if (listaSolicitari.size() == 0) {
+                    view.findViewById(R.id.solicitari_acceptate_textView).setVisibility(View.VISIBLE);
+                }
+                break;
+
+            case Solicitare.RESPINSA:
+                ascundeLottie(view); // ascunde animatia
+
+                // afiseaza un mesaj daca lista solicitarilor respinse este goala
+                if (listaSolicitari.size() == 0) {
+                    view.findViewById(R.id.solicitari_respinse_textView).setVisibility(View.VISIBLE);
+                }
+                break;
+
+            default:
+                ascundeLottie(view); // ascunde animatia
+
+                // afiseaza un mesaj daca lista solicitarilor neevaluate este goala
+                if (listaSolicitari.size() == 0) {
+                    view.findViewById(R.id.solicitari_neevaluate_textView).setVisibility(View.VISIBLE);
+                }
+                break;
+        }
     }
 }
