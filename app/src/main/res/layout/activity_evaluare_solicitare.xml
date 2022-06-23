@@ -1,9 +1,273 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/fundal"
+    android:orientation="vertical"
     tools:context=".controllers.EvaluareSolicitareActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- toolbar -->
+    <include
+        android:id="@+id/evaluare_solicitare_toolbar"
+        layout="@layout/layout_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" />
+
+    <!-- ScrollView date evaluare -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/evaluare_solicitare_linearLayoutButoane"
+        android:layout_below="@+id/evaluare_solicitare_toolbar">
+
+        <!-- RelativeLayout date evaluare -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_ecran">
+
+            <!-- RelativeLayout date melodie -->
+            <RelativeLayout
+                android:id="@+id/evaluare_solicitare_relativeLayoutDateMelodie"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_rotunjit"
+                android:backgroundTint="@color/fundal_alt"
+                android:padding="10dp">
+
+                <!-- card imagine melodie -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/evaluare_solicitare_cardViewMelodie"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_marginEnd="10dp"
+                    app:cardBackgroundColor="@color/primara"
+                    app:cardCornerRadius="@dimen/radius20"
+                    app:cardElevation="0dp">
+
+                    <ImageView
+                        android:id="@+id/evaluare_solicitare_imageViewImagineMelodie"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/logo_music" />
+                </androidx.cardview.widget.CardView>
+
+                <!-- nume melodie -->
+                <TextView
+                    android:id="@+id/evaluare_solicitare_textViewNumeMelodie"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/evaluare_solicitare_cardViewMelodie"
+                    android:text="Nume melodie"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/text_standard"
+                    android:textStyle="bold" />
+
+                <!-- nume artist -->
+                <TextView
+                    android:id="@+id/evaluare_solicitare_textViewNumeArtist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/evaluare_solicitare_textViewNumeMelodie"
+                    android:layout_toEndOf="@id/evaluare_solicitare_cardViewMelodie"
+                    android:text="Nume artist"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/text_mic" />
+
+                <!-- data solicitarii -->
+                <TextView
+                    android:id="@+id/evaluare_solicitare_textViewDataSolicitarii"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/evaluare_solicitare_textViewNumeArtist"
+                    android:layout_toEndOf="@id/evaluare_solicitare_cardViewMelodie"
+                    android:text="Se încarcă..."
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/text_mic" />
+
+            </RelativeLayout>
+
+            <!-- titlu nume solicitant -->
+            <TextView
+                android:id="@+id/evaluare_solicitare_textViewTitluNumeSolicitant"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/evaluare_solicitare_relativeLayoutDateMelodie"
+                android:layout_marginTop="15dp"
+                android:text="Nume solicitant"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard"
+                android:textStyle="bold" />
+
+            <!-- nume solicitant -->
+            <TextView
+                android:id="@+id/evaluare_solicitare_textViewNumeSolicitant"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/evaluare_solicitare_textViewTitluNumeSolicitant"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/background_rotunjit"
+                android:backgroundTint="@color/fundal_alt"
+                android:paddingHorizontal="15dp"
+                android:paddingVertical="8dp"
+                android:text="Se încarcă..."
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard" />
+
+            <!-- titlu scopul utilizarii -->
+            <TextView
+                android:id="@+id/evaluare_solicitare_textViewTitluScopulUtilizarii"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/evaluare_solicitare_textViewNumeSolicitant"
+                android:layout_marginTop="15dp"
+                android:text="Scopul utilizării"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard"
+                android:textStyle="bold" />
+
+            <!-- scopul utilizarii -->
+            <TextView
+                android:id="@+id/evaluare_solicitare_textViewScopulUtilizarii"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/evaluare_solicitare_textViewTitluScopulUtilizarii"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/background_rotunjit"
+                android:backgroundTint="@color/fundal_alt"
+                android:paddingHorizontal="15dp"
+                android:paddingVertical="8dp"
+                android:text="Se încarcă..."
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard" />
+
+            <!-- titlu mediul utilizarii -->
+            <TextView
+                android:id="@+id/evaluare_solicitare_textViewTitluMediulUtilizarii"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/evaluare_solicitare_textViewScopulUtilizarii"
+                android:layout_marginTop="15dp"
+                android:text="Mediul utilizării"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard"
+                android:textStyle="bold" />
+
+            <!-- mediul utilizarii -->
+            <TextView
+                android:id="@+id/evaluare_solicitare_textViewMediulUtilizarii"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/evaluare_solicitare_textViewTitluMediulUtilizarii"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/background_rotunjit"
+                android:backgroundTint="@color/fundal_alt"
+                android:paddingHorizontal="15dp"
+                android:paddingVertical="8dp"
+                android:text="Se încarcă..."
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard" />
+
+            <!-- titlu locul utilizarii -->
+            <TextView
+                android:id="@+id/evaluare_solicitare_textViewTitluLoculUtilizarii"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/evaluare_solicitare_textViewMediulUtilizarii"
+                android:layout_marginTop="15dp"
+                android:text="Locul utilizării"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard"
+                android:textStyle="bold" />
+
+            <!-- locul utilizarii -->
+            <TextView
+                android:id="@+id/evaluare_solicitare_textViewLoculUtilizarii"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/evaluare_solicitare_textViewTitluLoculUtilizarii"
+                android:layout_marginTop="5dp"
+                android:autoLink="web"
+                android:background="@drawable/background_rotunjit"
+                android:backgroundTint="@color/fundal_alt"
+                android:paddingHorizontal="15dp"
+                android:paddingVertical="8dp"
+                android:text="Se încarcă..."
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard" />
+
+            <!-- titlu motivul utilizarii -->
+            <TextView
+                android:id="@+id/evaluare_solicitare_textViewTitluMotivulUtilizarii"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/evaluare_solicitare_textViewLoculUtilizarii"
+                android:layout_marginTop="15dp"
+                android:text="Motivul utilizării"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard"
+                android:textStyle="bold" />
+
+            <!-- motivul utilizarii -->
+            <TextView
+                android:id="@+id/evaluare_solicitare_textViewMotivulUtilizarii"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/evaluare_solicitare_textViewTitluMotivulUtilizarii"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/background_rotunjit"
+                android:backgroundTint="@color/fundal_alt"
+                android:paddingHorizontal="15dp"
+                android:paddingVertical="8dp"
+                android:text="Se încarcă..."
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <!-- layout butoane -->
+    <LinearLayout
+        android:id="@+id/evaluare_solicitare_linearLayoutButoane"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/background_bottom_sheet"
+        android:backgroundTint="@color/fundal_alt"
+        android:orientation="horizontal"
+        android:padding="15dp">
+
+        <!-- buton accepta -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/evaluare_solicitare_buttonAccepta"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_rotunjit"
+            android:backgroundTint="#34DE00"
+            android:text="Acceptă"
+            android:textColor="@color/text_pe_primara"
+            android:textSize="@dimen/text_standard" />
+
+        <!-- buton respinge -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/evaluare_solicitare_buttonRespinge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/background_rotunjit"
+            android:backgroundTint="#E90000"
+            android:text="Respinge"
+            android:textColor="@color/text_pe_primara"
+            android:textSize="@dimen/text_standard" />
+
+    </LinearLayout>
+
+</RelativeLayout>
