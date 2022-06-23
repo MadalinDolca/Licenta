@@ -70,7 +70,7 @@ public class ProfilActivity extends AppCompatActivity {
                 if (profilUtilizator != null) {
                     textViewNumeUtilizator.setText(profilUtilizator.getNume());
 
-                    if (Objects.equals(profilUtilizator.getGrad(), "admin")) {
+                    if (Objects.equals(profilUtilizator.getGrad(), Utilizator.GRAD_ADMIN)) {
                         textViewGrad.setText(profilUtilizator.getGrad());
                     } else {
                         textViewGrad.setText("utilizator");
