@@ -15,7 +15,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Licenta">
         <activity
-            android:name=".controllers.SolicitaPermisiuneaActivity"
+            android:name=".controllers.EvaluareSolicitareActivity"
+            android:exported="false" />
+        <activity
+            android:name=".controllers.SolicitariActivity"
+            android:exported="false" />
+        <activity
+            android:name=".controllers.TrimitereSolicitareActivity"
             android:exported="false" />
         <activity
             android:name=".controllers.PlayerActivity"
