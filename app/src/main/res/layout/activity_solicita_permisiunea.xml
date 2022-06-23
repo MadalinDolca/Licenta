@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/fundal"
     android:scrollbars="none"
-    tools:context=".controllers.SolicitaPermisiuneaActivity">
+    tools:context=".controllers.TrimitereSolicitareActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,6 +17,7 @@
         <!-- toolbar -->
         <include layout="@layout/layout_toolbar" />
 
+        <!-- padding -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,6 +27,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:orientation="horizontal">
 
                 <!-- card imagine melodie -->
@@ -39,7 +42,7 @@
                     app:cardElevation="0dp">
 
                     <ImageView
-                        android:id="@+id/solicita_permisiunea_imageViewImagine"
+                        android:id="@+id/solicita_permisiunea_imageViewImagineMelodie"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:adjustViewBounds="true"
@@ -69,35 +72,65 @@
                     android:textColor="@color/text"
                     android:textSize="@dimen/text_standard" />
 
-                <!-- EditText nume solicitant -->
-                <EditText
-                    android:id="@+id/solicita_permisiunea_editTextNumeSolicitant"
+                <!-- titlu scop -->
+                <TextView
+                    android:id="@+id/solicita_permisiunea_textViewTitluScop"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/solicita_permisiunea_cardViewMelodie"
+                    android:layout_below="@+id/solicita_permisiunea_cardViewMelodie"
                     android:layout_marginTop="15dp"
-                    android:background="@drawable/background_rotunjit"
-                    android:backgroundTint="@color/fundal_alt"
-                    android:hint="Adaugă numele tău real"
-                    android:inputType="text"
-                    android:padding="15dp"
+                    android:text="Selectează scopul utilizării"
                     android:textColor="@color/text"
-                    android:textSize="@dimen/text_standard" />
+                    android:textSize="@dimen/text_standard"
+                    android:textStyle="bold" />
+
+                <!-- spinner scop -->
+                <Spinner
+                    android:id="@+id/solicita_permisiunea_spinnerScop"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/solicita_permisiunea_textViewTitluScop"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/background_spinner"
+                    android:popupBackground="@drawable/background_spinner_dropdown" />
+
+                <!-- titlu mediu -->
+                <TextView
+                    android:id="@+id/solicita_permisiunea_textViewTitluMediu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/solicita_permisiunea_spinnerScop"
+                    android:layout_marginTop="15dp"
+                    android:text="Selectează mediul utilizării"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/text_standard"
+                    android:textStyle="bold" />
+
+                <!-- spinner mediu -->
+                <Spinner
+                    android:id="@+id/solicita_permisiunea_spinnerMediu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/solicita_permisiunea_textViewTitluMediu"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/background_spinner"
+                    android:popupBackground="@drawable/background_spinner_dropdown" />
 
                 <!-- EditText locul utilizarii -->
                 <EditText
                     android:id="@+id/solicita_permisiunea_editTextLoculUtilizarii"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/solicita_permisiunea_editTextNumeSolicitant"
+                    android:layout_below="@id/solicita_permisiunea_spinnerMediu"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/background_rotunjit"
                     android:backgroundTint="@color/fundal_alt"
-                    android:hint="Adaugă locul utilizării"
+                    android:hint="Adaugă locul utilizării (adresa URL)"
                     android:inputType="text"
                     android:padding="15dp"
                     android:textColor="@color/text"
-                    android:textSize="@dimen/text_standard" />
+                    android:textSize="@dimen/text_standard"
+                    android:visibility="gone" />
 
                 <!-- EditText motiv -->
                 <EditText
@@ -109,24 +142,16 @@
                     android:background="@drawable/background_rotunjit"
                     android:backgroundTint="@color/fundal_alt"
                     android:gravity="top|start"
-                    android:hint="Adaugă motivul pentru care dorești să utilizezi melodia, sub ce formă o vei folosi"
+                    android:hint="Adaugă motivul pentru care dorești să utilizezi melodia"
                     android:inputType="textMultiLine"
                     android:lines="8"
                     android:maxLines="10"
-                    android:minLines="6"
+                    android:minLines="3"
                     android:padding="15dp"
                     android:scrollbars="vertical"
                     android:textColor="@color/text"
                     android:textSize="@dimen/text_standard" />
 
-                <!-- Spinner trimite solicitarea -->
-<!--                <Spinner-->
-<!--                    android:id="@+id/adauga_spinnerGenMelodie"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:background="@drawable/background_spinner"-->
-<!--                    android:popupBackground="@drawable/background_spinner_dropdown" />-->
-<!--                -->
                 <!-- buton trimite solicitarea -->
                 <Button
                     android:id="@+id/solicita_permisiunea_buttonTrimiteSolicitarea"
