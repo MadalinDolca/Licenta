@@ -19,4 +19,17 @@
         <item>Alternative Rock</item>
         <item>Pop</item>
     </string-array>
+
+    <!-- array scop solicitare cerere -->
+    <string-array name="array_scop_solicitare">
+        <item>Comercial</item>
+        <item>Non-comercial</item>
+    </string-array>
+
+    <!-- array mediu utilizare -->
+    <string-array name="array_mediu_utilizare">
+        <item>Online</item>
+        <item>Fizic</item>
+        <item>Ambele</item>
+    </string-array>
 </resources>
