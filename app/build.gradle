@@ -73,4 +73,7 @@ dependencies {
 
     // Extragere paleta culori din imagine
     implementation 'androidx.palette:palette:1.0.0'
+
+    // Vizualizare PDF
+    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
 }
