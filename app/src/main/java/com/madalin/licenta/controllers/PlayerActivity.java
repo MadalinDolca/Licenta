@@ -585,10 +585,10 @@ public class PlayerActivity extends AppCompatActivity
     public void afisareDateMelodie() {
         // setare date de tip text
         textViewNumeMelodie.setText(listaMelodiiPlayer.get(pozitieMelodie).getNumeMelodie());
-        textViewNumeMelodie.setFocusable(true); // pentru marquee
+        textViewNumeMelodie.setSelected(true); // pentru marquee
 
         textViewNumeArtist.setText(listaMelodiiPlayer.get(pozitieMelodie).getNumeArtist());
-        textViewNumeArtist.setFocusable(true); // pentru marquee
+        textViewNumeArtist.setSelected(true); // pentru marquee
 
         textViewDurataMelodie.setText(formatareMilisecunde(muzicaService.getDurataMelodie()));
 
