@@ -33,10 +33,12 @@
         android:id="@+id/banner_solicitare_textViewNumeMelodie"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/banner_solicitare_imageViewIconitaSolicitare"
         android:layout_toEndOf="@+id/banner_solicitare_cardViewMelodie"
         android:ellipsize="marquee"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:freezesText="true"
         android:marqueeRepeatLimit="marquee_forever"
         android:maxLines="1"
         android:scrollHorizontally="true"
@@ -62,7 +64,15 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/banner_solicitare_textViewNumeMelodie"
         android:layout_marginStart="10dp"
+        android:layout_toStartOf="@+id/banner_solicitare_imageViewIconitaSolicitare"
         android:layout_toEndOf="@+id/banner_solicitare_imageViewPersoana"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:freezesText="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
         android:text="Nume artist"
         android:textColor="@color/text"
         android:textSize="@dimen/text_mic" />
@@ -83,9 +93,29 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/banner_solicitare_textViewNumePersoana"
         android:layout_marginStart="10dp"
+        android:layout_toStartOf="@+id/banner_solicitare_imageViewIconitaSolicitare"
         android:layout_toEndOf="@+id/banner_solicitare_imageViewCalendar"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:freezesText="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
         android:text="Data solicitării"
         android:textColor="@color/text"
         android:textSize="@dimen/text_mic" />
+
+    <!-- iconita solicitare permisiune -->
+    <ImageView
+        android:id="@+id/banner_solicitare_imageViewIconitaSolicitare"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/ic_solicitare_permisiune"
+        android:visibility="gone"
+        app:tint="@color/text" />
 
 </RelativeLayout>
