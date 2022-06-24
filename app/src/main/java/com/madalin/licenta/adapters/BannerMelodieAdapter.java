@@ -66,13 +66,13 @@ public class BannerMelodieAdapter extends RecyclerView.Adapter<BannerMelodieAdap
 
         // seteaza datele de tip text
         holder.textViewNumeMelodie.setText(listaMelodii.get(position).getNumeMelodie());
-        holder.textViewNumeMelodie.setFocusable(true); // pentru marquee
+        holder.textViewNumeMelodie.setSelected(true); // pentru marquee
 
         holder.textViewNumarRedari.setText(listaMelodii.get(position).getNumarRedari() + " redări");
-        holder.textViewNumarRedari.setFocusable(true); // pentru marquee
+        holder.textViewNumarRedari.setSelected(true); // pentru marquee
 
         holder.textViewGenMuzical.setText(listaMelodii.get(position).getGenMelodie());
-        holder.textViewGenMuzical.setFocusable(true); // pentru marquee
+        holder.textViewGenMuzical.setSelected(true); // pentru marquee
 
         // lansare activitate Player la apasarea cardului
         holder.relativeLayoutContainer.setOnClickListener(v -> {
