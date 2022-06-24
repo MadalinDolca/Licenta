@@ -102,6 +102,6 @@ public class SolicitariActivity extends AppCompatActivity {
 
         toolbar.findViewById(R.id.toolbar_imageViewButonInapoi).setOnClickListener(v -> super.onBackPressed());
         TextView textView = toolbar.findViewById(R.id.toolbar_textViewTitlu);
-        textView.setText("Solicitări & Licențe");
+        textView.setText("Solicitări");
     }
 }
