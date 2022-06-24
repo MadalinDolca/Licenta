@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:id="@+id/licenta_linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/logo_music" />
+
+            <!-- titlu -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Acord de licență muzicală"
+                android:textAlignment="center"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard"
+                android:textStyle="bold" />
+
+            <!-- numar contract -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Numărul de contract"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/licenta_textViewNumarContract"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Număr contract"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard" />
+
+            <!-- introducere artist -->
+            <TextView
+                android:id="@+id/licenta_textViewIntroducereArtist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Introducere artist"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard" />
+
+            <!-- introducere beneficiar -->
+            <TextView
+                android:id="@+id/licenta_textViewIntroducereBeneficiar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Introducere artist"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard" />
+
+            <!-- conditii -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Condițiile de utilizare a conținutului"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/licenta_textViewConditii"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Condiții"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard" />
+
+            <!-- data inceperii valabilitatii -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Data începerii valabilității contractului"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/licenta_textViewDataIncepereValabilitate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Semnătura"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard" />
+
+            <!-- semnatura artist -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Semnătura artistului"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/licenta_textViewSemnaturaArtist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Semnătura"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard" />
+
+            <!-- semnatura beneficiar -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Semnătura beneficiarului"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/licenta_textViewSemnaturaBeneficiar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Semnătura"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_standard" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

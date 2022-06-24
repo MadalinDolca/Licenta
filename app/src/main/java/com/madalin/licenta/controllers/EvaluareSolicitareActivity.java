@@ -3,28 +3,28 @@ package com.madalin.licenta.controllers;
 import static com.madalin.licenta.global.EdgeToEdge.edgeToEdge;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.madalin.licenta.GeneratorLicenta;
 import com.madalin.licenta.R;
-import com.madalin.licenta.adapters.BannerSolicitareAdapter;
 import com.madalin.licenta.global.EdgeToEdge;
 import com.madalin.licenta.global.NumeExtra;
 import com.madalin.licenta.models.Melodie;
 import com.madalin.licenta.models.Solicitare;
 import com.madalin.licenta.models.Utilizator;
 
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
-import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -33,6 +33,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -155,15 +158,20 @@ public class EvaluareSolicitareActivity extends AppCompatActivity {
         });
 
         // la apasarea butonului "Accepta" se actualizeaza stadiul solicitarii in "acceptata"
-        buttonAccepta.setOnClickListener(v ->
-                FirebaseDatabase.getInstance().getReference("solicitari")
+        buttonAccepta.setOnClickListener(v -> {
+                /*FirebaseDatabase.getInstance().getReference("solicitari")
                         .child(solicitareSelectata.getCheie())
                         .child("stadiu").setValue(Solicitare.ACCEPTATA).addOnSuccessListener(unused -> {
                             linearLayoutButoane.setVisibility(View.GONE); // ascunde butoanele
                             EvaluareSolicitareActivity.this.finish(); // incheie activitatea
                         })
+                        .addOnSuccessListener(unused -> generareLicenta(solicitareSelectata)) // genereaza licenta
+                        .addOnFailureListener(e -> Toast.makeText(this, "Eroare: " + e.getMessage(), Toast.LENGTH_SHORT).show())*/
 
-        );
+            GeneratorLicenta generatorLicenta = new GeneratorLicenta(this);
+            generatorLicenta.generareLicenta(solicitareSelectata);
+
+        });
 
         // la apasarea butonului "Respinge" se actualizeaza stadiul solicitarii in "respinsa"
         buttonRespinge.setOnClickListener(v ->
@@ -173,8 +181,121 @@ public class EvaluareSolicitareActivity extends AppCompatActivity {
                             linearLayoutButoane.setVisibility(View.GONE); // ascunde butoanele
                             EvaluareSolicitareActivity.this.finish(); // incheie activitatea
                         })
-        );
+                        .addOnSuccessListener(unused -> EvaluareSolicitareActivity.this.finish()) // incheie activitatea curenta
+                        .addOnFailureListener(e -> Toast.makeText(this, "Eroare: " + e.getMessage(), Toast.LENGTH_SHORT).show()));
     }
+
+
+
+    /*private void createPdf() {
+        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        //  Display display = wm.getDefaultDisplay();
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        this.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        float hight = displaymetrics.heightPixels;
+        float width = displaymetrics.widthPixels;
+
+        int convertHighet = (int) hight, convertWidth = (int) width;
+
+        PdfDocument document = new PdfDocument();
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(convertWidth, convertHighet, 1).create();
+        PdfDocument.Page page = document.startPage(pageInfo);
+
+        Canvas canvas = page.getCanvas();
+
+        Paint paint = new Paint();
+        canvas.drawPaint(paint);
+
+        bitmap = Bitmap.createScaledBitmap(bitmap, convertWidth, convertHighet, true);
+
+        paint.setColor(Color.BLUE);
+        canvas.drawBitmap(bitmap, 0, 0, null);
+        document.finishPage(page);
+
+        // write the document content
+        String targetPdf = "/sdcard/page.pdf";
+        File filePath;
+        filePath = new File(targetPdf);
+        try {
+            document.writeTo(new FileOutputStream(filePath));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Something wrong: " + e.toString(), Toast.LENGTH_LONG).show();
+        }////////////////////
+
+        // close the document
+        document.close();
+        Toast.makeText(this, "successfully pdf created", Toast.LENGTH_SHORT).show();
+
+        openPdf();
+
+    }*/
+
+    /*
+    private void openPdf() {
+        File file = new File("/sdcard/page.pdf");
+        if (file.exists()) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri uri = Uri.fromFile(file);
+            intent.setDataAndType(uri, "application/pdf");
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(this, "No Application for pdf view", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }*/
+
+//    private void generareLicenta(Solicitare solicitare) {
+//        View viewLicenta = LayoutInflater.from(this).inflate(R.layout.layout_licenta, null);
+//        viewLicenta.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+//                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+//        viewLicenta.layout(0, 0, viewLicenta.getMeasuredWidth(), viewLicenta.getMeasuredHeight());
+//
+//        Bitmap bitmap = Bitmap.createBitmap(viewLicenta.getMeasuredWidth(), viewLicenta.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+//        Canvas c = new Canvas(bitmap);
+//        viewLicenta.draw(c);
+//
+//        //  Display display = wm.getDefaultDisplay();
+//        /*DisplayMetrics displaymetrics = new DisplayMetrics();
+//        this.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+//        float hight = displaymetrics.heightPixels;
+//        float width = displaymetrics.widthPixels;
+//        int convertHighet = (int) hight, convertWidth = (int) width;*/
+//
+//
+//        PdfDocument document = new PdfDocument();
+//        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(viewLicenta.getMeasuredWidth(), viewLicenta.getMeasuredHeight(), 1).create();
+//        PdfDocument.Page page = document.startPage(pageInfo);
+//        Canvas canvas = page.getCanvas();
+//        Paint paint = new Paint();
+//        canvas.drawPaint(paint);
+//
+//        bitmap = Bitmap.createScaledBitmap(bitmap, viewLicenta.getMeasuredWidth(), viewLicenta.getMeasuredHeight(), true);
+//
+//        paint.setColor(Color.BLUE);
+//        canvas.drawBitmap(bitmap, 0, 0, null);
+//        document.finishPage(page);
+//
+//        // write the document content
+//        String targetPdf = "/sdcard/pdffromScroll.pdf";
+//        File filePath;
+//        filePath = new File(targetPdf);
+//
+//        try {
+//            document.writeTo(new FileOutputStream(filePath));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Toast.makeText(this, "Something wrong: " + e.toString(), Toast.LENGTH_LONG).show();
+//        }
+//
+//        // close the document
+//        document.close();
+//        Toast.makeText(this, "PDF of Scroll is created!!!", Toast.LENGTH_SHORT).show();
+//    }
 
     /**
      * Initializeaza toate vederile din cadrul acestei activitati.
