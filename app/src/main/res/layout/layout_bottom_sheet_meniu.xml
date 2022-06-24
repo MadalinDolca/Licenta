@@ -84,7 +84,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
-            android:text="Solicitări &amp; Licențe"
+            android:text="Solicitări"
+            android:textColor="@color/text"
+            android:textSize="@dimen/text_standard" />
+    </LinearLayout>
+
+    <!-- licente -->
+    <LinearLayout
+        android:id="@+id/bottom_sheet_meniu_linearLayoutLicente"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingVertical="10dp">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_licenta"
+            app:tint="@color/text" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:text="Licențe"
             android:textColor="@color/text"
             android:textSize="@dimen/text_standard" />
     </LinearLayout>
