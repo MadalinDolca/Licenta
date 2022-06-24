@@ -19,7 +19,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.madalin.licenta.R;
 import com.madalin.licenta.adapters.BannerSolicitareAdapter;
 import com.madalin.licenta.controllers.MainActivity;
-import com.madalin.licenta.models.Melodie;
 import com.madalin.licenta.models.Solicitare;
 
 import java.util.ArrayList;
