@@ -98,13 +98,14 @@ public class BannerSolicitareAdapter extends RecyclerView.Adapter<BannerSolicita
      * si metadatele despre locul acesteia intr-un {@link RecyclerView}.
      */
     public static class BannerSolicitareViewHolder extends RecyclerView.ViewHolder {
-        RelativeLayout relativeLayoutContainer;
-        ImageView imageViewImagineMelodie;
-        ImageView imageViewPersoana;
-        ImageView imageViewCalendar;
-        TextView textViewNumeMelodie;
-        TextView textViewNumePersoana;
-        TextView textViewDataSolicitarii;
+        public RelativeLayout relativeLayoutContainer;
+        public ImageView imageViewImagineMelodie;
+        public ImageView imageViewPersoana;
+        public ImageView imageViewCalendar;
+        public ImageView imageViewIconitaSolicitare;
+        public TextView textViewNumeMelodie;
+        public TextView textViewNumePersoana;
+        public TextView textViewDataSolicitarii;
 
         public BannerSolicitareViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -113,6 +114,7 @@ public class BannerSolicitareAdapter extends RecyclerView.Adapter<BannerSolicita
             imageViewImagineMelodie = itemView.findViewById(R.id.banner_solicitare_imageViewImagine);
             imageViewPersoana = itemView.findViewById(R.id.banner_solicitare_imageViewPersoana);
             imageViewCalendar = itemView.findViewById(R.id.banner_solicitare_imageViewCalendar);
+            imageViewIconitaSolicitare = itemView.findViewById(R.id.banner_solicitare_imageViewIconitaSolicitare);
             textViewNumeMelodie = itemView.findViewById(R.id.banner_solicitare_textViewNumeMelodie);
             textViewNumePersoana = itemView.findViewById(R.id.banner_solicitare_textViewNumePersoana);
             textViewDataSolicitarii = itemView.findViewById(R.id.banner_solicitare_textViewDataSolicitarii);
@@ -150,7 +152,7 @@ public class BannerSolicitareAdapter extends RecyclerView.Adapter<BannerSolicita
                                 .into(holder.imageViewImagineMelodie);
 
                         holder.textViewNumeMelodie.setText(solicitare.getTemp_numeMelodie());
-                        holder.textViewNumeMelodie.setFocusable(true); // pentru marquee
+                        holder.textViewNumeMelodie.setSelected(true); // pentru marquee
 
                         getSetDateSolicitant(holder, solicitare); // obtine datele solicitantului din solicitare si le seteaza
                     }
@@ -183,10 +185,13 @@ public class BannerSolicitareAdapter extends RecyclerView.Adapter<BannerSolicita
                         // daca artistul este cel care vede solicitarea
                         if (Objects.equals(solicitare.getCheieArtist(), MainActivity.utilizator.getCheie())) {
                             holder.textViewNumePersoana.setText("Solicitant: " + solicitare.getTemp_numeSolicitant());
+                            holder.textViewNumePersoana.setSelected(true); // pentru marquee
+                            holder.imageViewIconitaSolicitare.setVisibility(View.VISIBLE);
                         }
                         // daca solicitantul este cel care vede solicitarea
                         else {
                             holder.textViewNumePersoana.setText("Către artistul: " + solicitare.getTemp_numeArtist());
+                            holder.textViewNumePersoana.setSelected(true); // pentru marquee
                         }
                     }
 
@@ -208,6 +213,7 @@ public class BannerSolicitareAdapter extends RecyclerView.Adapter<BannerSolicita
 
             holder.imageViewPersoana.setImageTintList(colorStateList);
             holder.imageViewCalendar.setImageTintList(colorStateList);
+            holder.imageViewIconitaSolicitare.setImageTintList(colorStateList);
             holder.textViewNumeMelodie.setTextColor(colorStateList);
             holder.textViewNumePersoana.setTextColor(colorStateList);
             holder.textViewDataSolicitarii.setTextColor(colorStateList);
