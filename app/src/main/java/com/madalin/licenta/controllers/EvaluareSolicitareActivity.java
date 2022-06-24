@@ -89,7 +89,7 @@ public class EvaluareSolicitareActivity extends AppCompatActivity {
         }
 
         // seteaza datele campurilor
-        textViewDataSolicitarii.setText(new SimpleDateFormat("dd.MM.yyyy").format(new Date(solicitareSelectata.getDataCreariiLong())));
+        textViewDataSolicitarii.setText("Data solicitării: " + new SimpleDateFormat("dd.MM.yyyy").format(new Date(solicitareSelectata.getDataCreariiLong())));
         textViewNumeSolicitant.setText(solicitareSelectata.getTemp_numeSolicitant());
         textViewScopulUtilizarii.setText(solicitareSelectata.getScopulUtilizarii());
         textViewMediulUtilizarii.setText(solicitareSelectata.getMediulUtilizarii());
@@ -156,6 +156,13 @@ public class EvaluareSolicitareActivity extends AppCompatActivity {
                 intent.putExtra(NumeExtra.POZITIE_MELODIE, 0); // adauga pozitia melodiei selectate
                 startActivity(intent); // lanseaza PlayerActivity
             }
+        });
+
+        // listener lansare ProfilActivity la apasarea numelui beneficiarului
+        textViewNumeSolicitant.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ProfilActivity.class);
+            intent.putExtra(NumeExtra.CHEIE_UTILIZATOR, solicitareSelectata.getCheieSolicitant());
+            startActivity(intent);
         });
 
         // la apasarea butonului "Accepta" se actualizeaza stadiul solicitarii in "acceptata" si se genereaza licenta
