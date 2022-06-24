@@ -15,6 +15,7 @@ import com.madalin.licenta.GeneratorLicenta;
 import com.madalin.licenta.R;
 import com.madalin.licenta.global.EdgeToEdge;
 import com.madalin.licenta.global.NumeExtra;
+import com.madalin.licenta.models.Licenta;
 import com.madalin.licenta.models.Melodie;
 import com.madalin.licenta.models.Solicitare;
 import com.madalin.licenta.models.Utilizator;
@@ -45,25 +46,25 @@ import java.util.Objects;
 
 public class EvaluareSolicitareActivity extends AppCompatActivity {
 
-    LinearLayout toolbar;
-    RelativeLayout relativeLayoutDateMelodie;
-    ImageView imageViewImagineMelodie;
-    TextView textViewNumeMelodie;
-    TextView textViewNumeArtist;
-    TextView textViewDataSolicitarii;
-    TextView textViewNumeSolicitant;
-    TextView textViewScopulUtilizarii;
-    TextView textViewMediulUtilizarii;
-    TextView textViewTitluLoculUtilizarii;
-    TextView textViewLoculUtilizarii;
-    TextView textViewMotivulUtilizarii;
-    LinearLayout linearLayoutButoane;
-    Button buttonAccepta;
-    Button buttonRespinge;
+    private LinearLayout toolbar;
+    private RelativeLayout relativeLayoutDateMelodie;
+    private ImageView imageViewImagineMelodie;
+    private TextView textViewNumeMelodie;
+    private TextView textViewNumeArtist;
+    private TextView textViewDataSolicitarii;
+    private TextView textViewNumeSolicitant;
+    private TextView textViewScopulUtilizarii;
+    private TextView textViewMediulUtilizarii;
+    private TextView textViewTitluLoculUtilizarii;
+    private TextView textViewLoculUtilizarii;
+    private TextView textViewMotivulUtilizarii;
+    private LinearLayout linearLayoutButoane;
+    private Button buttonAccepta;
+    private Button buttonRespinge;
 
-    Solicitare solicitareSelectata; // memoreaza datele solicitarii
-    Melodie melodieSolicitata; // memoreaza datele melodiei din solicitare
-    Utilizator utilizatorSolicitant; // memoreaza datele solicitantului
+    private Solicitare solicitareSelectata; // memoreaza datele solicitarii
+    private Melodie melodieSolicitata; // memoreaza datele melodiei din solicitare
+    private Utilizator utilizatorSolicitant; // memoreaza datele solicitantului
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,145 +158,34 @@ public class EvaluareSolicitareActivity extends AppCompatActivity {
             }
         });
 
-        // la apasarea butonului "Accepta" se actualizeaza stadiul solicitarii in "acceptata"
+        // la apasarea butonului "Accepta" se actualizeaza stadiul solicitarii in "acceptata" si se genereaza licenta
         buttonAccepta.setOnClickListener(v -> {
-                /*FirebaseDatabase.getInstance().getReference("solicitari")
-                        .child(solicitareSelectata.getCheie())
-                        .child("stadiu").setValue(Solicitare.ACCEPTATA).addOnSuccessListener(unused -> {
-                            linearLayoutButoane.setVisibility(View.GONE); // ascunde butoanele
-                            EvaluareSolicitareActivity.this.finish(); // incheie activitatea
-                        })
-                        .addOnSuccessListener(unused -> generareLicenta(solicitareSelectata)) // genereaza licenta
-                        .addOnFailureListener(e -> Toast.makeText(this, "Eroare: " + e.getMessage(), Toast.LENGTH_SHORT).show())*/
+            FirebaseDatabase.getInstance().getReference("solicitari")
+                    .child(solicitareSelectata.getCheie())
+                    .child("stadiu").setValue(Solicitare.ACCEPTATA)
 
-            GeneratorLicenta generatorLicenta = new GeneratorLicenta(this);
-            generatorLicenta.generareLicenta(solicitareSelectata);
-
+                    .addOnSuccessListener(unused -> {
+                        linearLayoutButoane.setVisibility(View.GONE); // ascunde butoanele
+                        GeneratorLicenta generatorLicenta = new GeneratorLicenta(this);
+                        generatorLicenta.generareLicenta(solicitareSelectata);
+                        EvaluareSolicitareActivity.this.finish(); // incheie activitatea
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(this, "Eroare: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         });
 
         // la apasarea butonului "Respinge" se actualizeaza stadiul solicitarii in "respinsa"
         buttonRespinge.setOnClickListener(v ->
                 FirebaseDatabase.getInstance().getReference("solicitari")
                         .child(solicitareSelectata.getCheie())
-                        .child("stadiu").setValue(Solicitare.RESPINSA).addOnSuccessListener(unused -> {
+                        .child("stadiu").setValue(Solicitare.RESPINSA)
+
+                        .addOnSuccessListener(unused -> {
                             linearLayoutButoane.setVisibility(View.GONE); // ascunde butoanele
-                            EvaluareSolicitareActivity.this.finish(); // incheie activitatea
+                            EvaluareSolicitareActivity.this.finish(); // incheie activitatea curenta
                         })
-                        .addOnSuccessListener(unused -> EvaluareSolicitareActivity.this.finish()) // incheie activitatea curenta
+
                         .addOnFailureListener(e -> Toast.makeText(this, "Eroare: " + e.getMessage(), Toast.LENGTH_SHORT).show()));
     }
-
-
-
-    /*private void createPdf() {
-        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        //  Display display = wm.getDefaultDisplay();
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        this.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        float hight = displaymetrics.heightPixels;
-        float width = displaymetrics.widthPixels;
-
-        int convertHighet = (int) hight, convertWidth = (int) width;
-
-        PdfDocument document = new PdfDocument();
-        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(convertWidth, convertHighet, 1).create();
-        PdfDocument.Page page = document.startPage(pageInfo);
-
-        Canvas canvas = page.getCanvas();
-
-        Paint paint = new Paint();
-        canvas.drawPaint(paint);
-
-        bitmap = Bitmap.createScaledBitmap(bitmap, convertWidth, convertHighet, true);
-
-        paint.setColor(Color.BLUE);
-        canvas.drawBitmap(bitmap, 0, 0, null);
-        document.finishPage(page);
-
-        // write the document content
-        String targetPdf = "/sdcard/page.pdf";
-        File filePath;
-        filePath = new File(targetPdf);
-        try {
-            document.writeTo(new FileOutputStream(filePath));
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Something wrong: " + e.toString(), Toast.LENGTH_LONG).show();
-        }////////////////////
-
-        // close the document
-        document.close();
-        Toast.makeText(this, "successfully pdf created", Toast.LENGTH_SHORT).show();
-
-        openPdf();
-
-    }*/
-
-    /*
-    private void openPdf() {
-        File file = new File("/sdcard/page.pdf");
-        if (file.exists()) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            Uri uri = Uri.fromFile(file);
-            intent.setDataAndType(uri, "application/pdf");
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-            try {
-                startActivity(intent);
-            } catch (ActivityNotFoundException e) {
-                Toast.makeText(this, "No Application for pdf view", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }*/
-
-//    private void generareLicenta(Solicitare solicitare) {
-//        View viewLicenta = LayoutInflater.from(this).inflate(R.layout.layout_licenta, null);
-//        viewLicenta.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-//                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-//        viewLicenta.layout(0, 0, viewLicenta.getMeasuredWidth(), viewLicenta.getMeasuredHeight());
-//
-//        Bitmap bitmap = Bitmap.createBitmap(viewLicenta.getMeasuredWidth(), viewLicenta.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-//        Canvas c = new Canvas(bitmap);
-//        viewLicenta.draw(c);
-//
-//        //  Display display = wm.getDefaultDisplay();
-//        /*DisplayMetrics displaymetrics = new DisplayMetrics();
-//        this.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-//        float hight = displaymetrics.heightPixels;
-//        float width = displaymetrics.widthPixels;
-//        int convertHighet = (int) hight, convertWidth = (int) width;*/
-//
-//
-//        PdfDocument document = new PdfDocument();
-//        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(viewLicenta.getMeasuredWidth(), viewLicenta.getMeasuredHeight(), 1).create();
-//        PdfDocument.Page page = document.startPage(pageInfo);
-//        Canvas canvas = page.getCanvas();
-//        Paint paint = new Paint();
-//        canvas.drawPaint(paint);
-//
-//        bitmap = Bitmap.createScaledBitmap(bitmap, viewLicenta.getMeasuredWidth(), viewLicenta.getMeasuredHeight(), true);
-//
-//        paint.setColor(Color.BLUE);
-//        canvas.drawBitmap(bitmap, 0, 0, null);
-//        document.finishPage(page);
-//
-//        // write the document content
-//        String targetPdf = "/sdcard/pdffromScroll.pdf";
-//        File filePath;
-//        filePath = new File(targetPdf);
-//
-//        try {
-//            document.writeTo(new FileOutputStream(filePath));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Toast.makeText(this, "Something wrong: " + e.toString(), Toast.LENGTH_LONG).show();
-//        }
-//
-//        // close the document
-//        document.close();
-//        Toast.makeText(this, "PDF of Scroll is created!!!", Toast.LENGTH_SHORT).show();
-//    }
 
     /**
      * Initializeaza toate vederile din cadrul acestei activitati.
