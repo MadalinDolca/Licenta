@@ -268,6 +268,7 @@ ft.commit();
         // initializare vederi bottom sheet dialog
         LinearLayout linearLayoutProfil = bottomSheetDialog.findViewById(R.id.bottom_sheet_meniu_linearLayoutProfil);
         LinearLayout linearLayoutSolicitari = bottomSheetDialog.findViewById(R.id.bottom_sheet_meniu_linearLayoutSolicitari);
+        LinearLayout linearLayoutLicente = bottomSheetDialog.findViewById(R.id.bottom_sheet_meniu_linearLayoutLicente);
         TextView textViewNume = bottomSheetDialog.findViewById(R.id.bottom_sheet_meniu_textViewNume);
         Button buttonDeconectare = bottomSheetDialog.findViewById(R.id.bottom_sheet_meniu_buttonDeconectare);
 
@@ -290,6 +291,13 @@ ft.commit();
                 startActivity(intentSolicitari);
             });
 
+            // accesare activitate licente
+            linearLayoutLicente.setOnClickListener(view -> {
+                bottomSheetDialog.dismiss();
+                Intent intentLicente = new Intent(MainActivity.this, LicenteActivity.class);
+                startActivity(intentLicente);
+            });
+
             // deconectare de la Firebase
             buttonDeconectare.setOnClickListener(view -> {
                 firebaseAuth.signOut(); // deconecteaza utilizatorul si il sterge din cache-ul disk-ului
@@ -308,8 +316,13 @@ ft.commit();
                 startActivity(new Intent(MainActivity.this, AutentificareActivity.class));
             });
 
-            // laytout solicitari
+            // layout solicitari
             linearLayoutSolicitari.setOnClickListener(view -> {
+                afisareDialogAlerta();
+            });
+
+            // layout licente
+            linearLayoutLicente.setOnClickListener(view -> {
                 afisareDialogAlerta();
             });
 
@@ -322,7 +335,6 @@ ft.commit();
 
         bottomSheetDialog.show(); // afiseaza bottom sheet dialog meniu
     }
-
 
     /**
      * Afiseaza un dialog de alerta pentru autentificare in scenariul in care se doreste utilizarea
