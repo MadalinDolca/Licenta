@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/banner_licenta_relativeLayoutContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="15dp"
+    android:layout_marginBottom="15dp"
+    android:background="@drawable/background_rotunjit"
+    android:backgroundTint="@color/fundal_alt"
+    android:padding="10dp">
+
+    <!-- card imagine melodie -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/banner_licenta_cardViewMelodie"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="10dp"
+        app:cardBackgroundColor="@color/primara"
+        app:cardCornerRadius="@dimen/radius20"
+        app:cardElevation="0dp">
+
+        <ImageView
+            android:id="@+id/banner_licenta_imageViewImagine"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- nume melodie -->
+    <TextView
+        android:id="@+id/banner_licenta_textViewNumeMelodie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/banner_licenta_imageViewIconitaLicenta"
+        android:layout_toEndOf="@+id/banner_licenta_cardViewMelodie"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:freezesText="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:text="Nume melodie"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_standard"
+        android:textStyle="bold" />
+
+    <!-- nume artist -->
+    <ImageView
+        android:id="@+id/banner_licenta_imageViewPersoana"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_below="@+id/banner_licenta_textViewNumeMelodie"
+        android:layout_toEndOf="@+id/banner_licenta_cardViewMelodie"
+        android:src="@drawable/ic_persoana"
+        app:tint="@color/text" />
+
+    <TextView
+        android:id="@+id/banner_licenta_textViewNumePersoana"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/banner_licenta_textViewNumeMelodie"
+        android:layout_marginStart="10dp"
+        android:layout_toStartOf="@+id/banner_licenta_imageViewIconitaLicenta"
+        android:layout_toEndOf="@+id/banner_licenta_imageViewPersoana"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:freezesText="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:text="Nume persoana"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_mic" />
+
+    <!-- data solicitarii -->
+    <ImageView
+        android:id="@+id/banner_licenta_imageViewCalendar"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_below="@+id/banner_licenta_textViewNumePersoana"
+        android:layout_toEndOf="@+id/banner_licenta_cardViewMelodie"
+        android:src="@drawable/ic_calendar"
+        app:tint="@color/text" />
+
+    <TextView
+        android:id="@+id/banner_licenta_textViewDataLicentierii"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/banner_licenta_textViewNumePersoana"
+        android:layout_marginStart="10dp"
+        android:layout_toStartOf="@+id/banner_licenta_imageViewIconitaLicenta"
+        android:layout_toEndOf="@+id/banner_licenta_imageViewCalendar"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:freezesText="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:text="Data licențierii"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_mic" />
+
+    <!-- iconita licenta -->
+    <ImageView
+        android:id="@+id/banner_licenta_imageViewIconitaLicenta"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/ic_licenta"
+        app:tint="@color/text" />
+
+</RelativeLayout>
