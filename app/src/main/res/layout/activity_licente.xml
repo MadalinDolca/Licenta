@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fundal"
+    android:orientation="vertical"
+    tools:context=".controllers.LicenteActivity">
+
+    <!-- toolbar -->
+    <include layout="@layout/layout_toolbar" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/licente_tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:background="#00000000"
+        app:tabGravity="fill"
+        app:tabIndicator="@drawable/background_rotunjit"
+        app:tabIndicatorAnimationMode="elastic"
+        app:tabIndicatorColor="@color/primara"
+        app:tabIndicatorGravity="stretch"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/text_pe_primara"
+        app:tabTextColor="@color/text">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Primite" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Oferite" />
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/licente_viewPager2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>
