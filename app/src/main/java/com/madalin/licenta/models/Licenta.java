@@ -9,17 +9,27 @@ import java.util.Map;
 public class Licenta implements Serializable {
     private String cheie;
     private String cheieArtist;
-    private String cheieSolicitant;
+    private String cheieBeneficiar;
     private String cheieMelodie;
     private String urlLicenta;
     private Long dataCrearii;
 
+    // date folosite pentru afisare
+    private String temp_numeBeneficiar;
+    private String temp_numeArtist;
+    private String temp_numeMelodie;
+    private String temp_imagineMelodie;
+
+    // tipul licentei
+    public static final String PRIMITA = "primita";
+    public static final String OFERITA = "oferita";
+
     public Licenta() {
     }
 
-    public Licenta(String cheieArtist, String cheieSolicitant, String cheieMelodie, String urlLicenta) {
+    public Licenta(String cheieArtist, String cheieBeneficiar, String cheieMelodie, String urlLicenta) {
         this.cheieArtist = cheieArtist;
-        this.cheieSolicitant = cheieSolicitant;
+        this.cheieBeneficiar = cheieBeneficiar;
         this.cheieMelodie = cheieMelodie;
         this.urlLicenta = urlLicenta;
     }
@@ -40,12 +50,12 @@ public class Licenta implements Serializable {
         this.cheieArtist = cheieArtist;
     }
 
-    public String getCheieSolicitant() {
-        return cheieSolicitant;
+    public String getCheieBeneficiar() {
+        return cheieBeneficiar;
     }
 
-    public void setCheieSolicitant(String cheieSolicitant) {
-        this.cheieSolicitant = cheieSolicitant;
+    public void setCheieBeneficiar(String cheieBeneficiar) {
+        this.cheieBeneficiar = cheieBeneficiar;
     }
 
     public String getCheieMelodie() {
@@ -75,5 +85,38 @@ public class Licenta implements Serializable {
 
     public void setDataCrearii(Long dataCrearii) {
         this.dataCrearii = dataCrearii;
+    }
+
+    // Getters & Setters date folosite pentru afisare
+    public String getTemp_numeBeneficiar() {
+        return temp_numeBeneficiar;
+    }
+
+    public void setTemp_numeBeneficiar(String temp_numeBeneficiar) {
+        this.temp_numeBeneficiar = temp_numeBeneficiar;
+    }
+
+    public String getTemp_numeArtist() {
+        return temp_numeArtist;
+    }
+
+    public void setTemp_numeArtist(String temp_numeArtist) {
+        this.temp_numeArtist = temp_numeArtist;
+    }
+
+    public String getTemp_numeMelodie() {
+        return temp_numeMelodie;
+    }
+
+    public void setTemp_numeMelodie(String temp_numeMelodie) {
+        this.temp_numeMelodie = temp_numeMelodie;
+    }
+
+    public String getTemp_imagineMelodie() {
+        return temp_imagineMelodie;
+    }
+
+    public void setTemp_imagineMelodie(String temp_imagineMelodie) {
+        this.temp_imagineMelodie = temp_imagineMelodie;
     }
 }
