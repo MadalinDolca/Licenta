@@ -16,6 +16,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Licenta">
         <activity
+            android:name=".controllers.VizualizareLicentaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".controllers.LicenteActivity"
+            android:exported="false" />
+        <activity
             android:name=".controllers.EvaluareSolicitareActivity"
             android:exported="false" />
         <activity
