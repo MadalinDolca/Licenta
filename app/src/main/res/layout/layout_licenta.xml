@@ -31,7 +31,7 @@
                 android:layout_marginTop="10dp"
                 android:text="Acord de licență muzicală"
                 android:textAlignment="center"
-                android:textColor="@color/text"
+                android:textColor="@color/black"
                 android:textSize="@dimen/text_standard"
                 android:textStyle="bold" />
 
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
                 android:text="Numărul de contract"
-                android:textColor="@color/text"
+                android:textColor="@color/black"
                 android:textSize="@dimen/text_standard"
                 android:textStyle="bold" />
 
@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Număr contract"
-                android:textColor="@color/text"
+                android:textColor="@color/black"
                 android:textSize="@dimen/text_standard" />
 
             <!-- introducere artist -->
@@ -60,7 +60,7 @@
                 android:layout_height="150dp"
                 android:layout_marginTop="30dp"
                 android:text="Introducere artist"
-                android:textColor="@color/text"
+                android:textColor="@color/black"
                 android:textSize="@dimen/text_standard" />
 
             <!-- introducere beneficiar -->
@@ -70,7 +70,7 @@
                 android:layout_height="150dp"
                 android:layout_marginTop="20dp"
                 android:text="Introducere artist"
-                android:textColor="@color/text"
+                android:textColor="@color/black"
                 android:textSize="@dimen/text_standard" />
 
             <!-- conditii -->
@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="Condițiile de utilizare a conținutului"
-                android:textColor="@color/text"
+                android:textColor="@color/black"
                 android:textSize="@dimen/text_standard"
                 android:textStyle="bold" />
 
@@ -88,7 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:text="Condiții"
-                android:textColor="@color/text"
+                android:textColor="@color/black"
                 android:textSize="@dimen/text_standard" />
 
             <!-- data inceperii valabilitatii -->
@@ -97,7 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="Data începerii valabilității contractului"
-                android:textColor="@color/text"
+                android:textColor="@color/black"
                 android:textSize="@dimen/text_standard"
                 android:textStyle="bold" />
 
@@ -106,7 +106,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Semnătura"
-                android:textColor="@color/text"
+                android:textColor="@color/black"
                 android:textSize="@dimen/text_standard" />
 
             <!-- semnatura artist -->
@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="Semnătura artistului"
-                android:textColor="@color/text"
+                android:textColor="@color/black"
                 android:textSize="@dimen/text_standard"
                 android:textStyle="bold" />
 
@@ -124,7 +124,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Semnătura"
-                android:textColor="@color/text"
+                android:textColor="@color/black"
                 android:textSize="@dimen/text_standard" />
 
             <!-- semnatura beneficiar -->
@@ -133,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="Semnătura beneficiarului"
-                android:textColor="@color/text"
+                android:textColor="@color/black"
                 android:textSize="@dimen/text_standard"
                 android:textStyle="bold" />
 
@@ -142,7 +142,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Semnătura"
-                android:textColor="@color/text"
+                android:textColor="@color/black"
                 android:textSize="@dimen/text_standard" />
 
         </LinearLayout>
