@@ -19,23 +19,35 @@
             android:layout_height="match_parent" />
     </androidx.cardview.widget.CardView>
 
+    <!-- nume melodie -->
     <TextView
         android:id="@+id/card_melodie_textViewNume"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:ellipsize="end"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:freezesText="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
         android:singleLine="true"
         android:text="Nume melodie"
         android:textColor="@color/text"
         android:textSize="@dimen/text_mic"
         android:textStyle="bold" />
 
+    <!-- nume artist -->
     <TextView
         android:id="@+id/card_melodie_textViewArtist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:freezesText="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
         android:singleLine="true"
         android:text="Nume artist"
         android:textColor="@color/text_alt"
