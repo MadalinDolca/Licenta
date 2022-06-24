@@ -55,8 +55,11 @@ public class CardMelodieAdapter extends RecyclerView.Adapter<CardMelodieAdapter.
                     .into(holder.imageViewImagineMelodie);
         }
 
+        // seteaza datele de tip text
         holder.textViewNumeMelodie.setText(listaMelodii.get(position).getNumeMelodie());
+        holder.textViewNumeMelodie.setSelected(true); // pentru marquee
         holder.textViewNumeArtist.setText(listaMelodii.get(position).getNumeArtist());
+        holder.textViewNumeArtist.setSelected(true); // pentru marquee
 
         // lansare PlayerActivity la apasarea cardului
         holder.imageViewImagineMelodie.setOnClickListener(v -> {
