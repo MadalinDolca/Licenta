@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.Fragment;
 import androidx.palette.graphics.Palette;
 
@@ -123,7 +125,7 @@ public class MiniPlayerFragment extends Fragment
      * Cand fragmentul este vizibil utilizatorului, iar acesta poate interactiona cu
      * {@link MiniPlayerFragment} sau se intoarce la acest fragment, se vor obtine datele melodiei
      * stocate in baza de date locala folosind {@link #obtineDateMelodieStocata()}. Daca
-     * {@link MainActivity#arataMiniplayer} este <code>true</code>, se vor popula vederile cu datele
+     * {@link MainActivity#isMiniplayerAfisat} este <code>true</code>, se vor popula vederile cu datele
      * obtinute folosind {@link #afisareDateMelodie()}. Realizeaza conectarea fragmentului
      * {@link MiniPlayerFragment} la serviciul {@link MuzicaService}.
      */
@@ -133,7 +135,7 @@ public class MiniPlayerFragment extends Fragment
 
         obtineDateMelodieStocata(); // obtine datele melodiei stocate in baza de date locala a sistemului
 
-        if (MainActivity.arataMiniplayer) { // verifica starea de afisarea miniplayer-ului
+        if (MainActivity.isMiniplayerAfisat) { // verifica starea de afisarea miniplayer-ului
             if (urlMelodie != null) { // verifica daca exista locatie spre melodie
                 afisareDateMelodie(); // afiseaza datele melodiei in miniplayer
 
@@ -215,9 +217,9 @@ public class MiniPlayerFragment extends Fragment
         numeArtist = sharedPreferences.getString(MuzicaService.KEY_NUME_ARTIST, null); // obtine numele artistului la cheia "NUME_ARTIST"
 
         if (urlMelodie != null) {
-            MainActivity.arataMiniplayer = true;
+            MainActivity.isMiniplayerAfisat = true;
         } else {
-            MainActivity.arataMiniplayer = false;
+            MainActivity.isMiniplayerAfisat = false;
 
             urlMelodie = null;
             imagineMelodie = null;
@@ -265,6 +267,13 @@ public class MiniPlayerFragment extends Fragment
                                     textViewNumeArtist.setTextColor(swatchColorState);
                                     floatingActionButtonButonPlayPause.setBackgroundTintList(swatchColorState);
                                     imageViewButonNext.setImageTintList(swatchColorState);
+
+                                    // seteaza culoarea resursei butonului PlayPause in functie de culoarea elementelor
+                                    if (ColorUtils.calculateLuminance(swatchCuloareDominanta.getBodyTextColor()) < 0.2) { // daca coloarea este intunecata
+                                        floatingActionButtonButonPlayPause.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+                                    } else { // daca culoarea este luminoasa
+                                        floatingActionButtonButonPlayPause.setImageTintList(ColorStateList.valueOf(Color.BLACK));
+                                    }
                                 }
                             });
                         }
