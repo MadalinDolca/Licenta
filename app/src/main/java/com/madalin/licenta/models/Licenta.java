@@ -14,11 +14,9 @@ public class Licenta implements Serializable {
     private String urlLicenta;
     private Long dataCrearii;
 
-    // date folosite pentru afisare
-    private String temp_numeBeneficiar;
-    private String temp_numeArtist;
-    private String temp_numeMelodie;
-    private String temp_imagineMelodie;
+    // obiecte folosite pentru afisarea datelor
+    private Melodie melodie;
+    private Utilizator beneficiar;
 
     // tipul licentei
     public static final String PRIMITA = "primita";
@@ -88,35 +86,19 @@ public class Licenta implements Serializable {
     }
 
     // Getters & Setters date folosite pentru afisare
-    public String getTemp_numeBeneficiar() {
-        return temp_numeBeneficiar;
+    public Melodie getMelodie() {
+        return melodie;
     }
 
-    public void setTemp_numeBeneficiar(String temp_numeBeneficiar) {
-        this.temp_numeBeneficiar = temp_numeBeneficiar;
+    public void setMelodie(Melodie melodie) {
+        this.melodie = melodie;
     }
 
-    public String getTemp_numeArtist() {
-        return temp_numeArtist;
+    public Utilizator getBeneficiar() {
+        return beneficiar;
     }
 
-    public void setTemp_numeArtist(String temp_numeArtist) {
-        this.temp_numeArtist = temp_numeArtist;
-    }
-
-    public String getTemp_numeMelodie() {
-        return temp_numeMelodie;
-    }
-
-    public void setTemp_numeMelodie(String temp_numeMelodie) {
-        this.temp_numeMelodie = temp_numeMelodie;
-    }
-
-    public String getTemp_imagineMelodie() {
-        return temp_imagineMelodie;
-    }
-
-    public void setTemp_imagineMelodie(String temp_imagineMelodie) {
-        this.temp_imagineMelodie = temp_imagineMelodie;
+    public void setBeneficiar(Utilizator beneficiar) {
+        this.beneficiar = beneficiar;
     }
 }
