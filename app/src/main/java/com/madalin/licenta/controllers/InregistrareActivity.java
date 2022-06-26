@@ -25,12 +25,12 @@ import com.madalin.licenta.R;
 import com.madalin.licenta.models.Utilizator;
 
 public class InregistrareActivity extends AppCompatActivity {
-    TextInputEditText editTextNume;
-    TextInputEditText editTextEmail;
-    TextInputEditText editTextParola;
-    TextView textViewAutentificate;
-    Button buttonInregistreazate;
-    ProgressDialog progressDialog;
+    private TextInputEditText editTextNume;
+    private TextInputEditText editTextEmail;
+    private TextInputEditText editTextParola;
+    private TextView textViewAutentificate;
+    private Button buttonInregistreazate;
+    private ProgressDialog progressDialog;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
