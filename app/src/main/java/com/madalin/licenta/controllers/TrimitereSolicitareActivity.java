@@ -37,20 +37,20 @@ import java.util.Objects;
 
 public class TrimitereSolicitareActivity extends AppCompatActivity {
 
-    LinearLayout toolbar;
-    RelativeLayout relativeLayoutDateMelodie;
-    ImageView imageViewImagineMelodie;
-    TextView textViewNumeMelodie;
-    TextView textViewNumeArtist;
-    Spinner spinnerScop;
-    Spinner spinnerMediu;
-    EditText editTextLoculUtilizarii;
-    EditText editTextMotivulUtilizarii;
-    Button buttonTrimiteSolicitarea;
-    ProgressDialog progressDialog;
+    private LinearLayout toolbar;
+    private RelativeLayout relativeLayoutDateMelodie;
+    private ImageView imageViewImagineMelodie;
+    private TextView textViewNumeMelodie;
+    private TextView textViewNumeArtist;
+    private Spinner spinnerScop;
+    private Spinner spinnerMediu;
+    private EditText editTextLoculUtilizarii;
+    private EditText editTextMotivulUtilizarii;
+    private Button buttonTrimiteSolicitarea;
+    private ProgressDialog progressDialog;
 
-    Melodie melodieSelectata; // datele melodiei selectate
-    Solicitare solicitare;
+    private Melodie melodieSelectata; // datele melodiei selectate
+    private Solicitare solicitare;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
