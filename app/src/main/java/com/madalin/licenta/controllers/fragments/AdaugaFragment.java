@@ -5,11 +5,9 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -29,24 +27,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.madalin.licenta.R;
 import com.madalin.licenta.controllers.AutentificareActivity;
-import com.madalin.licenta.controllers.InregistrareActivity;
 import com.madalin.licenta.controllers.MainActivity;
 import com.madalin.licenta.global.UtilitareFragment;
 import com.madalin.licenta.models.Melodie;
-
-import java.io.IOException;
-import java.util.Objects;
 
 public class AdaugaFragment extends Fragment {
 
@@ -65,7 +54,6 @@ public class AdaugaFragment extends Fragment {
 
     private Uri uriImagine;
     private Uri uriMelodie;
-    private String descriereMelodie;
 
     private final int CERERE_ALEGERE_IMAGINE = 1;
     private final int CERERE_ALEGERE_MELODIE = 2;
@@ -192,6 +180,15 @@ public class AdaugaFragment extends Fragment {
         startActivityForResult(intent, CERERE_ALEGERE_MELODIE);
     }
 
+    /**
+     * Verifica corectitudinea datelor introduse in campuri si afiseaza dialogul de incarcare.
+     * Creeaza un child in Storage in nodul "melodii" format din timpul curent si extensia melodiei.
+     * Incarca melodia in noul child creat si obtine URL-ul de descarcare. Creeaza un nou obiect
+     * {@link Melodie} si adauga datele aferente melodiei, iar apoi il adauga in baza de date.
+     * Creeaza un child in Storage in nodul "imagini" avand ca nume timpul curent si extensia imaginii.
+     * Incarca imaginea in noul child si obtine URL-ul de descarcare, iar apoi il adauga ca data in
+     * nodul melodiei din baza de date. Actualizeaza dialogul intr-un mesaj de succes.
+     */
     private void incarcaMelodia() {
         // obtinere continut din edit text
         String numeMelodie = editTextNumeMelodie.getText().toString().trim();
