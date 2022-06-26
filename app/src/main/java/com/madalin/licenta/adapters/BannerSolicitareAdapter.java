@@ -138,20 +138,17 @@ public class BannerSolicitareAdapter extends RecyclerView.Adapter<BannerSolicita
                         Melodie melodie = snapshot.getValue(Melodie.class);
                         melodie.setCheie(snapshot.getKey());
 
-                        // adauga datele melodiei in obiectul solicitarii
-                        solicitare.setTemp_numeMelodie(melodie.getNumeMelodie());
-                        solicitare.setTemp_numeArtist(melodie.getNumeArtist());
-                        solicitare.setTemp_imagineMelodie(melodie.getImagineMelodie());
+                        solicitare.setMelodie(melodie); // adauga datele melodiei in obiectul solicitarii
 
                         // seteaza datele obtinute din baza de date
                         Glide.with(context)
-                                .load(solicitare.getTemp_imagineMelodie())
+                                .load(solicitare.getMelodie().getImagineMelodie())
                                 .apply(RequestOptions.centerCropTransform())
                                 .placeholder(R.drawable.logo_music)
                                 .error(R.drawable.ic_eroare)
                                 .into(holder.imageViewImagineMelodie);
 
-                        holder.textViewNumeMelodie.setText(solicitare.getTemp_numeMelodie());
+                        holder.textViewNumeMelodie.setText(solicitare.getMelodie().getNumeMelodie());
                         holder.textViewNumeMelodie.setSelected(true); // pentru marquee
 
                         getSetDateSolicitant(holder, solicitare); // obtine datele solicitantului din solicitare si le seteaza
@@ -179,18 +176,17 @@ public class BannerSolicitareAdapter extends RecyclerView.Adapter<BannerSolicita
                         Utilizator utilizator = snapshot.getValue(Utilizator.class);
                         utilizator.setCheie(snapshot.getKey());
 
-                        // adauga datele solicitantului in obiectul solicitarii
-                        solicitare.setTemp_numeSolicitant(utilizator.getNume());
+                        solicitare.setSolicitant(utilizator); // adauga datele solicitantului in obiectul solicitarii
 
                         // daca artistul este cel care vede solicitarea
                         if (Objects.equals(solicitare.getCheieArtist(), MainActivity.utilizator.getCheie())) {
-                            holder.textViewNumePersoana.setText("Solicitant: " + solicitare.getTemp_numeSolicitant());
+                            holder.textViewNumePersoana.setText("Solicitant: " + solicitare.getSolicitant().getNume());
                             holder.textViewNumePersoana.setSelected(true); // pentru marquee
                             holder.imageViewIconitaSolicitare.setVisibility(View.VISIBLE);
                         }
                         // daca solicitantul este cel care vede solicitarea
                         else {
-                            holder.textViewNumePersoana.setText("Către artistul: " + solicitare.getTemp_numeArtist());
+                            holder.textViewNumePersoana.setText("Către artistul: " + solicitare.getMelodie().getNumeArtist());
                             holder.textViewNumePersoana.setSelected(true); // pentru marquee
                         }
                     }
