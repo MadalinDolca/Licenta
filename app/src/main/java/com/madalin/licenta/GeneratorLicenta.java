@@ -75,13 +75,13 @@ public class GeneratorLicenta {
                     initializareVederi();
 
                     // seteaza datele vederii licentei
-                    String introducereArtist = "Subsemnatul " + solicitare.getTemp_numeArtist()
-                            + ", îi ofer permisiunea lui " + solicitare.getTemp_numeSolicitant()
-                            + " de a-mi utiliza melodia \"" + solicitare.getTemp_numeMelodie()
+                    String introducereArtist = "Subsemnatul " + solicitare.getMelodie().getNumeArtist()
+                            + ", îi ofer permisiunea lui " + solicitare.getSolicitant().getNume()
+                            + " de a-mi utiliza melodia \"" + solicitare.getMelodie().getNumeMelodie()
                             + "\" în scopul, locația și cu motivul stabilit în solicitare doar dacă acesta respectă condițiile impuse în cadrul acestui contract."
                             + " Declar faptul că nu voi sancționa beneficiarul atât timp cât aceste criterii prezentate în contract sunt respectate.";
 
-                    String introducereBeneficiar = "Subsemnatul " + solicitare.getTemp_numeSolicitant()
+                    String introducereBeneficiar = "Subsemnatul " + solicitare.getSolicitant().getNume()
                             + " declar faptul că voi respecta detaliile precizate în solicitare și condițiile impuse în cadrul acestui contract în utilizarea melodiei."
                             + " Am luat la cunoștință faptul că voi fi sancționat în cazul în care criteriile stabilite în acest contract vor fi încălcate.";
 
