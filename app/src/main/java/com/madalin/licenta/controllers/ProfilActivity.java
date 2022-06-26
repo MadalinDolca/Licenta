@@ -6,15 +6,14 @@ import static com.madalin.licenta.global.EdgeToEdge.edgeToEdge;
 
 import android.os.Bundle;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,17 +21,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.madalin.licenta.R;
-import com.madalin.licenta.adapters.BannerMelodieAdapter;
+import com.madalin.licenta.adapters.BannerMelodieProfilAdapter;
 import com.madalin.licenta.global.NumeExtra;
 import com.madalin.licenta.models.Melodie;
 import com.madalin.licenta.models.Utilizator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 public class ProfilActivity extends AppCompatActivity {
 
+    private SwipeRefreshLayout swipeRefreshLayoutContainer;
     private LinearLayout toolbar;
     private RecyclerView recyclerView;
     private TextView textViewNumeUtilizator;
@@ -60,7 +61,20 @@ public class ProfilActivity extends AppCompatActivity {
         databaseReferenceUtilizatori = FirebaseDatabase.getInstance().getReference("utilizatori");
         databaseReferenceMelodii = FirebaseDatabase.getInstance().getReference("melodii");
 
-        // obtine datele utilizatorului din baza de date in functie de cheia acestuia
+        getSetDateUtilizator(); // obtine si afiseaza datele utilizatorului curent
+        getSetMelodiiUtilizator(); // obtine si afiseaza melodiile utilizatorului curent impreuna cu numarul de melodii si de redari
+
+        // reincarca datele la glisare
+        /*swipeRefreshLayoutContainer.setOnRefreshListener(() -> {
+            getSetDateUtilizator();
+            getSetMelodiiUtilizator();
+        });*/
+    }
+
+    /**
+     * Obtine din baza de date datele utilizatorului curent si le afiseaza.
+     */
+    private void getSetDateUtilizator() {
         databaseReferenceUtilizatori.child(cheieUtilizator).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -76,6 +90,8 @@ public class ProfilActivity extends AppCompatActivity {
                         textViewGrad.setText("utilizator");
                     }
                 }
+
+                //swipeRefreshLayoutContainer.setRefreshing(false); // inchide animatia de refresh
             }
 
             @Override
@@ -83,8 +99,17 @@ public class ProfilActivity extends AppCompatActivity {
                 Toast.makeText(ProfilActivity.this, "Eroare: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
-        // obtine melodiile care apartin utilizatorului selectat
+    /**
+     * Obtine din baza de date melodiile care apartin utilizatorului selectat si le afiseaza
+     * impreuna cu numarul de melodii incarcate si numarul de redari totale.
+     * Se parcurg melodiile din baza de date, iar in cazul in care {@link #cheieUtilizator} este
+     * egala cu cheia artistului melodiei, atunci se adauga melodia in {@link #listaMelodii} si se
+     * incrementeaza {@link #numarRedari}. Seteaza {@link #listaMelodii} pentru adapter-ul
+     * {@link #recyclerView}-ului.
+     */
+    private void getSetMelodiiUtilizator() {
         databaseReferenceMelodii.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -105,10 +130,14 @@ public class ProfilActivity extends AppCompatActivity {
                 textViewNumarMelodii.setText(listaMelodii.size() + " melodii încărcate");
                 textViewNumarRedari.setText(numarRedari + " redări totale");
 
+                Collections.reverse(listaMelodii); // reordoneaza lista cu melodii
+
                 // creeaza si seteaza adapter-ul pentru banner-ele cu melodii
-                BannerMelodieAdapter bannerMelodieAdapter = new BannerMelodieAdapter(ProfilActivity.this, listaMelodii); // creeaza adapter banner melodii
+                BannerMelodieProfilAdapter bannerMelodieProfilAdapter = new BannerMelodieProfilAdapter(ProfilActivity.this, listaMelodii); // creeaza adapter banner melodii
                 recyclerView.setLayoutManager(new LinearLayoutManager(ProfilActivity.this));
-                recyclerView.setAdapter(bannerMelodieAdapter); // setare adapter pe recyclerView pentru a furniza child views la cerere
+                recyclerView.setAdapter(bannerMelodieProfilAdapter); // setare adapter pe recyclerView pentru a furniza child views la cerere
+
+                //swipeRefreshLayoutContainer.setRefreshing(false); // inchide animatia de refresh
             }
 
             @Override
@@ -122,6 +151,7 @@ public class ProfilActivity extends AppCompatActivity {
      * Initializeaza toate vederile din {@link ProfilActivity}.
      */
     private void initializareVederi() {
+        //swipeRefreshLayoutContainer = findViewById(R.id.profil_swipeRefreshLayoutContainer);
         toolbar = findViewById(R.id.toolbar);
         recyclerView = findViewById(R.id.profil_recyclerViewMelodii);
         textViewNumeUtilizator = findViewById(R.id.profil_textViewNumeUtilizator);
