@@ -68,23 +68,43 @@
                     android:textStyle="bold" />
 
                 <!-- nume artist -->
+                <ImageView
+                    android:id="@+id/vizualizare_licenta_imageViewArtist"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_below="@+id/vizualizare_licenta_textViewNumeMelodie"
+                    android:layout_toEndOf="@+id/vizualizare_licenta_cardViewMelodie"
+                    android:src="@drawable/ic_persoana"
+                    app:tint="@color/text" />
+
                 <TextView
                     android:id="@+id/vizualizare_licenta_textViewNumeArtist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/vizualizare_licenta_textViewNumeMelodie"
-                    android:layout_toEndOf="@id/vizualizare_licenta_cardViewMelodie"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@id/vizualizare_licenta_imageViewArtist"
                     android:text="Nume artist"
                     android:textColor="@color/text"
                     android:textSize="@dimen/text_mic" />
 
                 <!-- data licentierii -->
+                <ImageView
+                    android:id="@+id/vizualizare_licenta_imageViewCalendar"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_below="@+id/vizualizare_licenta_imageViewArtist"
+                    android:layout_toEndOf="@+id/vizualizare_licenta_cardViewMelodie"
+                    android:src="@drawable/ic_calendar"
+                    app:tint="@color/text" />
+
                 <TextView
                     android:id="@+id/vizualizare_licenta_textViewDataLicentierii"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/vizualizare_licenta_textViewNumeArtist"
-                    android:layout_toEndOf="@id/vizualizare_licenta_cardViewMelodie"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@id/vizualizare_licenta_imageViewCalendar"
                     android:text="Se încarcă..."
                     android:textColor="@color/text"
                     android:textSize="@dimen/text_mic" />
@@ -94,7 +114,7 @@
             <!-- titlu nume beneficiar -->
             <TextView
                 android:id="@+id/vizualizare_licenta_textViewTitluNumeBeneficiar"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/vizualizare_licenta_relativeLayoutDateMelodie"
                 android:layout_marginTop="15dp"
@@ -102,6 +122,17 @@
                 android:textColor="@color/text"
                 android:textSize="@dimen/text_standard"
                 android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/vizualizare_licenta_imageViewLink"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_below="@+id/vizualizare_licenta_relativeLayoutDateMelodie"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_toEndOf="@+id/vizualizare_licenta_textViewTitluNumeBeneficiar"
+                android:src="@drawable/ic_link"
+                app:tint="@color/text" />
 
             <!-- nume beneficiar -->
             <TextView
@@ -124,7 +155,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 android:layout_below="@id/vizualizare_licenta_textViewNumeBeneficiar"
-                android:layout_marginTop="15dp" />
+                android:layout_marginTop="15dp"
+                android:background="@drawable/background_rotunjit"
+                android:backgroundTint="@color/fundal_alt" />
 
         </RelativeLayout>
 
