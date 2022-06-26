@@ -18,11 +18,9 @@ public class Solicitare implements Serializable {
     private String stadiu;
     private Long dataCrearii;
 
-    // date folosite pentru afisare
-    private String temp_numeSolicitant;
-    private String temp_numeArtist;
-    private String temp_numeMelodie;
-    private String temp_imagineMelodie;
+    // obiecte folosite pentru afisarea datelor
+    private Utilizator solicitant;
+    private Melodie melodie;
 
     // stadiul in care se poate afla o solicitare
     public static final String NEEVALUATA = "neevaluata";
@@ -131,35 +129,19 @@ public class Solicitare implements Serializable {
     }
 
     // Getters & Setters date folosite pentru afisare
-    public String getTemp_numeSolicitant() {
-        return temp_numeSolicitant;
+    public Utilizator getSolicitant() {
+        return solicitant;
     }
 
-    public void setTemp_numeSolicitant(String temp_numeSolicitant) {
-        this.temp_numeSolicitant = temp_numeSolicitant;
+    public void setSolicitant(Utilizator solicitant) {
+        this.solicitant = solicitant;
     }
 
-    public String getTemp_numeArtist() {
-        return temp_numeArtist;
+    public Melodie getMelodie() {
+        return melodie;
     }
 
-    public void setTemp_numeArtist(String temp_numeArtist) {
-        this.temp_numeArtist = temp_numeArtist;
-    }
-
-    public String getTemp_numeMelodie() {
-        return temp_numeMelodie;
-    }
-
-    public void setTemp_numeMelodie(String temp_numeMelodie) {
-        this.temp_numeMelodie = temp_numeMelodie;
-    }
-
-    public String getTemp_imagineMelodie() {
-        return temp_imagineMelodie;
-    }
-
-    public void setTemp_imagineMelodie(String temp_imagineMelodie) {
-        this.temp_imagineMelodie = temp_imagineMelodie;
+    public void setMelodie(Melodie melodie) {
+        this.melodie = melodie;
     }
 }
