@@ -16,6 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Licenta">
         <activity
+            android:name=".controllers.EditareMelodieActivity"
+            android:exported="false" />
+        <activity
             android:name=".controllers.VizualizareLicentaActivity"
             android:exported="false" />
         <activity
