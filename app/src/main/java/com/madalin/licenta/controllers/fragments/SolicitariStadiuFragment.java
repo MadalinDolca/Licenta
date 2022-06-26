@@ -22,6 +22,7 @@ import com.madalin.licenta.controllers.MainActivity;
 import com.madalin.licenta.models.Solicitare;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -122,6 +123,7 @@ public class SolicitariStadiuFragment extends Fragment {
                             }
                         }
 
+                        Collections.reverse(listaSolicitari); // reordoneaza lista cu solicitari
                         recyclerView.setAdapter(new BannerSolicitareAdapter(getContext(), listaSolicitari)); // creeeaza si seteaza adapter pe recyclerView pentru a furniza child views la cerere
                         afiseazaMesaj(view);
                     }
