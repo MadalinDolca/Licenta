@@ -23,6 +23,7 @@ import com.madalin.licenta.controllers.MainActivity;
 import com.madalin.licenta.models.Licenta;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -119,6 +120,7 @@ public class LicenteTipFragment extends Fragment {
                             }
                         }
 
+                        Collections.reverse(listaLicente); // reordoneaza lista cu licente
                         recyclerView.setAdapter(new BannerLicentaAdapter(getContext(), listaLicente)); // seteaza adapterul pentru legarea datelor de vederi
                         afiseazaMesaj(view);
                     }
