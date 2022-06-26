@@ -90,7 +90,7 @@ public class EvaluareSolicitareActivity extends AppCompatActivity {
 
         // seteaza datele campurilor
         textViewDataSolicitarii.setText("Data solicitării: " + new SimpleDateFormat("dd.MM.yyyy").format(new Date(solicitareSelectata.getDataCreariiLong())));
-        textViewNumeSolicitant.setText(solicitareSelectata.getTemp_numeSolicitant());
+        textViewNumeSolicitant.setText(solicitareSelectata.getSolicitant().getNume());
         textViewScopulUtilizarii.setText(solicitareSelectata.getScopulUtilizarii());
         textViewMediulUtilizarii.setText(solicitareSelectata.getMediulUtilizarii());
         textViewLoculUtilizarii.setText(solicitareSelectata.getLoculUtilizarii());
@@ -106,20 +106,17 @@ public class EvaluareSolicitareActivity extends AppCompatActivity {
                         melodieSolicitata = snapshot.getValue(Melodie.class);
                         melodieSolicitata.setCheie(snapshot.getKey());
 
-                        // adauga datele melodiei in obiectul solicitarii
-                        solicitareSelectata.setTemp_numeMelodie(melodieSolicitata.getNumeMelodie());
-                        solicitareSelectata.setTemp_numeArtist(melodieSolicitata.getNumeArtist());
-                        solicitareSelectata.setTemp_imagineMelodie(melodieSolicitata.getImagineMelodie());
+                        solicitareSelectata.setMelodie(melodieSolicitata);  // adauga datele melodiei in obiectul solicitarii
 
                         // seteaza datele obtinute din baza de date
                         Glide.with(EvaluareSolicitareActivity.this)
-                                .load(solicitareSelectata.getTemp_imagineMelodie())
+                                .load(solicitareSelectata.getMelodie().getImagineMelodie())
                                 .apply(RequestOptions.centerCropTransform())
                                 .placeholder(R.drawable.logo_music)
                                 .error(R.drawable.ic_eroare)
                                 .into(imageViewImagineMelodie);
-                        textViewNumeMelodie.setText(solicitareSelectata.getTemp_numeMelodie());
-                        textViewNumeArtist.setText(solicitareSelectata.getTemp_numeArtist());
+                        textViewNumeMelodie.setText(solicitareSelectata.getMelodie().getNumeMelodie());
+                        textViewNumeArtist.setText(solicitareSelectata.getMelodie().getNumeArtist());
                     }
 
                     @Override
@@ -135,8 +132,8 @@ public class EvaluareSolicitareActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         utilizatorSolicitant = snapshot.getValue(Utilizator.class);
-                        solicitareSelectata.setTemp_numeSolicitant(utilizatorSolicitant.getNume());
-                        textViewNumeSolicitant.setText(solicitareSelectata.getTemp_numeSolicitant()); // seteaza numele solicitantului
+                        solicitareSelectata.setSolicitant(utilizatorSolicitant); // adauga datele solicitantului in obiectul solicitarii
+                        textViewNumeSolicitant.setText(solicitareSelectata.getSolicitant().getNume()); // seteaza numele solicitantului
                     }
 
                     @Override
