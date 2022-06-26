@@ -359,7 +359,7 @@ public class MuzicaService extends Service
      * {@link MiniPlayerFragment#afisareDateMelodie()}.
      */
     void actualizareMiniPlayer() {
-        if (MainActivity.arataMiniplayer) { // verifica starea de afisarea miniplayer-ului
+        if (MainActivity.isMiniplayerAfisat) { // verifica starea de afisarea miniplayer-ului
             if (MiniPlayerFragment.urlMelodie != null) { // verifica daca exista locatia spre melodie
                 if (miniPlayerInterface != null) { // verifica daca s-a setat callback-ul
                     miniPlayerInterface.obtineDateMelodieStocata(); // obtine datele melodiei stocate in baza de date locala a sistemului
