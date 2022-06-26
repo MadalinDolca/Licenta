@@ -34,6 +34,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.ColorUtils;
 import androidx.palette.graphics.Palette;
 
 import com.bumptech.glide.Glide;
@@ -741,7 +742,7 @@ public class PlayerActivity extends AppCompatActivity
     }
 
     /**
-     * Seteaza culorile elementelor din player folosind culoarea dominanta a imaginii melodiei.
+     * Seteaza culorile elementelor din player in functie de culoarea dominanta a imaginii melodiei.
      *
      * @param swatchCuloareDominanta culoarea dominanta a imaginii melodiei
      */
@@ -773,6 +774,22 @@ public class PlayerActivity extends AppCompatActivity
 
         buttonSolicitaPermisiunea.setBackgroundTintList(colorStateListElement);
         buttonAfiseazaDateMelodie.setBackgroundTintList(colorStateListDominant);
+
+        // seteaza culoarea resursei butonului PlayPause si a textului butonului de solicitare a permisiunii in functie de culoarea elementelor
+        if (ColorUtils.calculateLuminance(swatchCuloareDominanta.getBodyTextColor()) < 0.2) { // daca coloarea este intunecata
+            floatingActionButtonPlayPause.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            buttonSolicitaPermisiunea.setTextColor(Color.WHITE);
+        } else { // daca culoarea este luminoasa
+            floatingActionButtonPlayPause.setImageTintList(ColorStateList.valueOf(Color.BLACK));
+            buttonSolicitaPermisiunea.setTextColor(Color.BLACK);
+        }
+
+        // seteaza culoarea butonului de afisare a datelor in functie de culoarea dominanta
+        if (ColorUtils.calculateLuminance(swatchCuloareDominanta.getRgb()) < 0.2) { // daca coloarea este intunecata
+            buttonAfiseazaDateMelodie.setTextColor(Color.WHITE);
+        } else { // daca culoarea este luminoasa
+            buttonAfiseazaDateMelodie.setTextColor(Color.BLACK);
+        }
     }
 
     /**
