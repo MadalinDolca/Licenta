@@ -1,17 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/teal_700"
+    android:paddingHorizontal="@dimen/padding_ecran"
+    android:paddingTop="15dp"
     tools:context=".controllers.fragments.CautaFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- bara de cautare -->
+    <EditText
+        android:id="@+id/cauta_editTextBaraCautare"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Cauta"
-        android:textSize="30sp" />
+        android:layout_toStartOf="@id/cauta_imageViewButonCautare"
+        android:background="@drawable/background_rotunjit"
+        android:backgroundTint="@color/fundal_alt"
+        android:hint="Caută"
+        android:inputType="text"
+        android:padding="15dp"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_standard" />
 
-</FrameLayout>
+    <!-- buton lupa -->
+    <ImageView
+        android:id="@+id/cauta_imageViewButonCautare"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/background_rotunjit"
+        android:backgroundTint="@color/primara"
+        android:padding="10dp"
+        android:src="@drawable/ic_cauta"
+        app:tint="@color/text_pe_primara" />
+
+    <!-- RecyclerView melodii -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/cauta_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/cauta_editTextBaraCautare"
+        android:layout_marginTop="15dp" />
+
+    <!-- mesaj cautare -->
+    <TextView
+        android:id="@+id/cauta_textViewMesaj"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/padding_ecran"
+        android:text="Nu am găsit nici o melodie care să se potrivească termenului de căutare introdus"
+        android:textAlignment="center"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_mare"
+        android:visibility="gone" />
+
+    <!-- animatia de incarcare -->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/cauta_lottieAnimationView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_below="@id/cauta_editTextBaraCautare"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:visibility="gone"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/lottie_music_girl" />
+
+</RelativeLayout>
