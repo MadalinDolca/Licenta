@@ -3,9 +3,10 @@ package com.madalin.licenta.models;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.ServerValue;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class Utilizator {
+public class Utilizator implements Serializable {
     private String cheie;
     private String nume;
     private String email;
