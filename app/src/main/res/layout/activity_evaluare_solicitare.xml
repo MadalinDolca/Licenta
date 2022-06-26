@@ -69,23 +69,43 @@
                     android:textStyle="bold" />
 
                 <!-- nume artist -->
+                <ImageView
+                    android:id="@+id/evaluare_solicitare_imageViewArtist"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_below="@+id/evaluare_solicitare_textViewNumeMelodie"
+                    android:layout_toEndOf="@+id/evaluare_solicitare_cardViewMelodie"
+                    android:src="@drawable/ic_persoana"
+                    app:tint="@color/text" />
+
                 <TextView
                     android:id="@+id/evaluare_solicitare_textViewNumeArtist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/evaluare_solicitare_textViewNumeMelodie"
-                    android:layout_toEndOf="@id/evaluare_solicitare_cardViewMelodie"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@id/evaluare_solicitare_imageViewArtist"
                     android:text="Nume artist"
                     android:textColor="@color/text"
                     android:textSize="@dimen/text_mic" />
 
                 <!-- data solicitarii -->
+                <ImageView
+                    android:id="@+id/evaluare_solicitare_imageViewCalendar"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_below="@+id/evaluare_solicitare_imageViewArtist"
+                    android:layout_toEndOf="@+id/evaluare_solicitare_cardViewMelodie"
+                    android:src="@drawable/ic_calendar"
+                    app:tint="@color/text" />
+
                 <TextView
                     android:id="@+id/evaluare_solicitare_textViewDataSolicitarii"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/evaluare_solicitare_textViewNumeArtist"
-                    android:layout_toEndOf="@id/evaluare_solicitare_cardViewMelodie"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@id/evaluare_solicitare_imageViewCalendar"
                     android:text="Se încarcă..."
                     android:textColor="@color/text"
                     android:textSize="@dimen/text_mic" />
@@ -95,7 +115,7 @@
             <!-- titlu nume solicitant -->
             <TextView
                 android:id="@+id/evaluare_solicitare_textViewTitluNumeSolicitant"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/evaluare_solicitare_relativeLayoutDateMelodie"
                 android:layout_marginTop="15dp"
@@ -103,6 +123,17 @@
                 android:textColor="@color/text"
                 android:textSize="@dimen/text_standard"
                 android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/evaluare_solicitare_imageViewLink"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_below="@+id/evaluare_solicitare_relativeLayoutDateMelodie"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_toEndOf="@+id/evaluare_solicitare_textViewTitluNumeSolicitant"
+                android:src="@drawable/ic_link"
+                app:tint="@color/text" />
 
             <!-- nume solicitant -->
             <TextView
