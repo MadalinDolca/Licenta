@@ -26,11 +26,11 @@ import com.madalin.licenta.R;
 
 public class AutentificareActivity extends AppCompatActivity {
 
-    TextInputEditText editTextEmail;
-    TextInputEditText editTextParola;
-    TextView textViewInregistreazate;
-    Button buttonLogin;
-    TextView textViewRecuperareCont;
+    private TextInputEditText editTextEmail;
+    private TextInputEditText editTextParola;
+    private TextView textViewInregistreazate;
+    private Button buttonLogin;
+    private TextView textViewRecuperareCont;
 
     private FirebaseAuth firebaseAuth; // punctul de intrare al SDK-ului Firebase Authentication
     private FirebaseDatabase firebaseDatabase;
