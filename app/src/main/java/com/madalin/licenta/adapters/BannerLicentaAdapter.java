@@ -25,9 +25,9 @@ import com.madalin.licenta.controllers.VizualizareLicentaActivity;
 import com.madalin.licenta.global.NumeExtra;
 import com.madalin.licenta.models.Licenta;
 import com.madalin.licenta.models.Melodie;
-import com.madalin.licenta.models.Solicitare;
 import com.madalin.licenta.models.Utilizator;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -113,20 +113,17 @@ public class BannerLicentaAdapter extends RecyclerView.Adapter<BannerLicentaAdap
                         Melodie melodie = snapshot.getValue(Melodie.class);
                         melodie.setCheie(snapshot.getKey());
 
-                        // adauga datele melodiei in obiectul solicitarii
-                        licenta.setTemp_numeMelodie(melodie.getNumeMelodie());
-                        licenta.setTemp_numeArtist(melodie.getNumeArtist());
-                        licenta.setTemp_imagineMelodie(melodie.getImagineMelodie());
+                        licenta.setMelodie(melodie); // adauga obiectul melodiei in obiectul solicitarii
 
                         // seteaza datele obtinute din baza de date
                         Glide.with(context)
-                                .load(licenta.getTemp_imagineMelodie())
+                                .load(licenta.getMelodie().getImagineMelodie())
                                 .apply(RequestOptions.centerCropTransform())
                                 .placeholder(R.drawable.logo_music)
                                 .error(R.drawable.ic_eroare)
                                 .into(holder.imageViewImagineMelodie);
 
-                        holder.textViewNumeMelodie.setText(licenta.getTemp_numeMelodie());
+                        holder.textViewNumeMelodie.setText(licenta.getMelodie().getNumeMelodie());
                         holder.textViewNumeMelodie.setSelected(true); // pentru marquee
 
                         getSetDateBeneficiar(holder, licenta); // obtine datele solicitantului din solicitare si le seteaza
@@ -154,17 +151,16 @@ public class BannerLicentaAdapter extends RecyclerView.Adapter<BannerLicentaAdap
                         Utilizator utilizator = snapshot.getValue(Utilizator.class);
                         utilizator.setCheie(snapshot.getKey());
 
-                        // adauga datele beneficiarului in obiectul licentei
-                        licenta.setTemp_numeBeneficiar(utilizator.getNume());
+                        licenta.setBeneficiar((Utilizator) utilizator); // adauga obiectul beneficiarului in obiectul licentei
 
                         // daca artistul este cel care vede licenta
                         if (Objects.equals(licenta.getCheieArtist(), MainActivity.utilizator.getCheie())) {
-                            holder.textViewNumePersoana.setText("Beneficiar: " + licenta.getTemp_numeBeneficiar());
+                            holder.textViewNumePersoana.setText("Beneficiar: " + licenta.getBeneficiar().getNume());
                             holder.textViewNumePersoana.setSelected(true); // pentru marquee
                         }
                         // daca solicitantul este cel care vede solicitarea
                         else {
-                            holder.textViewNumePersoana.setText("Artist: " + licenta.getTemp_numeArtist());
+                            holder.textViewNumePersoana.setText("Artist: " + licenta.getMelodie().getNumeArtist());
                             holder.textViewNumePersoana.setSelected(true); // pentru marquee
                         }
                     }
