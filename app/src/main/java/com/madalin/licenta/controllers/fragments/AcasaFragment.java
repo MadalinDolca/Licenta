@@ -23,6 +23,8 @@ import com.madalin.licenta.models.CategorieCarduri;
 import com.madalin.licenta.models.Melodie;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class AcasaFragment extends Fragment {
@@ -31,6 +33,8 @@ public class AcasaFragment extends Fragment {
     private RecyclerView recyclerView;
 
     private List<Melodie> listaMelodii; // lista pentru memorarea datelor melodiilor din baza de date
+    private List<Melodie> listaMelodiiNoi;
+    private List<Melodie> listaMelodiiPopulare;
     private List<Melodie> listaMelodiiGitHub; // lista pentru memorarea datelor melodiilor din request API
     private ArrayList<CategorieCarduri> listaCategorii; // pentru memorarea categoriilor
 
@@ -89,8 +93,26 @@ public class AcasaFragment extends Fragment {
                             listaMelodii.add(melodie); // adauga obiectul in lista
                         }
 
-                        listaCategorii.add(new CategorieCarduri("🎶 Toate Încărcările", listaMelodii)); // adauga lista cu melodii in lista categoriilor
+                        // categoria tuturor melodiilor
+                        listaCategorii.add(new CategorieCarduri("🎶 Toate melodiile", listaMelodii)); // adauga lista cu melodii in lista categoriilor
 
+                        // categoria melodiilor noi
+                        listaMelodiiNoi = new ArrayList<>(listaMelodii);
+                        Collections.reverse(listaMelodiiNoi);
+                        listaCategorii.add(new CategorieCarduri("🆕 Cele mai noi", listaMelodiiNoi));
+
+                        // categoria melodiilor celor mai populare
+                        listaMelodiiPopulare = new ArrayList<>(listaMelodii);
+                        Collections.sort(listaMelodiiPopulare, (m1, m2) -> {
+                            if (m1.getNumarRedari() < m2.getNumarRedari())
+                                return 1;
+                            if (m1.getNumarRedari() > m2.getNumarRedari())
+                                return -1;
+                            return 0;
+                        });
+                        listaCategorii.add(new CategorieCarduri("🔥 Cele mai populare", listaMelodiiPopulare));
+
+                        // configurarea adapter-ului si a recyclerView-ului
                         CategorieCarduriAdapter categorieCarduriAdapter = new CategorieCarduriAdapter(getContext(), listaCategorii); // creeaza un adapter pentru categoria cardurilor
                         recyclerView = requireActivity().findViewById(R.id.acasa_recyclerViewCategoriiCarduri); // obtinere vedere RecyclerView
                         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
