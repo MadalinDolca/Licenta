@@ -16,7 +16,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.madalin.licenta.R;
 import com.madalin.licenta.controllers.fragments.SolicitariStadiuFragment;
-import com.madalin.licenta.global.EdgeToEdge;
+import com.madalin.licenta.global.EdgeToEdge.*;
 import com.madalin.licenta.models.Solicitare;
 
 public class SolicitariActivity extends AppCompatActivity {
@@ -30,8 +30,8 @@ public class SolicitariActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_solicitari);
         initializareVederi();
-        edgeToEdge(this, toolbar, EdgeToEdge.Spatiere.PADDING, EdgeToEdge.Directie.SUS);
-        edgeToEdge(this, viewPager2, EdgeToEdge.Spatiere.PADDING, EdgeToEdge.Directie.JOS);
+        edgeToEdge(this, toolbar, Spatiere.PADDING, Directie.SUS);
+        edgeToEdge(this, viewPager2, Spatiere.MARGIN, Directie.JOS);
 
         // seteaza adapter-ul pentru ViewPager2
         viewPager2.setAdapter(new SolicitariAdapter(this));
