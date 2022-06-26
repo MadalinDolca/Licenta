@@ -40,6 +40,15 @@ public class CategorieCarduriAdapter extends RecyclerView.Adapter<CategorieCardu
         CardMelodieAdapter cardMelodieAdapter = new CardMelodieAdapter(context, listaCategorieCarduri.get(position).getListaMelodii()); // creeaza un adapter pentru cardurile cu melodii
         holder.recyclerViewCarduri.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         holder.recyclerViewCarduri.setAdapter(cardMelodieAdapter);
+
+        if (position == listaCategorieCarduri.size() - 1) {
+            holder.recyclerViewCarduri.setPadding(
+                    holder.recyclerViewCarduri.getPaddingLeft(),
+                    holder.recyclerViewCarduri.getPaddingTop(),
+                    holder.recyclerViewCarduri.getPaddingRight(),
+                    200);
+        }
+
         cardMelodieAdapter.notifyDataSetChanged();
     }
 
