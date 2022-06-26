@@ -42,7 +42,7 @@ import com.madalin.licenta.models.Utilizator;
 
 public class MainActivity extends AppCompatActivity {
 
-    BottomNavigationView bottomNavigationView;
+    private BottomNavigationView bottomNavigationView;
 
     private FirebaseAuth firebaseAuth; // punctul de intrare al SDK-ului Firebase Authentication
     private FirebaseDatabase firebaseDatabase;
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     boolean doubleBackToExitPressedOnce = false; // tine evidenta apasarii optiunii "back"
     static boolean shuffleBoolean = false; // tine evidenta starii butonului "shuffle" din PlayerActivity
     static boolean repeatBoolean = false; // tine evidenta starii butonului "repeat" din PlayerActivity
-    public static boolean arataMiniplayer = false; // tine evidenta starii de afisare a miniplayer-ului
+    public static boolean isMiniplayerAfisat = false; // tine evidenta starii de afisare a miniplayer-ului
 
     public static final int COD_SOLICITARE_SCRIERE = 1;
 
@@ -101,7 +101,7 @@ ft.commit();
 
                 case R.id.cauta:
                     afisareFragment(fragmentCauta, "cauta", 2);
-                    afisareMiniPlayerFragment(true);
+                    afisareMiniPlayerFragment(false);
                     return true;
 
                 case R.id.biblioteca:
