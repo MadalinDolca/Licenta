@@ -81,7 +81,7 @@ public class AdaugaFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initializareVederi();
+        initializareVederi(view);
 
         //spinnerGenMelodie = viewFragmentAdauga.findViewById(R.id.adauga_spinnerGenMelodie);
         ArrayAdapter<CharSequence> adapterSpinnerGenMelodie = ArrayAdapter.createFromResource(getContext(), R.array.array_genuri_muzicale, R.layout.layout_spinner_item); // populare spinner si setare aspect optiune
@@ -292,14 +292,13 @@ public class AdaugaFragment extends Fragment {
     /**
      * Initializeaza toate vederile din cadrul acestui fragment.
      */
-    private void initializareVederi() {
-        imageViewImagineMelodie = requireView().findViewById(R.id.adauga_imageViewImagineMelodie);
-        imageViewFisierAudio = requireView().findViewById(R.id.adauga_imageViewFisierAudio);
-        textViewNumeFisierAudio = requireView().findViewById(R.id.adauga_textViewNumeFisierAudio);
-        editTextNumeMelodie = requireView().findViewById(R.id.adauga_editTextNumeMelodie);
-        editTextDescriereMelodie = requireView().findViewById(R.id.adauga_editTextDescriereMelodie);
-        spinnerGenMelodie = requireView().findViewById(R.id.adauga_spinnerGenMelodie);
-        buttonIncarcaMelodia = requireView().findViewById(R.id.adauga_buttonIncarcaMelodia);
+    private void initializareVederi(View view) {
+        imageViewImagineMelodie = view.findViewById(R.id.adauga_imageViewImagineMelodie);
+        imageViewFisierAudio = view.findViewById(R.id.adauga_imageViewFisierAudio);
+        textViewNumeFisierAudio = view.findViewById(R.id.adauga_textViewNumeFisierAudio);
+        editTextNumeMelodie = view.findViewById(R.id.adauga_editTextNumeMelodie);
+        editTextDescriereMelodie = view.findViewById(R.id.adauga_editTextDescriereMelodie);
+        spinnerGenMelodie = view.findViewById(R.id.adauga_spinnerGenMelodie);
+        buttonIncarcaMelodia = view.findViewById(R.id.adauga_buttonIncarcaMelodia);
     }
-
 }
