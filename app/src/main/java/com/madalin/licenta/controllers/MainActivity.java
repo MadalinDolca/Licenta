@@ -318,12 +318,12 @@ ft.commit();
 
             // layout solicitari
             linearLayoutSolicitari.setOnClickListener(view -> {
-                afisareDialogAlerta();
+                afisareDialogAlerta("Pentru a vedea solicitările va trebui să te autentifici!");
             });
 
             // layout licente
             linearLayoutLicente.setOnClickListener(view -> {
-                afisareDialogAlerta();
+                afisareDialogAlerta("Pentru a vedea și descărca licențele va trebui să te autentifici!");
             });
 
             // buton deconectare
@@ -340,7 +340,7 @@ ft.commit();
      * Afiseaza un dialog de alerta pentru autentificare in scenariul in care se doreste utilizarea
      * unei functionalitati care necesita autentificarea.
      */
-    private void afisareDialogAlerta() {
+    private void afisareDialogAlerta(String mesaj) {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.layout_alert_dialog); // layout dialog
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // fundal transparent
@@ -351,7 +351,7 @@ ft.commit();
         Button buttonRenunta = dialog.findViewById(R.id.alert_dialog_buttonOptiune2);
 
         // setare continut
-        textViewMesaj.setText("Pentru a vedea solicitările va trebui să te autentifici!");
+        textViewMesaj.setText(mesaj);
         buttonRenunta.setText("Renunță");
         buttonAutentificare.setText("Autentifică-te");
 
