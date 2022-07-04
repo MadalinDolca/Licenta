@@ -594,10 +594,12 @@ public class PlayerActivity extends AppCompatActivity
         textViewDurataMelodie.setText(formatareMilisecunde(muzicaService.getDurataMelodie()));
 
         // ascunde butonul "Solicita permisiunea" fata de autorul melodiei curente
-        if (Objects.equals(listaMelodiiPlayer.get(pozitieMelodie).getCheieArtist(), MainActivity.utilizator.getCheie())) {
-            buttonSolicitaPermisiunea.setVisibility(View.GONE);
-        } else {
-            buttonSolicitaPermisiunea.setVisibility(View.VISIBLE);
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) { // daca utilizatorul este conectat
+            if (Objects.equals(listaMelodiiPlayer.get(pozitieMelodie).getCheieArtist(), MainActivity.utilizator.getCheie())) {
+                buttonSolicitaPermisiunea.setVisibility(View.GONE);
+            } else {
+                buttonSolicitaPermisiunea.setVisibility(View.VISIBLE);
+            }
         }
 
         // verifica daca activitatea este activa (afisata utilizatorului) sau inchisa
