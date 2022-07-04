@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.madalin.licenta.R;
 import com.madalin.licenta.controllers.EditareMelodieActivity;
 import com.madalin.licenta.controllers.MainActivity;
@@ -58,9 +59,13 @@ public class BannerMelodieProfilAdapter extends RecyclerView.Adapter<BannerMelod
         }
 
         // daca utilizatorul curent este proprietarul melodiei sau admin, se afiseaza butonul de edit
-        if (Objects.equals(MainActivity.utilizator.getCheie(), listaMelodii.get(position).getCheieArtist())
-                || Objects.equals(MainActivity.utilizator.getGrad(), Utilizator.GRAD_ADMIN)) {
-            holder.imageViewButonEdit.setVisibility(View.VISIBLE);
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) { // daca utilizatorul este conectat
+            if (Objects.equals(MainActivity.utilizator.getCheie(), listaMelodii.get(position).getCheieArtist())
+                    || Objects.equals(MainActivity.utilizator.getGrad(), Utilizator.GRAD_ADMIN)) {
+                holder.imageViewButonEdit.setVisibility(View.VISIBLE);
+            } else {
+                holder.imageViewButonEdit.setVisibility(View.GONE);
+            }
         } else {
             holder.imageViewButonEdit.setVisibility(View.GONE);
         }
