@@ -30,10 +30,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.madalin.licenta.global.NumeExtra;
 import com.madalin.licenta.R;
 import com.madalin.licenta.controllers.MainActivity;
 import com.madalin.licenta.controllers.PlayerActivity;
+import com.madalin.licenta.global.NumeExtra;
 import com.madalin.licenta.interfaces.MiniPlayerInterface;
 import com.madalin.licenta.services.MuzicaService;
 
@@ -50,7 +50,6 @@ public class MiniPlayerFragment extends Fragment
     private FloatingActionButton floatingActionButtonButonPlayPause;
     private TextView textViewNumeMelodie;
     private TextView textViewNumeArtist;
-    private View viewMiniPlayer;
 
     private MuzicaService muzicaService; // instanta serviciu muzical
 
@@ -66,9 +65,9 @@ public class MiniPlayerFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        viewMiniPlayer = inflater.inflate(R.layout.fragment_mini_player, container, false); // obtine layout-ul fragment_mini_player
+        View viewMiniPlayer = inflater.inflate(R.layout.fragment_mini_player, container, false); // obtine layout-ul fragment_mini_player
 
-        initializareVederi(); // initializeaza vederile fragmentului
+        initializareVederi(viewMiniPlayer); // initializeaza vederile fragmentului
 
         // listener lansare PlayerActivity la apasarea miniplayer-ului
         relativeLayoutMiniPlayer.setOnClickListener(v -> {
@@ -79,7 +78,7 @@ public class MiniPlayerFragment extends Fragment
                         intent.putExtra(NumeExtra.LISTA_MELODII, (Serializable) muzicaService.listaMelodiiService); // ofera PlayerActivity-ului lista cu melodii din MuzicaService
                         intent.putExtra(NumeExtra.POZITIE_MELODIE, muzicaService.pozitieMelodie); // ofera PlayerActivity-ului pozitia melodiei curente din MuzicaService
                         //intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                        requireActivity().startActivity(intent); // lanseaza PlayerActivity
+                        getActivity().startActivity(intent); // lanseaza PlayerActivity
                     }
                 } else {
                     Toast.makeText(getContext(), "Selecteaza o melodie!", Toast.LENGTH_SHORT).show();
@@ -110,11 +109,8 @@ public class MiniPlayerFragment extends Fragment
             if (muzicaService != null) {
                 muzicaService.butonNextClicked(); // trece la urmatoarea melodie (MuzicaService memoreaza datele melodiei curente atunci cand creaza un MediaPlayer)
 
-                // daca framentul este asociat unei activitati
-                if (getActivity() != null) {
-                    obtineDateMelodieStocata(); // obtine datele melodiei stocate in baza de date locala a sistemului
-                    afisareDateMelodie(); // afiseaza datele melodiei in fragment miniplayer
-                }
+                obtineDateMelodieStocata(); // obtine datele melodiei stocate in baza de date locala a sistemului
+                afisareDateMelodie(); // afiseaza datele melodiei in fragment miniplayer
             }
         });
 
@@ -209,12 +205,15 @@ public class MiniPlayerFragment extends Fragment
      * {@link #numeMelodie} si {@link #numeArtist}.
      */
     public void obtineDateMelodieStocata() {
-        // obtine datele melodiei stocate in baza de date locala a sistemului
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(MuzicaService.KEY_ULTIMA_MELODIE_REDATA, Context.MODE_PRIVATE);
-        urlMelodie = sharedPreferences.getString(MuzicaService.KEY_URL_MELODIE, null); // obtine URL-ul melodiei la cheia "URL_MELODIE"
-        imagineMelodie = sharedPreferences.getString(MuzicaService.KEY_IMAGINE_MELODIE, null); // obtine imaginea melodiei la cheia "IMAGINE_MELODIE"
-        numeMelodie = sharedPreferences.getString(MuzicaService.KEY_NUME_MELODIE, null); // obtine numele melodiei la cheia "NUME_MELODIE"
-        numeArtist = sharedPreferences.getString(MuzicaService.KEY_NUME_ARTIST, null); // obtine numele artistului la cheia "NUME_ARTIST"
+        // daca framentul este asociat unei activitati
+        if (getActivity() != null) {
+            // obtine datele melodiei stocate in baza de date locala a sistemului
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences(MuzicaService.KEY_ULTIMA_MELODIE_REDATA, Context.MODE_PRIVATE);
+            urlMelodie = sharedPreferences.getString(MuzicaService.KEY_URL_MELODIE, null); // obtine URL-ul melodiei la cheia "URL_MELODIE"
+            imagineMelodie = sharedPreferences.getString(MuzicaService.KEY_IMAGINE_MELODIE, null); // obtine imaginea melodiei la cheia "IMAGINE_MELODIE"
+            numeMelodie = sharedPreferences.getString(MuzicaService.KEY_NUME_MELODIE, null); // obtine numele melodiei la cheia "NUME_MELODIE"
+            numeArtist = sharedPreferences.getString(MuzicaService.KEY_NUME_ARTIST, null); // obtine numele artistului la cheia "NUME_ARTIST"
+        }
 
         if (urlMelodie != null) {
             MainActivity.isMiniplayerAfisat = true;
@@ -234,61 +233,66 @@ public class MiniPlayerFragment extends Fragment
      * culoarea dominanta a imaginii melodiei.
      */
     public void afisareDateMelodie() {
-        // populeaza campurile din miniplayer
-        textViewNumeMelodie.setText(numeMelodie);
-        textViewNumeMelodie.setSelected(true); // pentru marquee
+        // daca framentul este asociat unei activitati
+        if (getActivity() != null) {
+            // populeaza campurile din miniplayer
+            textViewNumeMelodie.setText(numeMelodie);
+            textViewNumeMelodie.setSelected(true); // pentru marquee
 
-        textViewNumeArtist.setText(numeArtist);
-        textViewNumeArtist.setSelected(true); // pentru marquee
+            textViewNumeArtist.setText(numeArtist);
+            textViewNumeArtist.setSelected(true); // pentru marquee
 
-        // setare imagine melodie si paleta de culori
-        if (imagineMelodie == null) { // daca melodia nu are link spre imagine
-            imageViewImagineMelodie.setImageResource(R.drawable.ic_nota_muzicala); // se adauga o resursa inlocuitoare
-        }
-        // daca melodia are link spre imagine, aceasta se obtine ca bitmap, se adauga in card si se aplica paleta de culori
-        else {
-            Glide.with(this).asBitmap().load(imagineMelodie) // obtine imaginea ca bitmap
-                    .into(new CustomTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resursaBitmapImagineMelodie, @Nullable Transition<? super Bitmap> transition) {
-                            PlayerActivity.animatieImagine(getContext(), imageViewImagineMelodie, resursaBitmapImagineMelodie); // animatie la schimbarea imaginii
+            // setare imagine melodie si paleta de culori
+            if (imagineMelodie == null) { // daca melodia nu are link spre imagine
+                imageViewImagineMelodie.setImageResource(R.drawable.ic_nota_muzicala); // se adauga o resursa inlocuitoare
+            }
+            // daca melodia are link spre imagine, aceasta se obtine ca bitmap, se adauga in card si se aplica paleta de culori
+            else {
+                Glide.with(this).asBitmap().load(imagineMelodie) // obtine imaginea ca bitmap
+                        .into(new CustomTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resursaBitmapImagineMelodie, @Nullable Transition<? super Bitmap> transition) {
+                                PlayerActivity.animatieImagine(getContext(), imageViewImagineMelodie, resursaBitmapImagineMelodie); // animatie la schimbarea imaginii
 
-                            // generare paleta de culori
-                            Palette.from(resursaBitmapImagineMelodie).generate(palette -> {
-                                Palette.Swatch swatchCuloareDominanta = palette.getDominantSwatch(); // obtine culoarea dominanta a imaginii melodiei
+                                // generare paleta de culori
+                                Palette.from(resursaBitmapImagineMelodie).generate(palette -> {
+                                    Palette.Swatch swatchCuloareDominanta = palette.getDominantSwatch(); // obtine culoarea dominanta a imaginii melodiei
 
-                                if (swatchCuloareDominanta != null) {
-                                    // aplica culoarea swatch-ului pe elementele player-ului
-                                    ColorStateList swatchColorState = ColorStateList.valueOf(swatchCuloareDominanta.getBodyTextColor()); // culoare elemente
-                                    ColorStateList swatchColorStateDominant = ColorStateList.valueOf(swatchCuloareDominanta.getRgb()); // culoare fundal
+                                    if (swatchCuloareDominanta != null) {
+                                        // aplica culoarea swatch-ului pe elementele player-ului
+                                        ColorStateList swatchColorState = ColorStateList.valueOf(swatchCuloareDominanta.getBodyTextColor()); // culoare elemente
+                                        ColorStateList swatchColorStateDominant = ColorStateList.valueOf(swatchCuloareDominanta.getRgb()); // culoare fundal
 
-                                    relativeLayoutMiniPlayer.setBackgroundTintList(swatchColorStateDominant); // setare culoare fundal
-                                    textViewNumeMelodie.setTextColor(swatchColorState);
-                                    textViewNumeArtist.setTextColor(swatchColorState);
-                                    floatingActionButtonButonPlayPause.setBackgroundTintList(swatchColorState);
-                                    imageViewButonNext.setImageTintList(swatchColorState);
+                                        relativeLayoutMiniPlayer.setBackgroundTintList(swatchColorStateDominant); // setare culoare fundal
+                                        textViewNumeMelodie.setTextColor(swatchColorState);
+                                        textViewNumeArtist.setTextColor(swatchColorState);
+                                        floatingActionButtonButonPlayPause.setBackgroundTintList(swatchColorState);
+                                        imageViewButonNext.setImageTintList(swatchColorState);
 
-                                    // seteaza culoarea resursei butonului PlayPause in functie de culoarea elementelor
-                                    if (ColorUtils.calculateLuminance(swatchCuloareDominanta.getBodyTextColor()) < 0.2) { // daca coloarea este intunecata
-                                        floatingActionButtonButonPlayPause.setImageTintList(ColorStateList.valueOf(Color.WHITE));
-                                    } else { // daca culoarea este luminoasa
-                                        floatingActionButtonButonPlayPause.setImageTintList(ColorStateList.valueOf(Color.BLACK));
+                                        // seteaza culoarea resursei butonului PlayPause in functie de culoarea elementelor
+                                        if (ColorUtils.calculateLuminance(swatchCuloareDominanta.getBodyTextColor()) < 0.2) { // daca coloarea este intunecata
+                                            floatingActionButtonButonPlayPause.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+                                        } else { // daca culoarea este luminoasa
+                                            floatingActionButtonButonPlayPause.setImageTintList(ColorStateList.valueOf(Color.BLACK));
+                                        }
                                     }
-                                }
-                            });
-                        }
+                                });
+                            }
 
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                        }
-                    });
+                            @Override
+                            public void onLoadCleared(@Nullable Drawable placeholder) {
+                            }
+                        });
+            }
         }
     }
 
     /**
      * Initializeaza vederile din {@link MiniPlayerFragment}.
+     *
+     * @param viewMiniPlayer vederea umflata cu layout-ul fragmentului
      */
-    void initializareVederi() {
+    void initializareVederi(View viewMiniPlayer) {
         relativeLayoutMiniPlayer = viewMiniPlayer.findViewById(R.id.mini_player_relativeLayout);
         imageViewImagineMelodie = viewMiniPlayer.findViewById(R.id.mini_player_imageViewImagineMelodie);
         textViewNumeMelodie = viewMiniPlayer.findViewById(R.id.mini_player_textViewNumeMelodie);
