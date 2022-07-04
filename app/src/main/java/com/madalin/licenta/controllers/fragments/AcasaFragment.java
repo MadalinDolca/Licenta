@@ -54,6 +54,7 @@ public class AcasaFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_acasa, container, false); // obtinere vedere fragment_acasa din MainActivity
         swipeRefreshLayoutContainer = view.findViewById(R.id.acasa_swipeRefreshLayoutContainer);
+        recyclerView = view.findViewById(R.id.acasa_recyclerViewCategoriiCarduri); // obtinere vedere RecyclerView
 
         return view;
     }
@@ -114,7 +115,6 @@ public class AcasaFragment extends Fragment {
 
                         // configurarea adapter-ului si a recyclerView-ului
                         CategorieCarduriAdapter categorieCarduriAdapter = new CategorieCarduriAdapter(getContext(), listaCategorii); // creeaza un adapter pentru categoria cardurilor
-                        recyclerView = requireActivity().findViewById(R.id.acasa_recyclerViewCategoriiCarduri); // obtinere vedere RecyclerView
                         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                         recyclerView.setAdapter(categorieCarduriAdapter); // setare adapter pe recyclerView pentru a furniza child views la cerere
 
