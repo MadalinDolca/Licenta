@@ -15,6 +15,7 @@
 - Song usage license generator
 - In-app licences viewer
 - Licenses and songs downloader as packets
+- Light and Dark mode
 - Other nice things
 
 ## 🔜 Planned
