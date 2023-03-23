@@ -2,10 +2,20 @@
 
 ## ✨ Features
 
-- Song upload with art, related data, genre etc.
+- Authentication system
+- User/artist profiles
+- Music catalog sorted by the newest songs, most played etc.
+- Song search engine
+- Song upload/update with art, related data, genre etc.
 - Dynamic music player and mini player
 - Background playing even with the app closed
+- Song analytics
+- Mechanism for requesting permission to reuse songs
+- Mechanism for viewing and evaluating song usage requests
 - Song usage license generator
+- In-app licences viewer
+- Licenses and songs downloader as packets
+- Other nice things
 
 ## 🔜 Planned
 
