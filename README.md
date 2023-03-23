@@ -8,7 +8,7 @@
 - Song search engine
 - Song upload/update with art, related data, genre etc.
 - Dynamic music player and mini player
-- Background playing even with the app closed
+- Background playing even with the app closed and notification controls
 - Song analytics
 - Mechanism for requesting permission to reuse songs
 - Mechanism for viewing and evaluating song usage requests
