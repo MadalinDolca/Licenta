@@ -1,5 +1,9 @@
 # Mobile app for promoting and licensing artists' works
 
+| Home in Light Mode | Home in Dark Mode |
+| - | - |
+| <img src="art/home_light.png" width="300px"/> | <img src="art/home_dark.png" width="300px"/> |
+
 ## ✨ Features
 
 - Authentication system
@@ -46,3 +50,29 @@ To get started with the app, follow these steps:
 1. Clone this repository to your local machine
 2. Import the project into Android Studio
 3. Build and run the app on an emulator or physical device
+
+## 👀 Preview
+
+| Music player | Song data | Notification control |
+| - | - | - |
+| <img src="art/music_player.jpeg" width="300px"/> | <img src="art/music_player_analytics.png" width="300px"/> | <img src="art/notification_control.png" width="300px"/> |
+
+| Song upload (blank) | Song upload | Song edit |
+| - | - | - |
+| <img src="art/song_upload_blank.png" width="300px"/> | <img src="art/song_upload_filled.png" width="300px"/> | <img src="art/song_edit.png" width="300px"/> |
+
+| Menu | Profile | Song search |
+| - | - | - |
+| <img src="art/bottom_menu.png" width="300px"/> | <img src="art/profile.png" width="300px"/> | <img src="art/search.png" width="300px"/> |
+
+| Permission request | Request evaluation |
+| - | - |
+| <img src="art/permission_request.png" width="300px"/> | <img src="art/request_evaluation.png" width="300px"/> |
+
+| Not evaluated requests | Evaluated requests | Declined requests |
+| - | - | - |
+| <img src="art/requests_notevaluated.png" width="300px"/> | <img src="art/requests_accepted.png" width="300px"/> | <img src="art/requests_declined.png" width="300px"/> |
+
+| Received licenses | Given licenses | License viewer |
+| - | - | - |
+| <img src="art/licenses_received.png" width="300px"/> | <img src="art/licenses_given.png" width="300px"/> | <img src="art/license_viewer.png" width="300px"/> |
