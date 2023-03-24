@@ -1,4 +1,4 @@
-# Mobile app for promoting and licensing artists' works
+# 🎵 Mobile app for promoting and licensing artists' works
 
 This is an app that I developed for my undergraduate thesis. Its purpose is to offer the artists the ability to upload and distribute their music in a controlled manner via the other users of this app by implementing a usage request, evaluation and license generating mechanism to offer the applicants the permission of complete or partially use of the desired audio content.
 
