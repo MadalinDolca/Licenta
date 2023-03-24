@@ -1,5 +1,7 @@
 # Mobile app for promoting and licensing artists' works
 
+This is an app that I developed for my undergraduate thesis. Its purpose is to offer the artists the ability to upload and distribute their music in a controlled manner via the other users of this app by implementing a usage request, evaluation and license generating mechanism to offer the applicants the permission of complete or partially use of the desired audio content.
+
 | Home in Light Mode | Home in Dark Mode |
 | - | - |
 | <img src="art/home_light.png" width="300px"/> | <img src="art/home_dark.png" width="300px"/> |
@@ -69,7 +71,7 @@ To get started with the app, follow these steps:
 | - | - |
 | <img src="art/permission_request.png" width="300px"/> | <img src="art/request_evaluation.png" width="300px"/> |
 
-| Not evaluated requests | Evaluated requests | Declined requests |
+| Unevaluated requests | Evaluated requests | Declined requests |
 | - | - | - |
 | <img src="art/requests_notevaluated.png" width="300px"/> | <img src="art/requests_accepted.png" width="300px"/> | <img src="art/requests_declined.png" width="300px"/> |
 
